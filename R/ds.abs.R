@@ -16,6 +16,8 @@
 #' @return \code{ds.abs} assigns a vector for each study that includes the absolute values of
 #' the input numeric or integer vector specified in the argument \code{x}. The created vectors
 #' are stored in the servers.
+#' @importFrom DSI datashield.connections_find datashield.assign
+#' @importFrom methods is
 #' @author Demetris Avraam for DataSHIELD Development Team
 #' @export
 #' @examples
