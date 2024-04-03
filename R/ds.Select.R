@@ -9,7 +9,8 @@
 #' @return the object specified by the \code{newobj} argument or
 #' of \code{ds.select} (or as default same name as input object) which is written to the serverside.
 #' @importFrom tidyselect eval_select
-#' @importFrom rlang set_names
+#' @importFrom rlang set_names quo_squash
+#' @importFrom DSI datashield.connections_find
 #' @export
 ds.select <- function(.data = NULL, newobj = NULL, datasources = NULL, select_args = NULL){
 
