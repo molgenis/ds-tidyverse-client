@@ -22,8 +22,13 @@ ds.select <- function(.data = NULL, newobj = NULL, datasources = NULL, select_ar
   if(!(is.list(datasources) && all(unlist(lapply(datasources, function(d) {methods::is(d,"DSConnection")}))))){
     stop("The 'datasources' were expected to be a list of DSConnection-class objects", call.=FALSE)
   }
-  expr <- rlang::enquo(select_args)
-  expr_squashed <- quo_squash(expr, warn = FALSE)
-  cally <- call("selectDS", expr_squashed)
+  expr <- rlang::enquo(select_args) ## Get the unquoted arguments
+  expr_squashed <- quo_text(expr) ## Convert them to a string
+  expr_as_string <- str_replace(expr_squashed, fixed("("), "$LB$")
+  expr_as_string <- str_replace(expr_as_string, fixed(")"), "$RB$")
+  expr_as_string <- str_replace(expr_as_string, fixed('\"'), "$QUOTE$")
+  expr_as_string <- str_replace(expr_as_string, fixed('\"'), "$QUOTE$")
+
+  cally <- call("selectDS", .data, expr_as_string)
   DSI::datashield.assign(datasources, newobj, cally)
 }
