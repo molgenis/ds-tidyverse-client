@@ -1,3 +1,22 @@
+.getEncodeKey <- function(){
+
+  encode_list <- list(
+      input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),
+      output = c("$LIST$", "$LB", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$")
+    )
+  return(encode_list)
+}
+
+.encodeTidyEval <- function(input_string, encode_key){
+  encode_vec <- setNames(encode_key$output, encode_key$input)
+  output_string <- str_replace_all(input_string, fixed(encode_vec))
+}
+
+
+
+
+
+
 #'
 #' @title Checks if the objects are defined in all studies
 #' @description This is an internal function.
