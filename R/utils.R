@@ -1,21 +1,27 @@
-.getEncodeKey <- function(){
-
+.getEncodeKey <- function() {
   encode_list <- list(
-      input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),
-      output = c("$LIST$", "$LB", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$")
-    )
+    input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),
+    output = c("$LIST$", "$LB", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$")
+  )
   return(encode_list)
 }
 
-.encodeTidyEval <- function(input_string, encode_key){
+.encode_tidy_eval <- function(input_string, encode_key) {
   encode_vec <- setNames(encode_key$output, encode_key$input)
   output_string <- str_replace_all(input_string, fixed(encode_vec))
 }
 
+.remove_list <- function(string_decoded) {
+  string_decoded %>%
+    str_replace_all(pattern = fixed("list("), replacement = "") %>%
+    str_sub(end = -2)
+}
 
-
-
-
+.format_args_as_string <- function(expr) {
+  args_as_string <- quo_text(expr) ## Convert them to a string
+  neat_args_as_string <- .remove_list(args_as_string)
+  return(neat_args_as_string)
+}
 
 #'
 #' @title Checks if the objects are defined in all studies
@@ -36,26 +42,24 @@
 #' \code{error.message} argument is set to FALSE.
 #' @author Demetris Avraam for DataSHIELD Development Team
 #'
-isDefined <- function(datasources=NULL, obj=NULL, error.message=TRUE){
-
+isDefined <- function(datasources = NULL, obj = NULL, error.message = TRUE) {
   inputobj <- unlist(obj)
 
-  for(i in 1:length(inputobj)){
-
+  for (i in 1:length(inputobj)) {
     extractObj <- extract(inputobj[i])
 
-    if(is.na(extractObj$holders)){
-      cally <- call('exists', extractObj$elements)
+    if (is.na(extractObj$holders)) {
+      cally <- call("exists", extractObj$elements)
       out <- DSI::datashield.aggregate(datasources, cally)
-    }else{
+    } else {
       dfname <- as.name(extractObj$holders)
-      cally <- call('exists', extractObj$elements, dfname)
+      cally <- call("exists", extractObj$elements, dfname)
       out <- DSI::datashield.aggregate(datasources, cally)
     }
 
-    if(error.message==TRUE & any(out==FALSE)){
-      stop("The input object ", inputobj[i], " is not defined in ", paste(names(which(out==FALSE)), collapse=", "), "!" , call.=FALSE)
-    }else{
+    if (error.message == TRUE & any(out == FALSE)) {
+      stop("The input object ", inputobj[i], " is not defined in ", paste(names(which(out == FALSE)), collapse = ", "), "!", call. = FALSE)
+    } else {
       return(out)
     }
   }
@@ -75,15 +79,15 @@ isDefined <- function(datasources=NULL, obj=NULL, error.message=TRUE){
 #' the object was not generated in any one server.
 #' @importFrom DSI datashield.aggregate
 #'
-isAssigned <- function(datasources=NULL, newobj=NULL){
-  cally <- call('exists', newobj)
+isAssigned <- function(datasources = NULL, newobj = NULL) {
+  cally <- call("exists", newobj)
   qc <- DSI::datashield.aggregate(datasources, cally)
-  indx <- as.numeric(which(qc==TRUE))
-  if(length(indx) > 0 & length(indx) < length(datasources)){
-    stop("The output object, '", newobj, "', was generated only for ", names(datasources)[indx], "!", call.=FALSE)
+  indx <- as.numeric(which(qc == TRUE))
+  if (length(indx) > 0 & length(indx) < length(datasources)) {
+    stop("The output object, '", newobj, "', was generated only for ", names(datasources)[indx], "!", call. = FALSE)
   }
-  if(length(indx) == 0){
-    stop("The output object has not been generated for any of the studies!", call.=FALSE)
+  if (length(indx) == 0) {
+    stop("The output object has not been generated for any of the studies!", call. = FALSE)
   }
 }
 
@@ -100,7 +104,7 @@ isAssigned <- function(datasources=NULL, newobj=NULL){
 #' @importFrom DSI datashield.aggregate
 #'
 #'
-checkClass <- function(datasources=NULL, obj=NULL){
+checkClass <- function(datasources = NULL, obj = NULL) {
   # check the class of the input object
   cally <- call("classDS", obj)
   classesBy <- DSI::datashield.aggregate(datasources, cally, async = FALSE)
@@ -109,7 +113,7 @@ checkClass <- function(datasources=NULL, obj=NULL){
     if (!all(classes == classesBy[[n]])) {
       message("The input data is not of the same class in all studies!")
       message("Use the function 'ds.class' to verify the class of the input object in each study.")
-      stop(" End of process!", call.=FALSE)
+      stop(" End of process!", call. = FALSE)
     }
   }
   return(classes)
@@ -123,22 +127,22 @@ checkClass <- function(datasources=NULL, obj=NULL){
 #' @keywords internal
 #' @return a vector of characters
 #'
-extract <- function(input){
+extract <- function(input) {
   input <- unlist(input)
   output1 <- c()
   output2 <- c()
-  for (i in 1:length(input)){
-    inputterms <- unlist(strsplit(input[i], "\\$", perl=TRUE))
-    if(length(inputterms) > 1){
-      obj1 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][2]
-    }else{
+  for (i in 1:length(input)) {
+    inputterms <- unlist(strsplit(input[i], "\\$", perl = TRUE))
+    if (length(inputterms) > 1) {
+      obj1 <- strsplit(input[i], "\\$", perl = TRUE)[[1]][1]
+      obj2 <- strsplit(input[i], "\\$", perl = TRUE)[[1]][2]
+    } else {
       obj1 <- NA
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
+      obj2 <- strsplit(input[i], "\\$", perl = TRUE)[[1]][1]
     }
     output1 <- append(output1, obj1)
     output2 <- append(output2, obj2)
   }
-  output <- list('holders'=output1, 'elements'=output2)
+  output <- list("holders" = output1, "elements" = output2)
   return(output)
 }

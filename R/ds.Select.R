@@ -12,20 +12,22 @@
 #' @importFrom rlang set_names quo_squash
 #' @importFrom DSI datashield.connections_find
 #' @export
-ds.select <- function(.data = NULL, newobj = NULL, datasources = NULL, select_args = NULL){
-
+ds.select <- function(.data = NULL, newobj = NULL, datasources = NULL, select_args = NULL) {
   # look for DS connections
-  if(is.null(datasources)){
+  if (is.null(datasources)) {
     datasources <- datashield.connections_find()
   }
 
-  if(!(is.list(datasources) && all(unlist(lapply(datasources, function(d) {methods::is(d,"DSConnection")}))))){
-    stop("The 'datasources' were expected to be a list of DSConnection-class objects", call.=FALSE)
+  if (!(is.list(datasources) && all(unlist(lapply(datasources, function(d) {
+    methods::is(d, "DSConnection")
+  }))))) {
+    stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
   }
-
-  expr <- rlang::enquo(select_args) ## Get the unquoted arguments
-  args_as_string <- quo_text(expr) ## Convert them to a string
-  string_encoded <- .encodeTidyEval(args_as_string, .getEncodeKey())
+  expr <- rlang::enquo(select_args)
+  args_as_string <- .format_args_as_string(expr)
+  string_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
   cally <- call("selectDS", .data, string_encoded)
-  DSI::datashield.assign(datasources, newobj, cally)
+  warnings <- DSI::datashield.assign(datasources, newobj, cally)
+  ## Write functionality to handle warnings
+  ## Write functionality to check object exists
 }
