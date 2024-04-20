@@ -7,57 +7,31 @@
 
 .verify_datasources <- function(datasources){
 
-  is_connection_class <- datasources %>% map(~unlist(.x) %>% methods::is("DSConnection"))
+  is_connection_class <- datasources %>% map_lgl(~unlist(.x) %>% methods::is("DSConnection"))
   if(!all(is_connection_class)){
     stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
   }
 }
 
-.getEncodeKey <- function() {
-  encode_list <- list(
-    input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),
-    output = c("$LIST$", "$LB", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$")
-  )
-  return(encode_list)
-}
+newobj = "test"
 
-.encode_tidy_eval <- function(input_string, encode_key) {
-  encode_vec <- setNames(encode_key$output, encode_key$input)
-  output_string <- str_replace_all(input_string, fixed(encode_vec))
-}
-
-.remove_list <- function(string_decoded) {
-  string_decoded %>%
-    str_replace_all(pattern = fixed("list("), replacement = "") %>%
-    str_sub(end = -2)
-}
-
-.format_args_as_string <- function(expr) {
-  args_as_string <- quo_text(expr) ## Convert them to a string
-  neat_args_as_string <- .remove_list(args_as_string)
-  return(neat_args_as_string)
-}
-
-library(purrr)
-
-# Function to create call text for each data source
-create_call_text <- function(datasource, test_obj_name) {
-  call("testObjExistsDS", test_obj_name)
-}
-
-# Function to aggregate results from data sources
-aggregate_results <- function(datasources, call_texts) {
-  map(datasources, ~DSI::datashield.aggregate(.x, .y))
+.get_obj_info <- function(datasources, newobj){
+  cally <- call("testObjExistsDS", newobj)
+  DSI::datashield.aggregate(datasources, cally)
 }
 
 # Function to check if object exists in all sources
 check_obj_existence <- function(object_info) {
-  all(map(object_info, ~.$test.obj.exists))
+  object_info %>%
+    map_lgl(~.$test.obj.exists) %>%
+    all()
 }
 
 # Function to check if object has valid content/class
 check_obj_validity <- function(object_info) {
-  all(map(object_info, ~!is.null(.$test.obj.class) && !("ABSENT" %in% .$test.obj.class)))
+  object_info %>%
+    map_lgl(~!is.null(.$test.obj.class) && !("ABSENT" %in% .$test.obj.class)) %>%
+    all()
 }
 
 # Function to generate return messages
@@ -81,7 +55,9 @@ call_messageDS <- function(datasources, test_obj_name) {
 
 # Function to check for errors in studyside messages
 check_studyside_errors <- function(studyside_messages) {
-  all(map(studyside_messages, ~. != "ALL OK: there are no studysideMessage(s) on this datasource"))
+  studyside_messages %>%
+    map_lgl(~. == "ALL OK: there are no studysideMessage(s) on this datasource") %>%
+    all()
 }
 
 # Function to generate validity check message
@@ -95,36 +71,37 @@ generate_validity_check_message <- function(obj_name, no_errors) {
 }
 
 # Main function to perform all checks
-check_object_creation <- function(datasources, test_obj_name) {
-  call_texts <- map(datasources, create_call_text, test_obj_name)
-  object_info <- aggregate_results(datasources, call_texts)
-
+.check_object_creation <- function(datasources, newobj) {
+  object_info <- .get_obj_info(datasources, newobj)
   obj_exists <- check_obj_existence(object_info)
   obj_valid <- check_obj_validity(object_info)
-
-  return_messages <- generate_return_messages(test_obj_name, obj_exists, obj_valid)
-
-  studyside_messages <- call_messageDS(datasources, test_obj_name)
+  return_messages <- generate_return_messages(newobj, obj_exists, obj_valid)
+  studyside_messages <- call_messageDS(datasources, newobj)
   no_errors <- check_studyside_errors(studyside_messages)
-
-  validity_check <- generate_validity_check_message(test_obj_name, no_errors)
+  validity_check <- generate_validity_check_message(newobj, no_errors)
 
   if (no_errors) {
-    return(list(is_object_created = return_messages, validity_check = validity_check))
+    return(
+      list(
+        success = TRUE,
+        messages = c(return_messages, validity_check)
+    )
+    )
   } else {
-    return(list(
-      is_object_created = return_messages,
-      validity_check = validity_check,
-      studyside_messages = studyside_messages
-    ))
+    return(
+      list(
+        sucess = FALSE,
+        messages = return_messages, validity_check, studyside_messages
+        )
+    )
   }
 }
-
-# Usage example
-datasources <- list("source1", "source2", "source3")
-test_obj_name <- "newobj"
-result <- check_object_creation(datasources, test_obj_name)
-print(result)
+#
+# # Usage example
+# datasources <- list("source1", "source2", "source3")
+# test_obj_name <- "newobj"
+# result <- .check_object_creation(datasources, newobj)
+# print(result)
 
 
 

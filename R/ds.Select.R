@@ -13,15 +13,22 @@
 #' @importFrom DSI datashield.connections_find
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
-  # look for DS connections
 
   datasources <- .set_datasources(datasources)
   .verify_datasources(datasources)
+
   args_as_quo <- rlang::enquo(tidy_select)
-  args_as_string <- .format_args_as_string(expr)
+  args_as_string <- .format_args_as_string(args_as_quo)
   string_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
+
   cally <- call("selectDS", .data, string_encoded)
   warnings <- DSI::datashield.assign(datasources, newobj, cally)
   ## Write functionality to handle warnings
-  ## Write functionality to check object exists
+
+  messages <- .check_object_creation(datasources, newobj)
+  if(messages$success){
+    return(messages$messages %>% walk(cli_alert_success))
+  } else {
+    return(messages$messages %>% walk(cli_alert_failure))
+  }
 }
