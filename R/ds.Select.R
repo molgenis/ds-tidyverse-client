@@ -16,12 +16,9 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
 
   datasources <- .set_datasources(datasources)
   .verify_datasources(datasources)
-
-  args_as_quo <- rlang::enquo(tidy_select)
-  args_as_string <- .format_args_as_string(args_as_quo)
-  string_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
-
-  cally <- call("selectDS", .data, string_encoded)
+  args_diffused <- rlang::enquo(tidy_select)
+  args_encoded <- .format_args(args_diffused)
+  cally <- call("selectDS", .data, args_encoded)
   warnings <- DSI::datashield.assign(datasources, newobj, cally)
   ## Write functionality to handle warnings
 

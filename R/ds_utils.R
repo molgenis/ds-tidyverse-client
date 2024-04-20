@@ -13,7 +13,11 @@
   }
 }
 
-newobj = "test"
+.format_args <- function(args_diffused){
+  args_as_string <- .format_args_as_string(args_diffused)
+  args_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
+  return(args_encoded)
+}
 
 .get_obj_info <- function(datasources, newobj){
   cally <- call("testObjExistsDS", newobj)
