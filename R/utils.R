@@ -1,3 +1,18 @@
+.set_datasources <- function(datasources){
+  if (is.null(datasources)) {
+    datasources <- datashield.connections_find()
+    return(datasources)
+  }
+}
+
+.verify_datasources <- function(datasources){
+
+  is_connection_class <- datasources %>% map(~unlist(.x) %>% methods::is("DSConnection"))
+  if(!all(is_connection_class)){
+    stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
+  }
+}
+
 .getEncodeKey <- function() {
   encode_list <- list(
     input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),

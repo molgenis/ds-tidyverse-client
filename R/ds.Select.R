@@ -12,18 +12,12 @@
 #' @importFrom rlang set_names quo_squash
 #' @importFrom DSI datashield.connections_find
 #' @export
-ds.select <- function(.data = NULL, newobj = NULL, datasources = NULL, select_args = NULL) {
+ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   # look for DS connections
-  if (is.null(datasources)) {
-    datasources <- datashield.connections_find()
-  }
 
-  if (!(is.list(datasources) && all(unlist(lapply(datasources, function(d) {
-    methods::is(d, "DSConnection")
-  }))))) {
-    stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
-  }
-  expr <- rlang::enquo(select_args)
+  datasources <- .set_datasources(datasources)
+  .verify_datasources(datasources)
+  args_as_quo <- rlang::enquo(tidy_select)
   args_as_string <- .format_args_as_string(expr)
   string_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
   cally <- call("selectDS", .data, string_encoded)
