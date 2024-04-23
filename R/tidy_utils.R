@@ -23,10 +23,13 @@
   return(neat_args_as_string)
 }
 
-permitted_tidy_select <- c("everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
-                           "matches", "num_range", "all_of", "any_of", "where")
+
 
 .check_function_names <- function(args_as_string){
+
+  permitted_tidy_select <- c("everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
+                             "matches", "num_range", "all_of", "any_of", "where")
+
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
   any_banned_functions <- function_names[!function_names %in% permitted_tidy_select]
   if(length(any_banned_functions) > 0) {
@@ -53,7 +56,4 @@ permitted_tidy_select <- c("everything", "last_col", "group_cols", "starts_with"
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, nfilter.string)
 }
-
-
-
 

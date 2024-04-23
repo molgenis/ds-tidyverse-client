@@ -7,7 +7,7 @@
 
 .verify_datasources <- function(datasources){
 
-  is_connection_class <- datasources %>% map(~unlist(.x) %>% methods::is("DSConnection"))
+  is_connection_class <- datasources %>% map_lgl(~unlist(.x) %>% methods::is("DSConnection"))
   if(!all(is_connection_class)){
     stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
   }
@@ -21,17 +21,11 @@
 
 
 .set_new_obj <- function(newobj){
-
   if(is.null(newobj)){
     newobj <- .data
-    return(newobj)
   }
-
+  return(newobj)
 }
-
-
-
-
 
 .getEncodeKey <- function() {
   encode_list <- list(
@@ -115,7 +109,7 @@ generate_validity_check_message <- function(obj_name, no_errors) {
 }
 
 # Main function to perform all checks
-check_object_creation <- function(datasources, test_obj_name) {
+.check_object_creation <- function(datasources, test_obj_name) {
   call_texts <- map(datasources, create_call_text, test_obj_name)
   object_info <- aggregate_results(datasources, call_texts)
 
@@ -140,16 +134,11 @@ check_object_creation <- function(datasources, test_obj_name) {
   }
 }
 
-# Usage example
-datasources <- list("source1", "source2", "source3")
-test_obj_name <- "newobj"
-result <- check_object_creation(datasources, test_obj_name)
-print(result)
-
-
-
-
-
+# # Usage example
+# datasources <- list("source1", "source2", "source3")
+# test_obj_name <- "newobj"
+# result <- check_object_creation(datasources, test_obj_name)
+# print(result)
 
 #'
 #' @title Checks if the objects are defined in all studies
@@ -286,4 +275,5 @@ extract <- function(input) {
     studysideMessage <- "FAILED: df.name argument > nfilter.string - please shorten"
     stop(studysideMessage, call. = FALSE)
   }
+}
 
