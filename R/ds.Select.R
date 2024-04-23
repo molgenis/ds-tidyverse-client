@@ -14,18 +14,41 @@
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
 
+  ## Take arguments provided in a list and convert to a character vector
+  tidy_select_diffused <- rlang::enquo(tidy_select)
+  tidy_select_as_string <- .format_args_as_string(tidy_select_diffused)
+
+  ## Check arguments valid
+  .check_args_type(.data, newobj)
+
+  ## Set defaults if not set
   datasources <- .set_datasources(datasources)
-  .verify_datasources(datasources)
-  args_diffused <- rlang::enquo(tidy_select)
-  args_encoded <- .format_args(args_diffused)
+  newobj <- .set_new_obj(newobj)
+
+  ## Check disclosure settings
+  disc_settings <- dsBase::listDisclosureSettingsDS()
+  .ds_disclosure_checks(.data, nfilter.string)
+  .tidy_disclosure_checks(args_as_string, disc_settings$nfilter.string)
+
+  ## Encode arguments to pass R parser
+  args_encoded <- .encode_tidy_eval(args_as_string)
+
+  ## Send arguments to serverside package
   cally <- call("selectDS", .data, args_encoded)
   warnings <- DSI::datashield.assign(datasources, newobj, cally)
-  ## Write functionality to handle warnings
 
+  ## Process any messages returned
   messages <- .check_object_creation(datasources, newobj)
   if(messages$success){
     return(messages$messages %>% walk(cli_alert_success))
   } else {
     return(messages$messages %>% walk(cli_alert_failure))
   }
+}
+
+.check_args_type <- function(.data, tidy_select, newobj){
+
+  checkmate::check_character(.data)
+  checkmate::check_character(newobj)
+
 }

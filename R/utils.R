@@ -1,4 +1,4 @@
-.set_datasources <- function(datasources){
+.get_datasources <- function(datasources){
   if (is.null(datasources)) {
     datasources <- datashield.connections_find()
     return(datasources)
@@ -12,6 +12,26 @@
     stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
   }
 }
+
+.set_datasources <- function(datasources){
+  datasources <- .get_datasources(datasources)
+  .verify_datasources(datasources)
+  return(datasources)
+}
+
+
+.set_new_obj <- function(newobj){
+
+  if(is.null(newobj)){
+    newobj <- .data
+    return(newobj)
+  }
+
+}
+
+
+
+
 
 .getEncodeKey <- function() {
   encode_list <- list(
@@ -254,3 +274,16 @@ extract <- function(input) {
   output <- list("holders" = output1, "elements" = output2)
   return(output)
 }
+
+.ds_disclosure_checks <- function(.data, nfilter.string){
+  dsBase::checkPermissivePrivacyControlLevel(c('permissive', 'banana'))
+  .check_data_name_length(.data, nfilter.string)
+}
+
+
+.check_data_name_length <- function(.data, nfilter.string){
+  if(str_length(.data) > nfilter.string){
+    studysideMessage <- "FAILED: df.name argument > nfilter.string - please shorten"
+    stop(studysideMessage, call. = FALSE)
+  }
+
