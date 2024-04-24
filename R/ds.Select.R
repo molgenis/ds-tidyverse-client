@@ -3,7 +3,7 @@
 #' @description This function is similar to R function \code{select}.
 #' @details Performs dplyr select
 #' @param .data Character specifying a serverside data frame or tibble.
-#' @param tidy_select Tidyselect syntax to be passed to dplyr::select.
+#' @param tidy_select List of Tidyselect syntax to be passed to dplyr::select.
 #' @param newobj Optionally, character specifying name for new server-side data frame. Default is
 #' to overwrite original object.
 #' @param datasources datashield connections object.
