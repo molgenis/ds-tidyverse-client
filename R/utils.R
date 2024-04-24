@@ -4,7 +4,7 @@
 #' to find available data sources.
 #' @return A list of data sources.
 #' @noRd
-.get_datasources <- function(datasources){
+.get_datasources <- function(datasources) {
   if (is.null(datasources)) {
     datasources <- datashield.connections_find()
     return(datasources)
@@ -16,10 +16,9 @@
 #' @param datasources A list of data sources.
 #' @importFrom cli cli_abort
 #' @noRd
-.verify_datasources <- function(datasources){
-
-  is_connection_class <- datasources %>% map_lgl(~unlist(.x) %>% methods::is("DSConnection"))
-  if(!all(is_connection_class)){
+.verify_datasources <- function(datasources) {
+  is_connection_class <- datasources %>% map_lgl(~ unlist(.x) %>% methods::is("DSConnection"))
+  if (!all(is_connection_class)) {
     cli::abort("The 'datasources' were expected to be a list of DSConnection-class objects")
   }
 }
@@ -30,7 +29,7 @@
 #' to find available data sources.
 #' @return A list of verified data sources.
 #' @noRd
-.set_datasources <- function(datasources){
+.set_datasources <- function(datasources) {
   datasources <- .get_datasources(datasources)
   .verify_datasources(datasources)
   return(datasources)
@@ -42,8 +41,8 @@
 #' @param newobj An optional new object name. If not provided, the function defaults to '.data'.
 #' @return The provided new object name or '.data' if no object is provided.
 #' @noRd
-.set_new_obj <- function(newobj){
-  if(is.null(newobj)){
+.set_new_obj <- function(newobj) {
+  if (is.null(newobj)) {
     newobj <- .data
   }
   return(newobj)
@@ -55,12 +54,13 @@
 #' @param .data The data object to be analyzed.
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @noRd
-.check_data_name_length <- function(.data, nfilter.string){
+.check_data_name_length <- function(.data, nfilter.string) {
   data_length <- str_length(.data)
-  if(data_length > nfilter.string){
+  if (data_length > nfilter.string) {
     cli_abort(
       c("The length of string passed to `.data` must be less than {nfilter.string} characters.",
-        "x" = "`.data` has a length of {data_length} characters.")
+        "x" = "`.data` has a length of {data_length} characters."
+      )
     )
   }
 }

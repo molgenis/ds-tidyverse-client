@@ -57,14 +57,15 @@
 #' with the format 'name('. These are then checked against permitted arguments, which are selection
 #' helpers described in the ?select documentation.#'
 #' @noRd
-.check_function_names <- function(args_as_string){
-
-  permitted_tidy_select <- c("everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
-                             "matches", "num_range", "all_of", "any_of", "where")
+.check_function_names <- function(args_as_string) {
+  permitted_tidy_select <- c(
+    "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
+    "matches", "num_range", "all_of", "any_of", "where"
+  )
 
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
   any_banned_functions <- function_names[!function_names %in% permitted_tidy_select]
-  if(length(any_banned_functions) > 0) {
+  if (length(any_banned_functions) > 0) {
     cli_abort(
       c(
         "`tidy_select` must only contain Tidyverse select functions",
@@ -84,17 +85,18 @@
 #' variable names from the list passed to `tidy_select`. It then checks the lengths of these against
 #' the value passed to nfilter.string.#'
 #' @noRd
-.check_variable_length <- function(args_as_string, nfilter.string){
+.check_variable_length <- function(args_as_string, nfilter.string) {
   variable_names <- str_extract_all(args_as_string, "\\b\\w+\\b(?!\\()", simplify = T)
   variable_lengths <- variable_names %>% map_int(str_length)
-  over_filter_thresh <- variable_lengths %>% map_lgl(~. > nfilter.string)
+  over_filter_thresh <- variable_lengths %>% map_lgl(~ . > nfilter.string)
   too_long <- variable_names[over_filter_thresh]
 
-  if(length(too_long) > 0 ){
+  if (length(too_long) > 0) {
     cli_abort(
       c(
         "The maximum length of columns specified in `tidy_select` is {nfilter.string} characters.",
-        "x" = "Detected {length(too_long)} variable{?s} longer than this: {too_long}")
+        "x" = "Detected {length(too_long)} variable{?s} longer than this: {too_long}"
+      )
     )
   }
 }
@@ -104,7 +106,7 @@
 #' @param args_as_string The string representation of the arguments.
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @noRd
-.tidy_disclosure_checks <- function(args_as_string, nfilter.string){
+.tidy_disclosure_checks <- function(args_as_string, nfilter.string) {
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, nfilter.string)
 }

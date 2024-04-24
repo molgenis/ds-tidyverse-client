@@ -1,25 +1,24 @@
-.set_datasources <- function(datasources){
+.set_datasources <- function(datasources) {
   if (is.null(datasources)) {
     datasources <- datashield.connections_find()
     return(datasources)
   }
 }
 
-.verify_datasources <- function(datasources){
-
-  is_connection_class <- datasources %>% map_lgl(~unlist(.x) %>% methods::is("DSConnection"))
-  if(!all(is_connection_class)){
+.verify_datasources <- function(datasources) {
+  is_connection_class <- datasources %>% map_lgl(~ unlist(.x) %>% methods::is("DSConnection"))
+  if (!all(is_connection_class)) {
     stop("The 'datasources' were expected to be a list of DSConnection-class objects", call. = FALSE)
   }
 }
 
-.format_args <- function(args_diffused){
+.format_args <- function(args_diffused) {
   args_as_string <- .format_args_as_string(args_diffused)
   args_encoded <- .encode_tidy_eval(args_as_string, .getEncodeKey())
   return(args_encoded)
 }
 
-.get_obj_info <- function(datasources, newobj){
+.get_obj_info <- function(datasources, newobj) {
   cally <- call("testObjExistsDS", newobj)
   DSI::datashield.aggregate(datasources, cally)
 }
@@ -27,14 +26,14 @@
 # Function to check if object exists in all sources
 check_obj_existence <- function(object_info) {
   object_info %>%
-    map_lgl(~.$test.obj.exists) %>%
+    map_lgl(~ .$test.obj.exists) %>%
     all()
 }
 
 # Function to check if object has valid content/class
 check_obj_validity <- function(object_info) {
   object_info %>%
-    map_lgl(~!is.null(.$test.obj.class) && !("ABSENT" %in% .$test.obj.class)) %>%
+    map_lgl(~ !is.null(.$test.obj.class) && !("ABSENT" %in% .$test.obj.class)) %>%
     all()
 }
 
@@ -54,13 +53,13 @@ generate_return_messages <- function(obj_name, obj_exists, obj_valid) {
 
 # Function to call `messageDS` function and aggregate results
 call_messageDS <- function(datasources, test_obj_name) {
-  map(datasources, ~DSI::datashield.aggregate(.x, call("messageDS", test_obj_name)))
+  map(datasources, ~ DSI::datashield.aggregate(.x, call("messageDS", test_obj_name)))
 }
 
 # Function to check for errors in studyside messages
 check_studyside_errors <- function(studyside_messages) {
   studyside_messages %>%
-    map_lgl(~. == "ALL OK: there are no studysideMessage(s) on this datasource") %>%
+    map_lgl(~ . == "ALL OK: there are no studysideMessage(s) on this datasource") %>%
     all()
 }
 
@@ -89,14 +88,14 @@ generate_validity_check_message <- function(obj_name, no_errors) {
       list(
         success = TRUE,
         messages = c(return_messages, validity_check)
-    )
+      )
     )
   } else {
     return(
       list(
         sucess = FALSE,
         messages = return_messages, validity_check, studyside_messages
-        )
+      )
     )
   }
 }

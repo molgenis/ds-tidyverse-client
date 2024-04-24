@@ -14,7 +14,6 @@
 #' @importFrom DSI datashield.connections_find
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
-
   ## Take arguments provided in a list and convert to a character vector
   tidy_select_diffused <- rlang::enquo(tidy_select)
   tidy_select_as_string <- .format_args_as_string(tidy_select_diffused)
@@ -37,7 +36,6 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   ## Send arguments to serverside package
   cally <- call("selectDS", .data, args_encoded) ## Add pre check for parser to return better error?
   DSI::datashield.assign(datasources, newobj, cally)
-
 }
 
 #' Check Select Arguments
@@ -49,10 +47,7 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
 #' @importFrom assertthat assert_that
 #'
 #' @noRd
-.check_select_args <- function(.data, newobj){
-
+.check_select_args <- function(.data, newobj) {
   assert_that(is.character(.data))
   assert_that(is.character(newobj))
-
 }
-
