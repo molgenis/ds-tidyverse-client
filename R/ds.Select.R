@@ -28,7 +28,7 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
 
   ## Check disclosure issues
   disc_settings <- dsBase::listDisclosureSettingsDS()
-  .ds_disclosure_checks(.data, nfilter.string)
+  .check_data_name_length(.data, disc_settings$nfilter.string)
   .tidy_disclosure_checks(tidy_select_as_string, disc_settings$nfilter.string)
 
   ## Encode arguments to pass R parser
