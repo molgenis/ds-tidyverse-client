@@ -20,7 +20,11 @@ Imports:
   DSI,
   methods,
   rlang,
-  tidyselect
+  tidyselect,
+  assertthat,
+  cli,
+  stringr,
+  purrr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

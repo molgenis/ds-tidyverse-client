@@ -23,7 +23,7 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
 
   ## Set defaults if not set
   datasources <- .set_datasources(datasources)
-  newobj <- .set_new_obj(newobj)
+  newobj <- .set_new_obj(.data, newobj)
 
   ## Check disclosure issues
   disc_settings <- dsBase::listDisclosureSettingsDS()
