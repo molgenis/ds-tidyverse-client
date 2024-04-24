@@ -12,6 +12,7 @@
 #' @importFrom tidyselect eval_select
 #' @importFrom rlang set_names quo_squash
 #' @importFrom DSI datashield.connections_find
+#' @importFrom dsBase listDisclosureSettingsDS
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   ## Take arguments provided in a list and convert to a character vector
