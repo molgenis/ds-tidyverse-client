@@ -1,18 +1,11 @@
 Package: dsTidyverseClient
 Type: Package
-Title: DataSHIELD Tidyverse Clientside Package
+Title: DataSHIELD clientside implentation of selected Tidyverse functions
 Version: 0.1.0
-Authors@R:
-    c(
-      person(given = "Tim",
-             family = "Cadman",
-             role = c("aut", "cre"),
-             email = "t.j.cadman@umcg.nl",
-             comment = c(ORCID = "0000-0002-7682-5645"))
-             )
+Author: Who wrote it
 Maintainer: Tim Cadman <t.j.cadman@umcg.nl>
-Description: DataSHIELD Clientside implementation of Tidyverse packages.
-License: LGPL (>= 2.1)
+Description: DataSHIELD clientside implentation of selected Tidyverse functions.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
@@ -24,7 +17,9 @@ Imports:
   assertthat,
   cli,
   stringr,
-  purrr
+  purrr, 
+  dsBase
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    DSLite
 Config/testthat/edition: 3
