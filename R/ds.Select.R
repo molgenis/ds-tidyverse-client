@@ -16,6 +16,7 @@
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   ## Take arguments provided in a list and convert to a character vector
+  browser()
   tidy_select_diffused <- rlang::enquo(tidy_select)
   tidy_select_as_string <- .format_args_as_string(tidy_select_diffused)
 

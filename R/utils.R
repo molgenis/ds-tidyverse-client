@@ -140,7 +140,7 @@
     cli_abort(
       c(
         "`tidy_select` must only contain Tidyverse select functions",
-        "x" = "You have included the following unpermitted function(s): '{any_banned_functions}'",
+        "x" = "You have included the following unpermitted function(s): {any_banned_functions}",
         "Search ?select for more information"
       )
     )
@@ -183,4 +183,3 @@
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, nfilter.string)
 }
-
