@@ -9,5 +9,6 @@
 library(testthat)
 library(dsTidyverseClient)
 library(DSLite)
+library(dplyr)
 
 test_check("dsTidyverseClient")
