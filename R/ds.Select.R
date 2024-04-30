@@ -35,8 +35,8 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   args_encoded <- .encode_tidy_eval(tidy_select_as_string, .getEncodeKey())
 
   ## Send arguments to serverside package
-  cally <- call("selectDS", .data, args_encoded) ## Add pre check for parser to return better error?
-  DSI::datashield.assign(datasources, newobj, cally)
+  cally <- call("selectDS", .data, args_encoded)
+  datashield.assign(datasources, newobj, cally)
 }
 
 #' Check Select Arguments

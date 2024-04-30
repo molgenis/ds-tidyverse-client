@@ -73,8 +73,8 @@
 #' @noRd
 .getEncodeKey <- function() {
   encode_list <- list(
-    input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|"),
-    output = c("$LIST$", "$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$")
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
+    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
   )
   return(encode_list)
 }
