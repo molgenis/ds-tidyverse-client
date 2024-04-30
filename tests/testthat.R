@@ -9,6 +9,5 @@
 library(testthat)
 library(dsTidyverseClient)
 library(DSLite)
-library(stringi)
 
 test_check("dsTidyverseClient")

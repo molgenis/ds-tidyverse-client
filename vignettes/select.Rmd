@@ -1,0 +1,184 @@
+---
+title: "Create resources"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Create resources}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+```r
+library(dsTidyverseClient)
+```
+
+Here is a simple illustration how to use ds.select, and how it improves on ds.dataFrameSubset
+
+## Set up environment
+```r
+require(DSLite)
+data("mtcars")
+dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
+data("logindata.dslite.cnsim")
+logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
+  mutate(table = "mtcars")
+dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse", "dsDanger")))
+dslite.server$assignMethod("selectDS", "selectDS")
+conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
+```
+
+## The old way
+With ds.dataFrameSubset, you could only subset columns by their index. E.g.
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+len <- ds.length("mtcars")[[1]]
+
+ds.rep(x1 = 4,
+        times = 6,
+        length.out = NA,
+        each = 1,
+        source.x1 = "clientside",
+        source.times = "c",
+        source.length.out = NULL,
+        source.each = "c",
+        x1.includes.characters = FALSE,
+        newobj = "ONES")
+#> $is.object.created
+#> [1] "A data object <ONES> has been created in all specified data sources"
+#> 
+#> $validity.check
+#> [1] "<ONES> appears valid in all sources"
+
+ds.dataFrameSubset(df.name = "mtcars",
+                   V1.name = "ONES",
+                   V2.name = "ONES",
+                   Boolean.operator = "==",
+                   keep.cols = c(1, 3, 6),
+                   rm.cols = NULL,
+                   keep.NAs = FALSE,
+                   newobj = "test")
+#> $is.object.created
+#> [1] "A data object <test> has been created in all specified data sources"
+#> 
+#> $validity.check
+#> [1] "<test> appears valid in all sources"
+
+ds.colnames("test")
+#> $sim1
+#> [1] "mpg"  "disp" "wt"
+```
+## ds.select
+ds.select implements all the flexibility of dplyr::select in subsetting columns. This includes:
+(i) ability to pass enquoted column names which are evaluated as columns of .data
+(ii) ability to use tidyselect helper functions, such as `contains`.
+
+For example:
+
+### Subset columns by name
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "mpg"  "disp" "wt"
+```
+
+### Specify column to exclude
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+### Specify range of columns
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
+```
+### Match by first letter
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(starts_with('m')), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "mpg"
+```
+### Match by last letter
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(ends_with('m')), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "am"
+```
+### Pattern matching
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
+```
+### Multiple conditions with '&'
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "carb"
+```
+### Multiple conditions with '|'
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "cyl"  "carb"
+```
+### Rename columns on the fly with '='
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test")
+ds.colnames("test")
+#> $sim1
+#> [1] "test"
+```
+
+

@@ -1,4 +1,3 @@
-#'
 #' @title Clientside dplyr select function
 #' @description This function is similar to R function \code{select}.
 #' @details Performs dplyr select
@@ -11,7 +10,7 @@
 #' as default same name as input object is written to the serverside.
 #' @importFrom tidyselect eval_select
 #' @importFrom rlang set_names quo_squash
-#' @importFrom DSI datashield.connections_find
+#' @importFrom DSI datashield.connections_find datashield.assign
 #' @importFrom dsBase listDisclosureSettingsDS
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
