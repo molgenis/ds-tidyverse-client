@@ -140,7 +140,7 @@
     cli_abort(
       c(
         "`tidy_select` must only contain Tidyverse select functions",
-        "x" = "You have included the following unpermitted function(s): {any_banned_functions}",
+        "x" = "You have included the following unpermitted function{?s}: {any_banned_functions}",
         "Search ?select for more information"
       ),
       call = NULL
