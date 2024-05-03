@@ -17,12 +17,15 @@ Imports:
   assertthat,
   cli,
   stringr,
-  purrr, 
+  purrr,
   dsBase
 Suggests: 
     testthat (>= 3.0.0),
-    DSLite, 
     knitr,
-    rmarkdown
+    rmarkdown, 
+    dsTidyverse,
+    DSLite, 
+    dsBaseClient, 
+    dplyr
 Config/testthat/edition: 3
 VignetteBuilder: knitr

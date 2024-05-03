@@ -12,7 +12,7 @@
     Code
       .check_function_names(arg_unpermitted)
     Condition
-      Error in `.check_function_names()`:
+      Error:
       ! `tidy_select` must only contain Tidyverse select functions
       x You have included the following unpermitted function(s): filter, slice, and mutate
       Search ?select for more information
@@ -40,7 +40,7 @@
     Code
       .tidy_disclosure_checks(arg_unpermitted_3, nfilter.string = 100)
     Condition
-      Error in `.check_function_names()`:
+      Error:
       ! `tidy_select` must only contain Tidyverse select functions
       x You have included the following unpermitted function(s): filter, slice, and mutate
       Search ?select for more information

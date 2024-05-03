@@ -1,5 +1,18 @@
-logindata.dslite.cnsim <- setupCNSIMTest()
-conns <- datashield.login(logindata.dslite.cnsim, assign = TRUE)
+library(DSLite)
+library(dplyr)
+
+options(datashield.env = environment())
+data("mtcars")
+dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
+data("logindata.dslite.cnsim")
+logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
+  mutate(table = "mtcars")
+dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
+dslite.server$assignMethod("selectDS", "selectDS")
+dslite.server$aggregateMethod("exists", "base::exists")
+dslite.server$aggregateMethod("classDS", "dsBase::classDS")
+dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
+conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 test_that(".get_datasources returns datasources found by datashield.connections_find() when datasources is NULL", {
   expect_equal(
