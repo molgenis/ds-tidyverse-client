@@ -2,6 +2,7 @@
 #'
 #' @param datasources An optional list of data sources. If not provided, the function will attempt
 #' to find available data sources.
+#' @importFrom DSI datashield.connections_find
 #' @return A list of data sources.
 #' @noRd
 .get_datasources <- function(datasources) {
@@ -15,9 +16,10 @@
 #'
 #' @param datasources A list of data sources.
 #' @importFrom cli cli_abort
+#' @importFrom methods is
 #' @noRd
 .verify_datasources <- function(datasources) {
-  is_connection_class <- datasources |> map_lgl(~ unlist(.x) |> methods::is("DSConnection"))
+  is_connection_class <- datasources |> map_lgl(~ unlist(.x) |> is("DSConnection"))
   if (!all(is_connection_class)) {
     cli_abort("The 'datasources' were expected to be a list of DSConnection-class objects")
   }
