@@ -11,4 +11,20 @@ LazyData: true
 RoxygenNote: 7.3.1
 Imports:
   DSI,
+  cli,
+  stringr,
+  rlang,
+  assertthat,
+  purrr, 
+  dsBase, 
   methods
+Suggests: 
+  testthat (>= 3.0.0),
+  knitr,
+  rmarkdown, 
+  dsTidyverse,
+  DSLite, 
+  dplyr, 
+  dsBaseClient
+Config/testthat/edition: 3
+VignetteBuilder: knitr
