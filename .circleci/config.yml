@@ -46,7 +46,7 @@ jobs:
     - run:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
-          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown rlang stringr cli covr git2r DSI assertthat purrr DSLite RANN lme4 reshape2 polycor gamlss gamlss.dist mice childsds fields metafor meta panelaggregation
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown rlang stringr cli covr git2r DSI assertthat purrr DSLite methods
           install2.r --skipinstalled --repo https://cran.obiba.org/ dsBase dsBaseClient
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
 
