@@ -9,7 +9,6 @@
 #' @return the object specified by the \code{newobj} argument or
 #' as default same name as input object is written to the serverside.
 #' @importFrom DSI datashield.assign
-#' @importFrom dsBase listDisclosureSettingsDS
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   ## Take arguments provided in a list and convert to a character vector
@@ -24,7 +23,7 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   newobj <- .set_new_obj(.data, newobj)
 
   ## Check disclosure issues
-  disc_settings <- listDisclosureSettingsDS()
+  disc_settings <- list_disclosure_settings()
   .check_data_name_length(.data, disc_settings$nfilter.string)
   .tidy_disclosure_checks(tidy_select_as_string, disc_settings$nfilter.string)
 
