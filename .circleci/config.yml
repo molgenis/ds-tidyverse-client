@@ -46,7 +46,7 @@ jobs:
     - run:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
-          installGithub.r molgenis/ds-tidyverse/feat/select-server
+          installGithub.r molgenis/ds-tidyverse
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
 
     - save_cache:
