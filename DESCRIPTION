@@ -22,8 +22,7 @@ Imports:
   stringr,
   rlang,
   assertthat,
-  purrr, 
-  dsBase, 
+  purrr,
   methods
 Suggests: 
   testthat (>= 3.0.0),
