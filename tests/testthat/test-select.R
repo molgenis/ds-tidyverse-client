@@ -25,12 +25,6 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
   expect_equal(observed, expected)
 }
 
-.wrap_assign_call_no_data <- function(tidy_select_as_string) {
-  args_encoded <- .encode_tidy_eval(tidy_select_as_string, .getEncodeKey())
-  cally <- call("selectDS", "asdasd", args_encoded)
-  datashield.assign(conns, "test", cally)
-}
-
 # test_that("ds.select fails with correct error message if data not present ", {
 #   expect_snapshot(
 #     ds.select(
