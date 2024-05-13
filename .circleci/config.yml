@@ -36,7 +36,6 @@ jobs:
         command: |
           export VERSION=`svu --strip-prefix`
           install2.r --repo https://cloud.r-project.org desc
-          installGithub.r RcppCore/RcppEigen
           Rscript -e "desc::desc_set_version('${VERSION}')"
 
     # we use version number for caching
@@ -49,6 +48,8 @@ jobs:
         command: |
           install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown rlang stringr cli covr git2r DSI assertthat purrr gridExtra
           install2.r --skipinstalled --repo https://cran.obiba.org/ dsBase dsBaseClient
+          Rscript -e "gitcreds::gitcreds_set('${GITHUB_TOKEN}')"
+          installGithub.r RcppCore/Rcpp
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
 
     - save_cache:
