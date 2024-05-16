@@ -12,6 +12,7 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
+dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 test_that(".get_datasources returns datasources found by datashield.connections_find() when datasources is NULL", {
@@ -79,16 +80,16 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
   expect_equal(result, "my_data")
 })
 
+disc_settings <- datashield.aggregate(conns, call("dsListDisclosureSettings"))
+
 test_that(".check_data_name_length throws an error if length of .data exceeds nfilter.string", {
   .data <- paste(rep("a", 101), collapse = "")
-  nfilter.string <- 100
-  expect_snapshot(.check_data_name_length(.data, nfilter.string), error = TRUE)
+  expect_snapshot(.check_data_name_length(.data, disc_settings, conns), error = TRUE)
 })
 
 test_that(".check_data_name_length does not throw an error if length of .data is within nfilter.string", {
-  .data <- paste(rep("a", 99), collapse = "")
-  nfilter.string <- 100
-  expect_silent(.check_data_name_length(.data, nfilter.string))
+  .data <- paste(rep("a", 79), collapse = "")
+  expect_silent(.check_data_name_length(.data, disc_settings, conns))
 })
 
 test_that(".getEncodeKey returns the expected encoding key", {
@@ -175,19 +176,19 @@ test_that(".check_function_names blocks unpermitted function names", {
 
 test_that(".check_variable_length allows variables with value less than nfilter.string", {
   expect_silent(
-    .check_variable_length(small_var, 100)
+    .check_variable_length(small_var, disc_settings, conns)
   )
 })
 
 test_that(".check_variable_length blocks variables with value greater than than nfilter.string", {
   expect_snapshot(
-    .check_variable_length(large_var, 100),
+    .check_variable_length(large_var, disc_settings, conns),
     error = TRUE
   )
 })
 
 test_that(".tidy_disclosure_checks allows permitted arg to pass", {
-  expect_silent(.tidy_disclosure_checks(arg_permitted, nfilter.string = 100))
+  expect_silent(.tidy_disclosure_checks(arg_permitted, disc_settings, conns))
 })
 
 test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {

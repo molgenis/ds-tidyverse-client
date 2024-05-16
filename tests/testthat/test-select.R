@@ -13,10 +13,11 @@ data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
-dslite.server$assignMethod("selectDS", "selectDS")
+dslite.server$assignMethod("selectDS", "dsTidyverse::selectDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
+dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 .check_cols_as_expected <- function(expected, df) {
