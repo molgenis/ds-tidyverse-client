@@ -54,12 +54,14 @@
 #' nfilter.string
 #'
 #' @param .data The data object to be analyzed.
-#' @param nfilter.string The maximum length of variable names allowed.
+#' @param disclosure list of disclosure settings, length number of cohorts
 #' @importFrom stringr str_length
 #' @noRd
-.check_data_name_length <- function(.data, nfilter.string) {
+.check_data_name_length <- function(.data, disclosure, conns) {
   data_length <- str_length(.data)
-  if (data_length > nfilter.string) {
+  thresholds <- map_chr(disclosure, ~as.character(.x$nfilter.string))
+
+  if (any(data_length > thresholds)) {
     cli_abort(
       c("The length of string passed to `.data` must be less than {nfilter.string} characters.",
         "x" = "`.data` has a length of {data_length} characters."
@@ -187,47 +189,4 @@
   .check_variable_length(args_as_string, nfilter.string)
 }
 
-#' List Disclosure Settings
-#' Outputs a list of disclosure settings
-#' @importFrom dplyr %>%
-#' @importFrom purrr map
-#' @return A named list of disclosure settings.
-#' @noRd
-list_disclosure_settings <- function() {
-  privacy_options <- .list_privacy_settings()
-
-  out <- privacy_options %>%
-    map(.set_privacy_option) %>%
-    set_names(privacy_options)
-
-  return(out)
-}
-
-#' List Privacy Settings
-#' This internal function returns a vector of privacy settings.
-#' @return A character vector containing privacy settings.
-#' @noRd
-.list_privacy_settings <- function() {
-  privacy_settings <- c(
-    "datashield.privacyControlLevel", "nfilter.tab", "nfilter.subset",
-    "nfilter.glm", "nfilter.string", "nfilter.stringShort", "nfilter.kNN",
-    "nfilter.levels.density", "nfilter.levels.max", "nfilter.noise"
-  )
-  return(privacy_settings)
-}
-
-#' Set Privacy Option
-#' Retrieves the value of a given privacy setting or set a default
-#' @param setting The name of the privacy setting.
-#' @return The value of the specified privacy setting.
-#'
-#' @keywords internal
-#'
-.set_privacy_option <- function(setting) {
-  out <- getOption(setting)
-  if (is.null(out)) {
-    out <- getOption(paste0("default.", setting))
-  }
-  return(out)
-}
 
