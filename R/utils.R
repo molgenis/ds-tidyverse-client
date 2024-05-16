@@ -56,19 +56,34 @@
 #' @param .data The data object to be analyzed.
 #' @param disclosure list of disclosure settings, length number of cohorts
 #' @importFrom stringr str_length
+#' @importFrom purrr map_chr
 #' @noRd
 .check_data_name_length <- function(.data, disclosure, conns) {
   data_length <- str_length(.data)
-  thresholds <- map_chr(disclosure, ~as.character(.x$nfilter.string))
+  thresholds <- map_int(disclosure, ~.x$nfilter.string)
 
   if (any(data_length > thresholds)) {
-    cli_abort(
-      c("The length of string passed to `.data` must be less than {nfilter.string} characters.",
-        "x" = "`.data` has a length of {data_length} characters."
-      )
-    )
+    length_message <- .format_data_length_errors(data_length, disclosure)
+    cli_abort(length_message)
   }
 }
+
+.format_data_length_errors <- function(data_length, disclosure){
+  message_text_header <- "Error: The length of string passed to `.data` must be less than nfilter.string. "
+  message_text_1 <- "The values of nfilter.string are: "
+  message_text_2 <- "The length of `.data` is: "
+
+  coh_message_1 <- disclosure %>% imap_chr(~paste0(.y, ": ", .x$nfilter.string, "\n"))
+  coh_message_2 <- data_length
+
+  out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, coh_message_2)
+  names(out) <- c(
+    "", "x", rep("i", length(disclosure)), "x", rep("i", length(data_length))
+  )
+
+  return(out)
+}
+
 
 #' Generate an encoding key which is used for encoding and decoding strings to pass the R parser
 #'
@@ -158,35 +173,65 @@
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @importFrom cli cli_abort
 #' @importFrom stringr str_extract_all
-#' @importFrom purrr map_int map_lgl
+#' @importFrom purrr map map_int map_lgl
 #' @details To check users are not passing variable names which are too long, first a regex extracts
 #' variable names from the list passed to `tidy_select`. It then checks the lengths of these against
 #' the value passed to nfilter.string.#'
 #' @noRd
-.check_variable_length <- function(args_as_string, nfilter.string) {
+.check_variable_length <- function(args_as_string, disclosure, datasources) {
   variable_names <- str_extract_all(args_as_string, "\\b\\w+\\b(?!\\()", simplify = T)
   variable_lengths <- variable_names |> map_int(str_length)
-  over_filter_thresh <- variable_lengths |> map_lgl(~ . > nfilter.string)
-  too_long <- variable_names[over_filter_thresh]
+  over_filter_thresh <- disclosure %>% map(~.over_filter_thresh(.x, variable_lengths))
+  too_long_per_cohort <- over_filter_thresh %>% map(~variable_names[.x[[1]]])
+  any_too_long <- too_long_per_cohort %>% map_lgl(~length(.x) > 0)
 
-  if (length(too_long) > 0) {
-    cli_abort(
-      c(
-        "The maximum length of columns specified in `tidy_select` is {nfilter.string} characters.",
-        "x" = "Detected {length(too_long)} variable{?s} longer than this: {too_long}"
-      )
-    )
+  if (any(any_too_long > 0)) {
+    disclosure_message <- .format_disclosure_errors(too_long_per_cohort, disclosure)
+    cli_abort(disclosure_message, call = NULL)
   }
 }
+
+#' Format Errors
+#'
+#' Format errors into a character vector with specified prefix.
+#'
+#' This function formats a list of errors into a character vector with each
+#' error message prefixed by a cross.
+#'
+#' @param errors A list of errors to be formatted.
+#' @return A character vector containing formatted error messages.
+#' @importFrom dplyr %>%
+#' @importFrom purrr imap_chr
+#' @noRd
+.format_disclosure_errors <- function(errors, disclosure){
+  message_text_header <- "Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string. "
+  message_text_1 <- "The values of nfilter.string are: "
+  message_text_2 <- "These variables are longer than this: "
+
+  coh_message_1 <- disclosure %>% imap_chr(~paste0(.y, ": ", .x$nfilter.string, "\n"))
+  coh_message_2 <- errors %>% imap_chr(~paste0(.y, ": ", .x, "\n"))
+
+  out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, coh_message_2)
+  names(out) <- c(
+    "", "x", rep("i", length(disclosure)), "x", rep("i", length(errors))
+  )
+
+  return(out)
+}
+
+.over_filter_thresh <- function(disclosure, variable_lengths){
+  disclosure$nfilter.string %>% map(~variable_lengths > .x)
+}
+
 
 #' Checks both for length of variable names and names of functions passed to `tidy_args`
 #'
 #' @param args_as_string The string representation of the arguments.
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @noRd
-.tidy_disclosure_checks <- function(args_as_string, nfilter.string) {
+.tidy_disclosure_checks <- function(args_as_string, disclosure, datasources) {
   .check_function_names(args_as_string)
-  .check_variable_length(args_as_string, nfilter.string)
+  .check_variable_length(args_as_string, disclosure)
 }
 
 
