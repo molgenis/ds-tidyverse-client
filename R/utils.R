@@ -54,11 +54,11 @@
 #' nfilter.string
 #'
 #' @param .data The data object to be analyzed.
-#' @param disclosure list of disclosure settings, length number of cohorts
+#' @param disclosure list of disclosure settings, length of number of cohorts
 #' @importFrom stringr str_length
 #' @importFrom purrr map_chr
 #' @noRd
-.check_data_name_length <- function(.data, disclosure, conns) {
+.check_data_name_length <- function(.data, disclosure) {
   data_length <- str_length(.data)
   thresholds <- map_int(disclosure, ~.x$nfilter.string)
 
@@ -68,6 +68,13 @@
   }
 }
 
+#' Format errors for `.check_data_name_length`
+#'
+#' @param data_length The length of the argument to `data`.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @return A character vector containing the error message.
+#' @details The function constructs an error message indicating the length of the string passed to `.data` and the allowed length specified in the `disclosure` argument.
+#' @noRd
 .format_data_length_errors <- function(data_length, disclosure){
   message_text_header <- "Error: The length of string passed to `.data` must be less than nfilter.string. "
   message_text_1 <- "The values of nfilter.string are: "
@@ -83,7 +90,6 @@
 
   return(out)
 }
-
 
 #' Generate an encoding key which is used for encoding and decoding strings to pass the R parser
 #'
@@ -170,7 +176,8 @@
 #' Check if the length of variable names in tidy evaluation exceeds a nfilter.string threshold.
 #'
 #' @param args_as_string The string representation of the arguments.
-#' @param nfilter.string The maximum length of variable names allowed.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param conns DataSHIELD connections object
 #' @importFrom cli cli_abort
 #' @importFrom stringr str_extract_all
 #' @importFrom purrr map map_int map_lgl
@@ -199,6 +206,7 @@
 #' error message prefixed by a cross.
 #'
 #' @param errors A list of errors to be formatted.
+#' @param disclosure list of disclosure settings, length of number of cohorts
 #' @return A character vector containing formatted error messages.
 #' @importFrom dplyr %>%
 #' @importFrom purrr imap_chr
@@ -219,14 +227,23 @@
   return(out)
 }
 
+#' Over Filter Threshold Check
+#'
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param variable_lengths A numeric vector containing the lengths of variables.
+#' @return A logical vector indicating whether each variable length exceeds its corresponding filter threshold.
+#' @noRd
 .over_filter_thresh <- function(disclosure, variable_lengths){
   disclosure$nfilter.string %>% map(~variable_lengths > .x)
 }
 
 
+
 #' Checks both for length of variable names and names of functions passed to `tidy_args`
 #'
 #' @param args_as_string The string representation of the arguments.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param datasources DataSHIELD connections object
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @noRd
 .tidy_disclosure_checks <- function(args_as_string, disclosure, datasources) {
