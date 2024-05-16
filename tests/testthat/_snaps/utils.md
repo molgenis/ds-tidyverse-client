@@ -1,7 +1,7 @@
 # .check_data_name_length throws an error if length of .data exceeds nfilter.string
 
     Code
-      .check_data_name_length(.data, disc_settings, conns)
+      .check_data_name_length(.data, disc_settings)
     Condition
       Error in `.check_data_name_length()`:
       ! Error: The length of string passed to `.data` must be less than nfilter.string.
@@ -41,16 +41,26 @@
 # .tidy_disclosure_checks blocks argument with unpermitted variable length
 
     Code
-      .tidy_disclosure_checks(arg_unpermitted_2, nfilter.string = 100)
+      .tidy_disclosure_checks(arg_unpermitted_2, disc_settings, conns)
     Condition
-      Error in `.tidy_disclosure_checks()`:
-      ! unused argument (nfilter.string = 100)
+      Error:
+      ! Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string.
+      x The values of nfilter.string are:
+      i sim1: 80
+      i sim2: 80
+      i sim3: 80
+      x These variables are longer than this:
+      i sim1: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasd
+      i sim2: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasd
+      i sim3: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasd
 
 # .tidy_disclosure_checks blocks argument with unpermitted function names
 
     Code
-      .tidy_disclosure_checks(arg_unpermitted_3, nfilter.string = 100)
+      .tidy_disclosure_checks(arg_unpermitted_3, disc_settings, conns)
     Condition
-      Error in `.tidy_disclosure_checks()`:
-      ! unused argument (nfilter.string = 100)
+      Error:
+      ! `tidy_select` must only contain Tidyverse select functions
+      x You have included the following unpermitted functions: filter, slice, and mutate
+      Search ?select for more information
 

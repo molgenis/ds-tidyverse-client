@@ -84,12 +84,12 @@ disc_settings <- datashield.aggregate(conns, call("dsListDisclosureSettings"))
 
 test_that(".check_data_name_length throws an error if length of .data exceeds nfilter.string", {
   .data <- paste(rep("a", 101), collapse = "")
-  expect_snapshot(.check_data_name_length(.data, disc_settings, conns), error = TRUE)
+  expect_snapshot(.check_data_name_length(.data, disc_settings), error = TRUE)
 })
 
 test_that(".check_data_name_length does not throw an error if length of .data is within nfilter.string", {
   .data <- paste(rep("a", 79), collapse = "")
-  expect_silent(.check_data_name_length(.data, disc_settings, conns))
+  expect_silent(.check_data_name_length(.data, disc_settings))
 })
 
 test_that(".getEncodeKey returns the expected encoding key", {
@@ -194,7 +194,7 @@ test_that(".tidy_disclosure_checks allows permitted arg to pass", {
 test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {
   arg_unpermitted_2 <- paste0(large_var, arg_permitted)
   expect_snapshot(
-    .tidy_disclosure_checks(arg_unpermitted_2, nfilter.string = 100),
+    .tidy_disclosure_checks(arg_unpermitted_2, disc_settings, conns),
     error = TRUE
   )
 })
@@ -202,7 +202,7 @@ test_that(".tidy_disclosure_checks blocks argument with unpermitted variable len
 test_that(".tidy_disclosure_checks blocks argument with unpermitted function names", {
   arg_unpermitted_3 <- arg_unpermitted
   expect_snapshot(
-    .tidy_disclosure_checks(arg_unpermitted_3, nfilter.string = 100),
+    .tidy_disclosure_checks(arg_unpermitted_3, disc_settings, conns),
     error = TRUE
   )
 })
