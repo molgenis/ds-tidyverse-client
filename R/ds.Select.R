@@ -8,7 +8,7 @@
 #' @param datasources datashield connections object.
 #' @return the object specified by the \code{newobj} argument or
 #' as default same name as input object is written to the serverside.
-#' @importFrom DSI datashield.assign
+#' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   ## Take arguments provided in a list and convert to a character vector
@@ -23,9 +23,10 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   newobj <- .set_new_obj(.data, newobj)
 
   ## Check disclosure issues
-  disc_settings <- list_disclosure_settings()
-  .check_data_name_length(.data, disc_settings$nfilter.string)
-  .tidy_disclosure_checks(tidy_select_as_string, disc_settings$nfilter.string)
+  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettings"))
+  # disc_settings <- list_disclosure_settings()
+  .check_data_name_length(.data, disc_settings, datasources)
+  .tidy_disclosure_checks(tidy_select_as_string, disc_settings, datasources)
 
   ## Encode arguments to pass R parser
   args_encoded <- .encode_tidy_eval(tidy_select_as_string, .getEncodeKey())
