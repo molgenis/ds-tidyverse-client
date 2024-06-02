@@ -24,7 +24,7 @@ ds.rename <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   datashield.assign(datasources, newobj, cally)
 }
 
-#' Check Select Arguments
+#' Check Rename Arguments
 #'
 #' @param .data Character specifying a serverside data frame or tibble.
 #' @param newobj Optionally, character specifying name for new server-side data frame.
