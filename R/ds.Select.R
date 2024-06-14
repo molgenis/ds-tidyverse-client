@@ -11,29 +11,12 @@
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
 ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
-  ## Take arguments provided in a list and convert to a character vector
-  tidy_select_diffused <- rlang::enquo(tidy_select)
-  tidy_select_as_string <- .format_args_as_string(tidy_select_diffused)
-
-  ## Check arguments valid
+  tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   .check_select_args(.data, newobj)
-
-  ## Set defaults if not set
   datasources <- .set_datasources(datasources)
   newobj <- .set_new_obj(.data, newobj)
-
-  ## Check disclosure issues
-  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettings"))
-  # disc_settings <- list_disclosure_settings()
-  .check_data_name_length(.data, disc_settings)
-  .tidy_disclosure_checks(tidy_select_as_string, disc_settings, datasources)
-
-  ## Encode arguments to pass R parser
-  args_encoded <- .encode_tidy_eval(tidy_select_as_string, .getEncodeKey())
-
-  ## Send arguments to serverside package
-  cally <- call("selectDS", .data, args_encoded)
-  datashield.assign(datasources, newobj, cally)
+  .check_select_disclosure(.data, tidy_select, datasources)
+  .call_select_ds(tidy_select, .data, newobj, datasources)
 }
 
 #' Check Select Arguments
@@ -48,4 +31,16 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
 .check_select_args <- function(.data, newobj) {
   assert_that(is.character(.data))
   assert_that(is.character(newobj))
+}
+
+.check_select_disclosure <- function(.data, tidy_select, datasources){
+  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
+  .check_data_name_length(.data, disc_settings)
+  .check_tidy_disclosure(tidy_select, disc_settings, datasources)
+}
+
+.call_select_ds <- function(tidy_select, .data, newobj, datasources){
+  args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
+  cally <- call("selectDS", .data, args_encoded)
+  datashield.assign(datasources, newobj, cally)
 }
