@@ -23,13 +23,16 @@ Imports:
   rlang,
   assertthat,
   purrr,
-  methods
+  methods, 
+  dplyr
 Suggests: 
   testthat (>= 3.0.0),
   knitr,
   rmarkdown, 
   DSLite, 
-  dplyr, 
-  dsBaseClient
+  dsBase,
+  dsBaseClient, 
+  dsTidyverse
 Config/testthat/edition: 3
 Additional_repositories: https://cran.obiba.org/
+VignetteBuilder: knitr

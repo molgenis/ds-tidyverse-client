@@ -1,125 +1,250 @@
+#' Retrieve datasources if not specified
 #'
-#' @title Checks if the objects are defined in all studies
-#' @description This is an internal function.
-#' @details In DataSHIELD an object included in analysis must be defined (i.e. exists)
-#' in all the studies. If not the process should halt.
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login.
-#' If the \code{datasources} argument is not specified, the default set of connections will be
-#' used: see \code{\link{datashield.connections_default}}.
-#' @param obj a character vector, the name of the object(s) to look for.
-#' @param error.message a Boolean which specifies if the function should stop and return
-#' an error message when the input object is not defined in one or more studies or to
-#' return a list of TRUE/FALSE indicating in which studies the object is defined
-#' @keywords internal
-#' @return returns an error message if \code{error.message} argument is set to TRUE (default)
-#' and if the input object is not defined in one or more studies, or a Boolean value if
-#' @importFrom DSI datashield.aggregate
-#' \code{error.message} argument is set to FALSE.
-#' @author Demetris Avraam for DataSHIELD Development Team
+#' @param datasources An optional list of data sources. If not provided, the function will attempt
+#' to find available data sources.
+#' @importFrom DSI datashield.connections_find
+#' @return A list of data sources.
+#' @noRd
+.get_datasources <- function(datasources) {
+  if (is.null(datasources)) {
+    datasources <- datashield.connections_find()
+  }
+  return(datasources)
+}
+
+#' Verify that the provided data sources are of class 'DSConnection'.
 #'
-isDefined <- function(datasources=NULL, obj=NULL, error.message=TRUE){
-
-  inputobj <- unlist(obj)
-
-  for(i in 1:length(inputobj)){
-
-    extractObj <- extract(inputobj[i])
-
-    if(is.na(extractObj$holders)){
-      cally <- call('exists', extractObj$elements)
-      out <- DSI::datashield.aggregate(datasources, cally)
-    }else{
-      dfname <- as.name(extractObj$holders)
-      cally <- call('exists', extractObj$elements, dfname)
-      out <- DSI::datashield.aggregate(datasources, cally)
-    }
-
-    if(error.message==TRUE & any(out==FALSE)){
-      stop("The input object ", inputobj[i], " is not defined in ", paste(names(which(out==FALSE)), collapse=", "), "!" , call.=FALSE)
-    }else{
-      return(out)
-    }
+#' @param datasources A list of data sources.
+#' @importFrom cli cli_abort
+#' @importFrom methods is
+#' @noRd
+.verify_datasources <- function(datasources) {
+  is_connection_class <- datasources |> map_lgl(~ unlist(.x) |> is("DSConnection"))
+  if (!all(is_connection_class)) {
+    cli_abort("The 'datasources' were expected to be a list of DSConnection-class objects")
   }
 }
 
+#' Set and verify data sources.
 #'
-#' @title Checks an object has been generated on the server side
-#' @description This is an internal function.
-#' @details After calling an assign function it is important
-#' to know whether or not the action has been completed by
-#' checking if the output actually exists on the server side.
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
-#' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param newobj a character, the name the object to look for.
-#' @keywords internal
-#' @return nothing is return but the process is stopped if
-#' the object was not generated in any one server.
-#' @importFrom DSI datashield.aggregate
+#' @param datasources An optional list of data sources. If not provided, the function will attempt
+#' to find available data sources.
+#' @return A list of verified data sources.
+#' @noRd
+.set_datasources <- function(datasources) {
+  datasources <- .get_datasources(datasources)
+  .verify_datasources(datasources)
+  return(datasources)
+}
+
+
+#' Set a new object or defaults to '.data' if no object is provided.
 #'
-isAssigned <- function(datasources=NULL, newobj=NULL){
-  cally <- call('exists', newobj)
-  qc <- DSI::datashield.aggregate(datasources, cally)
-  indx <- as.numeric(which(qc==TRUE))
-  if(length(indx) > 0 & length(indx) < length(datasources)){
-    stop("The output object, '", newobj, "', was generated only for ", names(datasources)[indx], "!", call.=FALSE)
+#' @param newobj An optional new object name. If not provided, the function defaults to '.data'.
+#' @return The provided new object name or '.data' if no object is provided.
+#' @noRd
+.set_new_obj <- function(.data, newobj) {
+  if (is.null(newobj)) {
+    newobj <- .data
   }
-  if(length(indx) == 0){
-    stop("The output object has not been generated for any of the studies!", call.=FALSE)
+  return(newobj)
+}
+
+#' Check that the length of the character string provided to `.data` does not exceed the value of
+#' nfilter.string
+#'
+#' @param .data The data object to be analyzed.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @importFrom stringr str_length
+#' @importFrom purrr map_chr
+#' @noRd
+.check_data_name_length <- function(.data, disclosure) {
+  data_length <- str_length(.data)
+  thresholds <- map_int(disclosure, ~ .x$nfilter.string)
+
+  if (any(data_length > thresholds)) {
+    length_message <- .format_data_length_errors(data_length, disclosure)
+    cli_abort(length_message)
   }
 }
 
+#' Format errors for `.check_data_name_length`
 #'
-#' @title Checks that an object has the same class in all studies
-#' @description This is an internal function.
-#' @details In DataSHIELD an object included in analysis must be of the same type in all
-#' the collaborating studies. If that is not the case the process is stopped
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
-#' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param obj a string character, the name of the object to check for.
-#' @keywords internal
-#' @return a message or the class of the object if the object has the same class in all studies.
-#' @importFrom DSI datashield.aggregate
-#'
-#'
-checkClass <- function(datasources=NULL, obj=NULL){
-  # check the class of the input object
-  cally <- call("classDS", obj)
-  classesBy <- DSI::datashield.aggregate(datasources, cally, async = FALSE)
-  classes <- unique(unlist(classesBy))
-  for (n in names(classesBy)) {
-    if (!all(classes == classesBy[[n]])) {
-      message("The input data is not of the same class in all studies!")
-      message("Use the function 'ds.class' to verify the class of the input object in each study.")
-      stop(" End of process!", call.=FALSE)
-    }
-  }
-  return(classes)
+#' @param data_length The length of the argument to `data`.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @return A character vector containing the error message.
+#' @details The function constructs an error message indicating the length of the string passed to `.data` and the allowed length specified in the `disclosure` argument.
+#' @noRd
+.format_data_length_errors <- function(data_length, disclosure) {
+  message_text_header <- "Error: The length of string passed to `.data` must be less than nfilter.string. "
+  message_text_1 <- "The values of nfilter.string are: "
+  message_text_2 <- "The length of `.data` is: "
+
+  coh_message_1 <- disclosure %>% imap_chr(~ paste0(.y, ": ", .x$nfilter.string, "\n"))
+
+  out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, data_length)
+  names(out) <- c(
+    "", "x", rep("i", length(disclosure)), "x", rep("i", length(data_length))
+  )
+
+  return(out)
 }
 
+#' Generate an encoding key which is used for encoding and decoding strings to pass the R parser
 #'
-#' @title Splits character by '$' and returns the single characters
-#' @description This is an internal function.
-#' @details Not required
-#' @param input a vector or a list of characters
-#' @keywords internal
-#' @return a vector of characters
+#' @return A list containing the encoding key, with 'input' specifying the characters to be encoded
+#' and 'output' specifying their corresponding encoded values.
+#' @noRd
+.get_encode_dictionary <- function() {
+  encode_list <- list(
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
+    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
+  )
+  return(encode_list)
+}
+
+#' Remove List
 #'
-extract <- function(input){
-  input <- unlist(input)
-  output1 <- c()
-  output2 <- c()
-  for (i in 1:length(input)){
-    inputterms <- unlist(strsplit(input[i], "\\$", perl=TRUE))
-    if(length(inputterms) > 1){
-      obj1 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][2]
-    }else{
-      obj1 <- NA
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
-    }
-    output1 <- append(output1, obj1)
-    output2 <- append(output2, obj2)
+#' This function removes the 'list(' portion from a string.
+#'
+#' @param string A string containing the characters 'list('.
+#' @return The string with 'list(' removed.
+#' @importFrom stringr str_replace_all str_sub
+#' @noRd
+.remove_list <- function(string) {
+  string |>
+    str_replace_all(pattern = fixed("list("), replacement = "") |>
+    str_sub(end = -2)
+}
+
+#' Converts expressions to a string and remove the 'list(' portion.
+#'
+#' @param expr The expression to be converted.
+#' @return The formatted arguments as a string.
+#' @importFrom rlang quo_text
+#' @noRd
+.format_args_as_string <- function(expr) {
+  neat_args_as_string <- .remove_list(quo_text(expr))
+  return(neat_args_as_string)
+}
+
+#' Encode a string using the provided encoding key.
+#'
+#' @param input_string The string to be encoded.
+#' @param encode_key The encoding key generated by '.get_encode_dictionary()'.
+#' @return The encoded string.
+#' @importFrom stringr str_replace_all fixed
+#' @importFrom rlang set_names
+#' @noRd
+.encode_tidy_eval <- function(input_string, encode_key) {
+  encode_vec <- set_names(encode_key$output, encode_key$input)
+  output_string <- str_replace_all(input_string, fixed(encode_vec))
+}
+
+#' Check if the functions used in tidy evaluation are permitted.
+#'
+#' @param args_as_string The string representation of the arguments.
+#' @importFrom cli cli_abort
+#' @importFrom stringr str_extract_all
+#' @details To avoid users attempting to maliciously pass functions to the servervia the tidy_select
+#' argument, a regex is used to first extract all functions from the string by identifying any characters
+#' with the format 'name('. These are then checked against permitted arguments, which are selection
+#' helpers described in the ?select documentation.#'
+#' @noRd
+.check_function_names <- function(args_as_string) {
+  permitted_tidy_select <- c(
+    "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
+    "matches", "num_range", "all_of", "any_of", "where", "c"
+  )
+
+  function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
+  any_banned_functions <- function_names[!function_names %in% permitted_tidy_select]
+  if (length(any_banned_functions) > 0) {
+    cli_abort(
+      c(
+        "`tidy_select` must only contain Tidyverse select functions",
+        "x" = "You have included the following unpermitted function{?s}: {any_banned_functions}",
+        "Search ?select for more information"
+      ),
+      call = NULL
+    )
   }
-  output <- list('holders'=output1, 'elements'=output2)
-  return(output)
+}
+
+#' Check if the length of variable names in tidy evaluation exceeds a nfilter.string threshold.
+#'
+#' @param args_as_string The string representation of the arguments.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param conns DataSHIELD connections object
+#' @importFrom cli cli_abort
+#' @importFrom stringr str_extract_all
+#' @importFrom purrr map map_int map_lgl
+#' @details To check users are not passing variable names which are too long, first a regex extracts
+#' variable names from the list passed to `tidy_select`. It then checks the lengths of these against
+#' the value passed to nfilter.string.#'
+#' @noRd
+.check_variable_length <- function(args_as_string, disclosure, datasources) {
+  variable_names <- str_extract_all(args_as_string, "\\b\\w+\\b(?!\\()", simplify = T)
+  variable_lengths <- variable_names |> map_int(str_length)
+  over_filter_thresh <- disclosure %>% map(~ .check_exceeds_threshold(.x, variable_lengths))
+  too_long_per_cohort <- over_filter_thresh %>% map(~ variable_names[.x[[1]]])
+  any_too_long <- too_long_per_cohort %>% map_lgl(~ length(.x) > 0)
+
+  if (any(any_too_long > 0)) {
+    disclosure_message <- .format_disclosure_errors(too_long_per_cohort, disclosure)
+    cli_abort(disclosure_message, call = NULL)
+  }
+}
+
+#' Format Errors
+#'
+#' Format errors into a character vector with specified prefix.
+#'
+#' This function formats a list of errors into a character vector with each
+#' error message prefixed by a cross.
+#'
+#' @param errors A list of errors to be formatted.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @return A character vector containing formatted error messages.
+#' @importFrom dplyr %>%
+#' @importFrom purrr imap_chr
+#' @noRd
+.format_disclosure_errors <- function(errors, disclosure) {
+  message_text_header <- "Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string. "
+  message_text_1 <- "The values of nfilter.string are: "
+  message_text_2 <- "These variables are longer than this: "
+
+  coh_message_1 <- disclosure %>% imap_chr(~ paste0(.y, ": ", .x$nfilter.string, "\n"))
+  coh_message_2 <- errors %>% imap_chr(~ paste0(.y, ": ", .x, "\n"))
+
+  out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, coh_message_2)
+  names(out) <- c(
+    "", "x", rep("i", length(disclosure)), "x", rep("i", length(errors))
+  )
+
+  return(out)
+}
+
+#' Over Filter Threshold Check
+#'
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param variable_lengths A numeric vector containing the lengths of variables.
+#' @return A logical vector indicating whether each variable length exceeds its corresponding filter threshold.
+#' @noRd
+.check_exceeds_threshold <- function(disclosure, variable_lengths) {
+  disclosure$nfilter.string %>% map(~ variable_lengths > .x)
+}
+
+
+
+#' Checks both for length of variable names and names of functions passed to `tidy_args`
+#'
+#' @param args_as_string The string representation of the arguments.
+#' @param disclosure list of disclosure settings, length of number of cohorts
+#' @param datasources DataSHIELD connections object
+#' @param nfilter.string The maximum length of variable names allowed.
+#' @noRd
+.check_tidy_disclosure <- function(args_as_string, disclosure, datasources) {
+  .check_function_names(args_as_string)
+  .check_variable_length(args_as_string, disclosure)
 }
