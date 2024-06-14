@@ -41,7 +41,7 @@
 # .tidy_disclosure_checks blocks argument with unpermitted variable length
 
     Code
-      .tidy_disclosure_checks(arg_unpermitted_2, disc_settings, conns)
+      .check_tidy_disclosure(arg_unpermitted_2, disc_settings, conns)
     Condition
       Error:
       ! Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string.
@@ -57,7 +57,7 @@
 # .tidy_disclosure_checks blocks argument with unpermitted function names
 
     Code
-      .tidy_disclosure_checks(arg_unpermitted_3, disc_settings, conns)
+      .check_tidy_disclosure(arg_unpermitted_3, disc_settings, conns)
     Condition
       Error:
       ! `tidy_select` must only contain Tidyverse select functions

@@ -17,7 +17,7 @@ dslite.server$assignMethod("selectDS", "dsTidyverse::selectDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
+dslite.server$aggregateMethod("dsListDisclosureSettingsTidyVerse", "dsTidyverse::dsListDisclosureSettingsTidyVerse")
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 .check_cols_as_expected <- function(expected, df) {
@@ -33,6 +33,14 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 #       tidy_select = list(mpg:drat),
 #       newobj = "nodata"))
 #   })## Wait until DSI updated
+
+  tryCatch(
+    ds.select(
+      .data = "mtcars",
+      tidy_select = list(mpg:drat),
+      newobj = "mpg_drat"),
+    error = function(e){print(datashield.errors())}
+  )
 
 test_that("selectDS correctly passes : ", {
   ds.select(

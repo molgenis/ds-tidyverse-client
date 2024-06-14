@@ -80,7 +80,7 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
   expect_equal(result, "my_data")
 })
 
-disc_settings <- datashield.aggregate(conns, call("dsListDisclosureSettings"))
+disc_settings <- datashield.aggregate(conns, call("dsListDisclosureSettingsTidyVerse"))
 
 test_that(".check_data_name_length throws an error if length of .data exceeds nfilter.string", {
   .data <- paste(rep("a", 101), collapse = "")
@@ -92,21 +92,21 @@ test_that(".check_data_name_length does not throw an error if length of .data is
   expect_silent(.check_data_name_length(.data, disc_settings))
 })
 
-test_that(".getEncodeKey returns the expected encoding key", {
+test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
     input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
     output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
   )
-  actual_encode_list <- .getEncodeKey()
+  actual_encode_list <- .get_encode_dictionary()
   expect_equal(actual_encode_list, expected_encode_list)
 })
 
-test_that(".getEncodeKey returns the expected encoding key", {
+test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
     input = c("list", "(", ")", "\"", ",", " ", "c", ":", "!", "&", "|", "=="),
     output = c("$LIST$", "$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$C$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$EQUALS$")
   )
-  actual_encode_list <- .getEncodeKey()
+  actual_encode_list <- .get_encode_dictionary()
   expect_false(isTRUE(all.equal(expected_encode_list, actual_encode_list)))
 })
 
@@ -141,7 +141,7 @@ test_that(".format_args_as_string correctly formats excluding 'list'", {
 })
 
 test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
-  encode_key <- .getEncodeKey()
+  encode_key <- .get_encode_dictionary()
   input_string <- "asd, qwe, starts_with('test')"
   expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$starts_with$LB$$APO$test$APO$$RB$"
   result <- .encode_tidy_eval(input_string, encode_key)
@@ -149,7 +149,7 @@ test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
 })
 
 test_that(".encode_tidy_eval correctly encodes strings with unpermitted values", {
-  encode_key <- .getEncodeKey()
+  encode_key <- .get_encode_dictionary()
   input_string <- "asd, qwe, wer == rew ^}{}/&%"
   expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$^}{}/$AND$%"
   result <- .encode_tidy_eval(input_string, encode_key)
@@ -188,13 +188,13 @@ test_that(".check_variable_length blocks variables with value greater than than 
 })
 
 test_that(".tidy_disclosure_checks allows permitted arg to pass", {
-  expect_silent(.tidy_disclosure_checks(arg_permitted, disc_settings, conns))
+  expect_silent(.check_tidy_disclosure(arg_permitted, disc_settings, conns))
 })
 
 test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {
   arg_unpermitted_2 <- paste0(large_var, arg_permitted)
   expect_snapshot(
-    .tidy_disclosure_checks(arg_unpermitted_2, disc_settings, conns),
+    .check_tidy_disclosure(arg_unpermitted_2, disc_settings, conns),
     error = TRUE
   )
 })
@@ -202,7 +202,7 @@ test_that(".tidy_disclosure_checks blocks argument with unpermitted variable len
 test_that(".tidy_disclosure_checks blocks argument with unpermitted function names", {
   arg_unpermitted_3 <- arg_unpermitted
   expect_snapshot(
-    .tidy_disclosure_checks(arg_unpermitted_3, disc_settings, conns),
+    .check_tidy_disclosure(arg_unpermitted_3, disc_settings, conns),
     error = TRUE
   )
 })
