@@ -29,14 +29,14 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 # test_that("ds.select fails with correct error message if data not present ", {
 #   expect_snapshot(
 #     ds.select(
-#       .data = "datanotthere",
+#       df.name = "datanotthere",
 #       tidy_select = list(mpg:drat),
 #       newobj = "nodata"))
 #   })## Wait until DSI updated
 
 tryCatch(
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(mpg:drat),
     newobj = "mpg_drat"
   ),
@@ -47,7 +47,7 @@ tryCatch(
 
 test_that("selectDS correctly passes : ", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(mpg:drat),
     newobj = "mpg_drat"
   )
@@ -57,7 +57,7 @@ test_that("selectDS correctly passes : ", {
 
 test_that(".execute_tidyverse_function correctly passes `starts_with`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(starts_with("m")),
     newobj = "starts"
   )
@@ -67,7 +67,7 @@ test_that(".execute_tidyverse_function correctly passes `starts_with`", {
 
 test_that(".execute_tidyverse_function correctly passes `ends_with`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(ends_with("m")),
     newobj = "ends"
   )
@@ -77,7 +77,7 @@ test_that(".execute_tidyverse_function correctly passes `ends_with`", {
 
 test_that(".execute_tidyverse_function correctly passes `matches`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(matches("[aeiou]")),
     newobj = "matches"
   )
@@ -87,7 +87,7 @@ test_that(".execute_tidyverse_function correctly passes `matches`", {
 
 test_that(".execute_tidyverse_function correctly passes `everything`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(everything()),
     newobj = "everything"
   )
@@ -97,7 +97,7 @@ test_that(".execute_tidyverse_function correctly passes `everything`", {
 
 test_that(".execute_tidyverse_function correctly passes `last_col`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(last_col()),
     newobj = "last"
   )
@@ -107,7 +107,7 @@ test_that(".execute_tidyverse_function correctly passes `last_col`", {
 
 test_that(".execute_tidyverse_function correctly passes `group_cols`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(group_cols()),
     newobj = "group"
   )
@@ -117,7 +117,7 @@ test_that(".execute_tidyverse_function correctly passes `group_cols`", {
 
 test_that(".execute_tidyverse_function correctly passes strings with '&'", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(starts_with("c") & ends_with("b")),
     newobj = "and"
   )
@@ -127,7 +127,7 @@ test_that(".execute_tidyverse_function correctly passes strings with '&'", {
 
 test_that(".execute_tidyverse_function correctly passes strings with '!'", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(!mpg),
     newobj = "not"
   )
@@ -137,7 +137,7 @@ test_that(".execute_tidyverse_function correctly passes strings with '!'", {
 
 test_that(".execute_tidyverse_function correctly passes strings with '|'", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(starts_with("c") | ends_with("b")),
     newobj = "or"
   )
@@ -147,7 +147,7 @@ test_that(".execute_tidyverse_function correctly passes strings with '|'", {
 
 test_that(".execute_tidyverse_function correctly passes `strings with `all_of`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(all_of(c("mpg", "cyl"))),
     newobj = "all_of"
   )
@@ -157,7 +157,7 @@ test_that(".execute_tidyverse_function correctly passes `strings with `all_of`",
 
 test_that(".execute_tidyverse_function correctly passes strings with `any_of`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(any_of(c("mpg", "cyl"))),
     newobj = "any_of"
   )
@@ -167,7 +167,7 @@ test_that(".execute_tidyverse_function correctly passes strings with `any_of`", 
 
 test_that(".execute_tidyverse_function correctly passes complex strings", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list((starts_with("c") & ends_with("b")) | contains("ra") | gear:carb),
     newobj = "complex"
   )
@@ -177,7 +177,7 @@ test_that(".execute_tidyverse_function correctly passes complex strings", {
 
 test_that(".execute_tidyverse_function correctly passes strings with `where`", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(where(is.numeric)),
     newobj = "where"
   )
@@ -187,7 +187,7 @@ test_that(".execute_tidyverse_function correctly passes strings with `where`", {
 
 test_that(".execute_tidyverse_function correctly passes strings with '='", {
   ds.select(
-    .data = "mtcars",
+    df.name = "mtcars",
     tidy_select = list(test = mpg, cyl, gear),
     newobj = "equals"
   )

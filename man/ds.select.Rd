@@ -4,10 +4,15 @@
 \alias{ds.select}
 \title{Clientside dplyr select function}
 \usage{
-ds.select(.data = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL)
+ds.select(
+  df.name = NULL,
+  tidy_select = NULL,
+  newobj = NULL,
+  datasources = NULL
+)
 }
 \arguments{
-\item{.data}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a serverside data frame or tibble.}
 
 \item{tidy_select}{List of Tidyselect syntax to be passed to dplyr::select.}
 
