@@ -1,10 +1,7 @@
 library(DSLite)
 library(dplyr)
-library(dsBaseClient)
-library(testthat)
-library(purrr)
-library(cli)
 library(dsTidyverse)
+library(dsBaseClient)
 
 options(datashield.env = environment())
 data("mtcars")
@@ -33,17 +30,6 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 #       tidy_select = list(mpg:drat),
 #       newobj = "nodata"))
 #   })## Wait until DSI updated
-
-tryCatch(
-  ds.select(
-    df.name = "mtcars",
-    tidy_select = list(mpg:drat),
-    newobj = "mpg_drat"
-  ),
-  error = function(e) {
-    print(datashield.errors())
-  }
-)
 
 test_that("selectDS correctly passes : ", {
   ds.select(
