@@ -34,13 +34,16 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 #       newobj = "nodata"))
 #   })## Wait until DSI updated
 
-  tryCatch(
-    ds.select(
-      .data = "mtcars",
-      tidy_select = list(mpg:drat),
-      newobj = "mpg_drat"),
-    error = function(e){print(datashield.errors())}
-  )
+tryCatch(
+  ds.select(
+    .data = "mtcars",
+    tidy_select = list(mpg:drat),
+    newobj = "mpg_drat"
+  ),
+  error = function(e) {
+    print(datashield.errors())
+  }
+)
 
 test_that("selectDS correctly passes : ", {
   ds.select(

@@ -33,13 +33,13 @@ ds.select <- function(.data = NULL, tidy_select = NULL, newobj = NULL, datasourc
   assert_that(is.character(newobj))
 }
 
-.check_select_disclosure <- function(.data, tidy_select, datasources){
+.check_select_disclosure <- function(.data, tidy_select, datasources) {
   disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
   .check_data_name_length(.data, disc_settings)
   .check_tidy_disclosure(tidy_select, disc_settings, datasources)
 }
 
-.call_select_ds <- function(tidy_select, .data, newobj, datasources){
+.call_select_ds <- function(tidy_select, .data, newobj, datasources) {
   args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
   cally <- call("selectDS", .data, args_encoded)
   datashield.assign(datasources, newobj, cally)

@@ -60,7 +60,7 @@
 #' @noRd
 .check_data_name_length <- function(.data, disclosure) {
   data_length <- str_length(.data)
-  thresholds <- map_int(disclosure, ~.x$nfilter.string)
+  thresholds <- map_int(disclosure, ~ .x$nfilter.string)
 
   if (any(data_length > thresholds)) {
     length_message <- .format_data_length_errors(data_length, disclosure)
@@ -75,12 +75,12 @@
 #' @return A character vector containing the error message.
 #' @details The function constructs an error message indicating the length of the string passed to `.data` and the allowed length specified in the `disclosure` argument.
 #' @noRd
-.format_data_length_errors <- function(data_length, disclosure){
+.format_data_length_errors <- function(data_length, disclosure) {
   message_text_header <- "Error: The length of string passed to `.data` must be less than nfilter.string. "
   message_text_1 <- "The values of nfilter.string are: "
   message_text_2 <- "The length of `.data` is: "
 
-  coh_message_1 <- disclosure %>% imap_chr(~paste0(.y, ": ", .x$nfilter.string, "\n"))
+  coh_message_1 <- disclosure %>% imap_chr(~ paste0(.y, ": ", .x$nfilter.string, "\n"))
 
   out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, data_length)
   names(out) <- c(
@@ -186,9 +186,9 @@
 .check_variable_length <- function(args_as_string, disclosure, datasources) {
   variable_names <- str_extract_all(args_as_string, "\\b\\w+\\b(?!\\()", simplify = T)
   variable_lengths <- variable_names |> map_int(str_length)
-  over_filter_thresh <- disclosure %>% map(~.check_exceeds_threshold(.x, variable_lengths))
-  too_long_per_cohort <- over_filter_thresh %>% map(~variable_names[.x[[1]]])
-  any_too_long <- too_long_per_cohort %>% map_lgl(~length(.x) > 0)
+  over_filter_thresh <- disclosure %>% map(~ .check_exceeds_threshold(.x, variable_lengths))
+  too_long_per_cohort <- over_filter_thresh %>% map(~ variable_names[.x[[1]]])
+  any_too_long <- too_long_per_cohort %>% map_lgl(~ length(.x) > 0)
 
   if (any(any_too_long > 0)) {
     disclosure_message <- .format_disclosure_errors(too_long_per_cohort, disclosure)
@@ -209,13 +209,13 @@
 #' @importFrom dplyr %>%
 #' @importFrom purrr imap_chr
 #' @noRd
-.format_disclosure_errors <- function(errors, disclosure){
+.format_disclosure_errors <- function(errors, disclosure) {
   message_text_header <- "Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string. "
   message_text_1 <- "The values of nfilter.string are: "
   message_text_2 <- "These variables are longer than this: "
 
-  coh_message_1 <- disclosure %>% imap_chr(~paste0(.y, ": ", .x$nfilter.string, "\n"))
-  coh_message_2 <- errors %>% imap_chr(~paste0(.y, ": ", .x, "\n"))
+  coh_message_1 <- disclosure %>% imap_chr(~ paste0(.y, ": ", .x$nfilter.string, "\n"))
+  coh_message_2 <- errors %>% imap_chr(~ paste0(.y, ": ", .x, "\n"))
 
   out <- c(message_text_header, message_text_1, coh_message_1, message_text_2, coh_message_2)
   names(out) <- c(
@@ -231,8 +231,8 @@
 #' @param variable_lengths A numeric vector containing the lengths of variables.
 #' @return A logical vector indicating whether each variable length exceeds its corresponding filter threshold.
 #' @noRd
-.check_exceeds_threshold <- function(disclosure, variable_lengths){
-  disclosure$nfilter.string %>% map(~variable_lengths > .x)
+.check_exceeds_threshold <- function(disclosure, variable_lengths) {
+  disclosure$nfilter.string %>% map(~ variable_lengths > .x)
 }
 
 
@@ -248,5 +248,3 @@
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, disclosure)
 }
-
-
