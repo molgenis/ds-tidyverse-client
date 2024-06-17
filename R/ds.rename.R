@@ -33,14 +33,30 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   assert_that(is.character(newobj))
 }
 
+#' Check Rename Disclosure Settings
+#'
+#' @param df.name A character string specifying the name of the dataframe.
+#' @param tidy_select A tidy selection specification of columns.
+#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
+#' @return None. This function is used for its side effects of checking disclosure settings.
+#' @noRd
 .check_rename_disclosure <- function(df.name, tidy_select, datasources) {
   disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
   .check_data_name_length(df.name, disc_settings)
   .check_tidy_disclosure(tidy_select, disc_settings, datasources)
 }
 
+#' Call Rename DataShield Function
+#'
+#' @param tidy_select A tidy selection specification of columns.
+#' @param df.name A character string specifying the name of the dataframe.
+#' @param newobj A character string specifying the name of the new dataframe after renaming columns.
+#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
+#' @return None.
+#' @noRd
 .call_rename_ds <- function(tidy_select, df.name, newobj, datasources) {
   args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
   cally <- call("renameDS", df.name, args_encoded)
   datashield.assign(datasources, newobj, cally)
 }
+
