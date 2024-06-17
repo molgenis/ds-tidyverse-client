@@ -19,20 +19,6 @@ ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   .call_select_ds(tidy_select, df.name, newobj, datasources)
 }
 
-#' Check Select Arguments
-#'
-#' @param .data Character specifying a serverside data frame or tibble.
-#' @param newobj Optionally, character specifying name for new server-side data frame.
-#' @return This function does not return a value but is used for argument validation.
-#'
-#' @importFrom assertthat assert_that
-#'
-#' @noRd
-.check_select_args <- function(df.name, newobj) {
-  assert_that(is.character(df.name))
-  assert_that(is.character(newobj))
-}
-
 .check_select_disclosure <- function(df.name, tidy_select, datasources) {
   disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
   .check_data_name_length(df.name, disc_settings)
