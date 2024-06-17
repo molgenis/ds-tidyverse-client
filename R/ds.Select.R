@@ -14,15 +14,8 @@ ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   .check_tidy_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
-  newobj <- .set_new_obj(df.name, newobj)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_select_ds(tidy_select, df.name, newobj, datasources)
-}
-
-.check_select_disclosure <- function(df.name, tidy_select, datasources) {
-  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
-  .check_data_name_length(df.name, disc_settings)
-  .check_tidy_disclosure(tidy_select, disc_settings, datasources)
 }
 
 .call_select_ds <- function(tidy_select, df.name, newobj, datasources) {
