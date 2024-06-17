@@ -1,7 +1,7 @@
 #' @title Clientside dplyr rename function
 #' @description This function is similar to R function \code{rename}.
 #' @details Performs dplyr rename
-#' @param .data Character specifying a serverside data frame or tibble.
+#' @param .df.name Character specifying a serverside data frame or tibble.
 #' @param tidy_select List of Tidyselect syntax to be passed to dplyr::rename
 #' @param newobj Optionally, character specifying name for new server-side data frame. Default is
 #' to overwrite original object.
@@ -14,7 +14,6 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   .check_rename_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
-  newobj <- .set_new_obj(.data, newobj)
   .check_rename_disclosure(df.name, tidy_select, datasources)
   .call_rename_ds(tidy_select, df.name, newobj, datasources)
 }
