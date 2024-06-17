@@ -1,7 +1,7 @@
 #' @title Clientside dplyr rename function
 #' @description This function is similar to R function \code{rename}.
 #' @details Performs dplyr rename
-#' @param .df.name Character specifying a serverside data frame or tibble.
+#' @param df.name Character specifying a serverside data frame or tibble.
 #' @param tidy_select List of Tidyselect syntax to be passed to dplyr::rename
 #' @param newobj Optionally, character specifying name for new server-side data frame. Default is
 #' to overwrite original object.
