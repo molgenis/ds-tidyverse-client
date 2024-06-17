@@ -40,6 +40,6 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
 
 .call_rename_ds <- function(tidy_select, df.name, newobj, datasources) {
   args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- call("selectDS", df.name, args_encoded)
+  cally <- call("renameDS", df.name, args_encoded)
   datashield.assign(datasources, newobj, cally)
 }
