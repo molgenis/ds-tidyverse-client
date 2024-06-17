@@ -11,7 +11,7 @@
 ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = NULL, .before = NULL,
                       .after = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
-  .check_mutate_args(df.name, newobj, .keep)
+  .check_tidy_args(df.name, newobj, .keep)
   datasources <- .set_datasources(datasources)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_mutate_ds(tidy_select, df.name, newobj, .keep, .before, .after, datasources)

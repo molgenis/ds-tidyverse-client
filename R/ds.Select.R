@@ -12,7 +12,7 @@
 #' @export
 ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
-  .check_select_args(df.name, newobj)
+  .check_tidy_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
   newobj <- .set_new_obj(df.name, newobj)
   .check_tidy_disclosure(df.name, tidy_select, datasources)

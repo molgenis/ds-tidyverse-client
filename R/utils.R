@@ -249,3 +249,18 @@
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, disclosure)
 }
+
+#' Check tidy Arguments
+#'
+#' @param .data Character specifying a serverside data frame or tibble.
+#' @param newobj Optionally, character specifying name for new server-side data frame.
+#' @return This function does not return a value but is used for argument validation.
+#'
+#' @importFrom assertthat assert_that
+#'
+#' @noRd
+.check_tidy_args <- function(.data, newobj) {
+  assert_that(!is.null(newobj))
+  assert_that(is.character(.data))
+  assert_that(is.character(newobj))
+}
