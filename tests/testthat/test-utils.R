@@ -94,8 +94,9 @@ test_that(".check_data_name_length does not throw an error if length of .data is
 
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
-    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^"),
+    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
+               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$")
   )
   actual_encode_list <- .get_encode_dictionary()
   expect_equal(actual_encode_list, expected_encode_list)
@@ -150,8 +151,8 @@ test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
 
 test_that(".encode_tidy_eval correctly encodes strings with unpermitted values", {
   encode_key <- .get_encode_dictionary()
-  input_string <- "asd, qwe, wer == rew ^}{}/&%"
-  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$^}{}/$AND$%"
+  input_string <- "asd, qwe, wer == rew &}{}%"
+  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$$AND$}{}%"
   result <- .encode_tidy_eval(input_string, encode_key)
   expect_equal(result, expected_output)
 })
