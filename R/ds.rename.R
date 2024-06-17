@@ -28,6 +28,7 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
 #'
 #' @noRd
 .check_rename_args <- function(.data, newobj) {
+  assert_that(!is.null(newobj))
   assert_that(is.character(.data))
   assert_that(is.character(newobj))
 }
