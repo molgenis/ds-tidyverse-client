@@ -15,7 +15,7 @@ ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   .check_select_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
   newobj <- .set_new_obj(df.name, newobj)
-  .check_select_disclosure(df.name, tidy_select, datasources)
+  .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_select_ds(tidy_select, df.name, newobj, datasources)
 }
 
