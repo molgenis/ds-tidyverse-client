@@ -1,5 +1,5 @@
 ---
-title: "Create resources"
+title: "Using tidyverse within DataSHIELD"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Create resources}
@@ -7,20 +7,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-```{r settings, echo = FALSE}
-options(datashield.progress = FALSE)
-options(datashield.progress.clear = TRUE)
-knitr::opts_chunk$set(message = FALSE)
-knitr::opts_chunk$set(results = TRUE)
-knitr::opts_chunk$set(warning = FALSE)
-options(knitr.duplicate.label = "allow")
-```
+
+
 
 ```r
 library(dsTidyverseClient)
@@ -43,10 +31,19 @@ conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 
 ## The old way
 With ds.dataFrameSubset, you could only subset columns by their index. E.g.
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 
 len <- ds.length("mtcars")[[1]]
+#> Error in ds.length("mtcars"): could not find function "ds.length"
+```
+
+``` r
 
 ds.rep(x1 = 4,
         times = 6,
@@ -58,6 +55,10 @@ ds.rep(x1 = 4,
         source.each = "c",
         x1.includes.characters = FALSE,
         newobj = "ONES")
+#> Error in ds.rep(x1 = 4, times = 6, length.out = NA, each = 1, source.x1 = "clientside", : could not find function "ds.rep"
+```
+
+``` r
 
 ds.dataFrameSubset(df.name = "mtcars",
                    V1.name = "ONES",
@@ -67,8 +68,13 @@ ds.dataFrameSubset(df.name = "mtcars",
                    rm.cols = NULL,
                    keep.NAs = FALSE,
                    newobj = "test")
+#> Error in ds.dataFrameSubset(df.name = "mtcars", V1.name = "ONES", V2.name = "ONES", : could not find function "ds.dataFrameSubset"
+```
+
+``` r
 
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ## ds.select
 ds.select implements all the flexibility of dplyr::select in subsetting columns. This includes:
@@ -78,59 +84,149 @@ ds.select implements all the flexibility of dplyr::select in subsetting columns.
 For example:
 
 ### Subset columns by name
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 
 ### Specify column to exclude
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test"): could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Specify range of columns
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test"): could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Match by first letter
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(starts_with('m')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("m")), : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Match by last letter
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(ends_with('m')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(ends_with("m")), : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Pattern matching
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(matches("[aeiou]")), : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Multiple conditions with '&'
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") & : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Multiple conditions with '|'
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") | : could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 ### Rename columns on the fly with '='
-```{r}
+
+``` r
 ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
 ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test"): could not find function "ds.select"
+```
+
+``` r
 ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
 
 
