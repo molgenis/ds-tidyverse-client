@@ -246,6 +246,7 @@
 #' @param nfilter.string The maximum length of variable names allowed.
 #' @noRd
 .check_tidy_disclosure <- function(args_as_string, disclosure, datasources) {
+  disclosure <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
   .check_function_names(args_as_string)
   .check_variable_length(args_as_string, disclosure)
 }
