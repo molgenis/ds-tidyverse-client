@@ -237,18 +237,34 @@
 }
 
 
-
-#' Checks both for length of variable names and names of functions passed to `tidy_args`
+#' Check tidyverse disclosure Settings
 #'
-#' @param args_as_string The string representation of the arguments.
-#' @param disclosure list of disclosure settings, length of number of cohorts
-#' @param datasources DataSHIELD connections object
-#' @param nfilter.string The maximum length of variable names allowed.
+#' @param df.name A character string specifying the name of the dataframe.
+#' @param tidy_select A tidy selection specification of columns.
+#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
+#' @return None. This function is used for its side effects of checking disclosure settings.
+#' @importFrom DSI datashield.aggregate
 #' @noRd
-.check_tidy_disclosure <- function(args_as_string, disclosure, datasources) {
-  disclosure <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
-  .check_function_names(args_as_string)
-  .check_variable_length(args_as_string, disclosure)
+.check_tidy_disclosure <- function(df.name, tidyselect, datasources) {
+  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
+  .check_data_name_length(df.name, disc_settings)
+  .check_function_names(tidyselect)
+  .check_variable_length(tidyselect, disc_settings)
+}
+
+#' Check Select Arguments
+#'
+#' @param .data Character specifying a serverside data frame or tibble.
+#' @param newobj Optionally, character specifying name for new server-side data frame.
+#' @return This function does not return a value but is used for argument validation.
+#'
+#' @importFrom assertthat assert_that
+#'
+#' @noRd
+.check_tidy_args <- function(df.name, newobj, .keep) {
+  assert_that(!is.null(newobj))
+  assert_that(is.character(df.name))
+  assert_that(is.character(newobj))
 }
 
 #' Check tidy Arguments
