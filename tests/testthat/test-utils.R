@@ -189,13 +189,13 @@ test_that(".check_variable_length blocks variables with value greater than than 
 })
 
 test_that(".tidy_disclosure_checks allows permitted arg to pass", {
-  expect_silent(.check_tidy_disclosure(arg_permitted, disc_settings, conns))
+  expect_silent(.check_tidy_disclosure("dataframe", arg_permitted, conns))
 })
 
 test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {
   arg_unpermitted_2 <- paste0(large_var, arg_permitted)
   expect_snapshot(
-    .check_tidy_disclosure(arg_unpermitted_2, disc_settings, conns),
+    .check_tidy_disclosure("dataframe", arg_unpermitted_2, conns),
     error = TRUE
   )
 })
@@ -203,7 +203,7 @@ test_that(".tidy_disclosure_checks blocks argument with unpermitted variable len
 test_that(".tidy_disclosure_checks blocks argument with unpermitted function names", {
   arg_unpermitted_3 <- arg_unpermitted
   expect_snapshot(
-    .check_tidy_disclosure(arg_unpermitted_3, disc_settings, conns),
+    .check_tidy_disclosure("dataset", arg_unpermitted_3, conns),
     error = TRUE
   )
 })
