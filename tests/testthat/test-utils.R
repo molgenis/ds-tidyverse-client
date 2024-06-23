@@ -151,8 +151,8 @@ test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
 
 test_that(".encode_tidy_eval correctly encodes strings with unpermitted values", {
   encode_key <- .get_encode_dictionary()
-  input_string <- "asd, qwe, wer == rew &}{}%"
-  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$$AND$}{}%"
+  input_string <- "asd, qwe, wer == rew ^}{}/&%"
+  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$^}{}/$AND$%"
   result <- .encode_tidy_eval(input_string, encode_key)
   expect_equal(result, expected_output)
 })
