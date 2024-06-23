@@ -19,7 +19,7 @@
     Condition
       Error:
       ! `tidy_select` must only contain Tidyverse select functions
-      x You have included the following unpermitted functions: filter and slice
+      x You have included the following unpermitted functions: filter, slice, and mutate
       Search ?select for more information
 
 # .check_variable_length blocks variables with value greater than than nfilter.string
@@ -61,6 +61,6 @@
     Condition
       Error:
       ! `tidy_select` must only contain Tidyverse select functions
-      x You have included the following unpermitted functions: filter and slice
+      x You have included the following unpermitted functions: filter, slice, and mutate
       Search ?select for more information
 
