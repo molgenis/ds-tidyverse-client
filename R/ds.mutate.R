@@ -24,6 +24,6 @@ ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep =
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("selectDS", df.name, tidy_select, NULL, newobj, datasources)
+  cally <- .make_serverside_call("mutateDS", df.name, tidy_select, NULL)
   datashield.assign(datasources, newobj, cally)
 }
