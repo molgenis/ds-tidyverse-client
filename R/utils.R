@@ -287,8 +287,24 @@
   datashield.assign(datasources, newobj, cally)
 }
 
-.execute_clientside_tidyverse <- function(fun_name, df.name, tidy_select, other_args, newobj,
-                                          datasources){
+#' Check and Execute Server-side Tidyverse Function
+#'
+#' This function checks arguments and disclosure conditions before executing
+#' a server-side tidyverse function call. It ensures that the provided dataframe
+#' name and new object name are valid, that the disclosure rules for the tidyverse
+#' operation are met, and then calls the specified tidyverse function on the server.
+#'
+#' @param fun_name A string specifying the name of the tidyverse function to be called.
+#' @param df.name A string specifying the name of the dataframe on which the function is to be executed.
+#' @param tidy_select A selection of columns (using tidyverse selection helpers) to be passed to the function.
+#' @param other_args A list of other arguments to be passed to the tidyverse function.
+#' @param newobj A string specifying the name of the new object to be created on the server.
+#' @param datasources A list of datasources where the function will be executed.
+#'
+#' @return None. This function is called for its side effects.
+#' @noRd
+.check_and_execute_serverside_tidyverse <- function(fun_name, df.name, tidy_select, other_args, newobj,
+                                                    datasources){
   .check_tidy_args(df.name, newobj)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_tidy_ds(fun_name, df.name, tidy_select, other_args, newobj, datasources)
