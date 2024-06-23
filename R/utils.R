@@ -278,12 +278,24 @@
 #' @param other_args A list of additional arguments to be passed to the function (optional).
 #' @return A call object that can be evaluated to perform the specified operation.
 #' @noRD
-.make_serverside_call <- function(tidy_select, fun_name, df.name, other_args) {
+.make_serverside_call <- function(fun_name, df.name, tidy_select, other_args) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
   cally <- .build_cally(fun_name, df.name, tidy_select, other_args)
   return(cally)
 }
 
+#' Construct a Call Object
+#'
+#' This function constructs and returns a call object based on the provided
+#' function name, dataframe name, tidyselect specification, and additional arguments.
+#'
+#' @param fun_name A character string representing the function name.
+#' @param df.name The name of the dataframe.
+#' @param tidy_select Tidyselect specification (e.g., column names or selection helpers).
+#' @param other_args Additional arguments to be included in the call. If NULL, no additional arguments are added.
+#' @importFrom rlang sym
+#' @return A call object constructed from the provided arguments.
+#' @noRd
 .build_cally <- function(fun_name, df.name, tidy_select, other_args){
   arg_list <- list(sym(fun_name), df.name, tidy_select)
   if(is.null(other_args)) {
@@ -293,7 +305,19 @@
   }
 }
 
+#' Perform Tidyverse Checks
+#'
+#' This function performs checks related to tidyverse operations, ensuring that
+#' the arguments and disclosures are valid and appropriate.
+#'
+#' @param df.name The name of the dataframe being checked.
+#' @param newobj The new object or result of some tidyverse operation.
+#' @param tidy_select Tidyselect specification (e.g., column names or selection helpers).
+#' @param datasources Data sources involved in the operation.
+#' @return None. This function is called for its side effects (checking validity and compliance).
+#' @noRd
 .perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources){
   .check_tidy_args(df.name, newobj)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
 }
+
