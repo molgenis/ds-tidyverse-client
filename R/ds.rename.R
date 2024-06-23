@@ -12,8 +12,8 @@
 #' @export
 ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
-  .check_tidy_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
+  .check_tidy_args(df.name, newobj)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_tidy_ds("renameDS", df.name, tidy_select, NULL, newobj, datasources)
 }
