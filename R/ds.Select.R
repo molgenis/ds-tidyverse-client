@@ -15,11 +15,5 @@ ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   .check_tidy_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
-  .call_select_ds(tidy_select, df.name, newobj, datasources)
-}
-
-.call_select_ds <- function(tidy_select, df.name, newobj, datasources) {
-  args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- call("selectDS", df.name, args_encoded)
-  datashield.assign(datasources, newobj, cally)
+  .call_tidy_ds("selectDS", df.name, tidy_select, NULL, newobj, datasources)
 }

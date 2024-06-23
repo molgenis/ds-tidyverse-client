@@ -15,20 +15,5 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   .check_tidy_args(df.name, newobj)
   datasources <- .set_datasources(datasources)
   .check_tidy_disclosure(df.name, tidy_select, datasources)
-  .call_rename_ds(tidy_select, df.name, newobj, datasources)
+  .call_tidy_ds("renameDS", df.name, tidy_select, NULL, newobj, datasources)
 }
-
-#' Call Rename DataShield Function
-#'
-#' @param tidy_select A tidy selection specification of columns.
-#' @param df.name A character string specifying the name of the dataframe.
-#' @param newobj A character string specifying the name of the new dataframe after renaming columns.
-#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
-#' @return None.
-#' @noRd
-.call_rename_ds <- function(tidy_select, df.name, newobj, datasources) {
-  args_encoded <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- call("renameDS", df.name, args_encoded)
-  datashield.assign(datasources, newobj, cally)
-}
-
