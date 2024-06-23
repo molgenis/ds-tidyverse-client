@@ -279,10 +279,17 @@
 #' @noRd
 .call_tidy_ds <- function(fun_name, df.name, tidy_select, other_args, newobj, datasources) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- as.call(
-    list(
-      sym(fun_name), df.name, tidy_select, other_args
-    )
-  )
+  arg_list <- list(sym(fun_name), df.name, tidy_select)
+  if(!is.null(other_args)) {
+    arg_list <- c(arg_list, other_args)
+  }
+   cally <- as.call(arg_list)
   datashield.assign(datasources, newobj, cally)
+}
+
+.execute_clientside_tidyverse <- function(fun_name, df.name, tidy_select, other_args, newobj,
+                                          datasources){
+  .check_tidy_args(df.name, newobj)
+  .check_tidy_disclosure(df.name, tidy_select, datasources)
+  .call_tidy_ds(fun_name, df.name, tidy_select, other_args, newobj, datasources)
 }
