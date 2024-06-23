@@ -279,12 +279,28 @@
 #' @noRd
 .call_tidy_ds <- function(fun_name, df.name, tidy_select, other_args, newobj, datasources) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  arg_list <- list(sym(fun_name), df.name, tidy_select)
-  if(!is.null(other_args)) {
-    arg_list <- c(arg_list, other_args)
-  }
-   cally <- as.call(arg_list)
+  cally <- .make_tidy_call(tidy_select, fun_name, df.name, other_args)
   datashield.assign(datasources, newobj, cally)
+}
+
+#' Create a Tidy Evaluation Call
+#'
+#' This function constructs a call object for a tidy evaluation function.
+#' It allows for the dynamic creation of function calls in a tidyverse-compatible manner.
+#'
+#' @param tidy_select Encoded tidyselect arguments
+#' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
+#' @param df.name The name of the data frame (as a string) to which the function will be applied.
+#' @param other_args A list of additional arguments to be passed to the function (optional).
+#' @return A call object that can be evaluated to perform the specified operation.
+#' @noRD
+.make_tidy_call <- function(tidy_select, fun_name, df.name, other_args) {
+  arg_list <- list(sym(fun_name), df.name, tidy_select)
+  if(is.null(other_args)) {
+    return(as.call(arg_list))
+  } else {
+    return(as.call(c(arg_list, other_args)))
+  }
 }
 
 #' Check and Execute Server-side Tidyverse Function
