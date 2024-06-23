@@ -267,17 +267,22 @@
   assert_that(is.character(newobj))
 }
 
-#' Check tidy Arguments
+#' Call serverside tidyverse function
 #'
-#' @param .data Character specifying a serverside data frame or tibble.
-#' @param newobj Optionally, character specifying name for new server-side data frame.
-#' @return This function does not return a value but is used for argument validation.
-#'
-#' @importFrom assertthat assert_that
-#'
+#' @param fun_name Character specifying name of serverside function to all
+#' @param ds.name Character specifying a serverside data frame or tibble.
+#' @param tidy_select A tidy selection specification of columns.
+#' @param other_args Additional arguments to pass to serverside function, in order
+#' @param newobj A character string specifying the name of the new dataframe after renaming columns.
+#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
+#' @return None.
 #' @noRd
-.check_tidy_args <- function(.data, newobj) {
-  assert_that(!is.null(newobj))
-  assert_that(is.character(.data))
-  assert_that(is.character(newobj))
+.call_tidy_ds <- function(fun_name, df.name, tidy_select, other_args, newobj, datasources) {
+  tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
+  cally <- as.call(
+    list(
+      sym(fun_name), df.name, tidy_select, other_args
+    )
+  )
+  datashield.assign(datasources, newobj, cally)
 }

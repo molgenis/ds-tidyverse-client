@@ -27,21 +27,3 @@ ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep =
   .check_tidy_disclosure(df.name, tidy_select, datasources)
   .call_tidy_ds("mutateDS", df.name, tidy_select, list(.keep, .before, .after), newobj, datasources)
 }
-
-#' Call Rename DataShield Function
-#'
-#' @param tidy_select A tidy selection specification of columns.
-#' @param df.name A character string specifying the name of the dataframe.
-#' @param newobj A character string specifying the name of the new dataframe after renaming columns.
-#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
-#' @return None.
-#' @noRd
-.call_tidy_ds <- function(fun_name, df.name, tidy_select, other_args, newobj, datasources) {
-  tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  args_combined <- c(
-    list(
-      sym(fun_name), df.name, tidy_select, other_args
-    )
-  cally <- as.call(args_combined)
-  datashield.assign(datasources, newobj, cally)
-}
