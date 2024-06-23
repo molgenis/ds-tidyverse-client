@@ -97,9 +97,9 @@
 #' @noRd
 .get_encode_dictionary <- function() {
   encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^"),
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
     output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
-               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$")
+               "$APO$", "$LSQ$", "$RSQ", "$EQU$")
   )
   return(encode_list)
 }
@@ -155,7 +155,7 @@
 .check_function_names <- function(args_as_string) {
   permitted_tidy_select <- c(
     "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
-    "matches", "num_range", "all_of", "any_of", "where", "c", "rename", "mutate"
+    "matches", "num_range", "all_of", "any_of", "where", "c", "rename",
   )
 
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
@@ -264,20 +264,5 @@
 .check_tidy_args <- function(df.name, newobj, .keep) {
   assert_that(!is.null(newobj))
   assert_that(is.character(df.name))
-  assert_that(is.character(newobj))
-}
-
-#' Check tidy Arguments
-#'
-#' @param .data Character specifying a serverside data frame or tibble.
-#' @param newobj Optionally, character specifying name for new server-side data frame.
-#' @return This function does not return a value but is used for argument validation.
-#'
-#' @importFrom assertthat assert_that
-#'
-#' @noRd
-.check_tidy_args <- function(.data, newobj) {
-  assert_that(!is.null(newobj))
-  assert_that(is.character(.data))
   assert_that(is.character(newobj))
 }
