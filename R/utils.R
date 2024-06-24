@@ -261,8 +261,7 @@
 #' @importFrom assertthat assert_that
 #'
 #' @noRd
-.check_tidy_args <- function(df.name, newobj, .keep) {
-  assert_that(!is.null(newobj))
+.check_tidy_args <- function(df.name, newobj) {
   assert_that(is.character(df.name))
   assert_that(is.character(newobj))
 }
