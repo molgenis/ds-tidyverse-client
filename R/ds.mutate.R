@@ -19,11 +19,11 @@
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
-ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = NULL, .before = NULL,
+ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = "all", .before = NULL,
                       .after = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("mutateDS", df.name, tidy_select, NULL)
+  cally <- .make_serverside_call("mutateDS", df.name, tidy_select, list(.keep, .before, .after))
   datashield.assign(datasources, newobj, cally)
 }

@@ -320,3 +320,8 @@
   .check_tidy_disclosure(df.name, tidy_select, datasources)
 }
 
+# .make_tidyverse_call <- function(.data, tidy_select, extra_args){
+#   extra_args <- .paste_character_args(extra_args)
+#   tidy_string <- .make_tidyselect_arg(.data, fun, tidy_select_args, extra_args)
+#   return(rlang::parse_expr(tidy_string))
+# }

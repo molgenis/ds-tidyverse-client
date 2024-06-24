@@ -8,7 +8,7 @@ ds.mutate(
   df.name = NULL,
   tidy_select = NULL,
   newobj = NULL,
-  .keep = NULL,
+  .keep = "all",
   .before = NULL,
   .after = NULL,
   datasources = NULL
