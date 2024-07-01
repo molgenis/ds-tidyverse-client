@@ -23,15 +23,6 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
   expect_equal(observed, expected)
 }
 
-tryCatch(
-  ds.mutate(
-    df.name = "mtcars",
-    tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-    newobj = "new"
-  ),
-  error = function(e){print(datashield.errors())}
-)
-
 test_that("ds.mutate correctly passes good argument", {
   ds.mutate(
     df.name = "mtcars",
