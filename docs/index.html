@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DataSHIELD Tidyverse Clientside Package • dsTidyverseClient</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -71,6 +71,50 @@
 <div class="page-header"><h1 id="dstidyverseclient">dsTidyverseClient<a class="anchor" aria-label="anchor" href="#dstidyverseclient"></a>
 </h1></div>
 <p>Clientside implementation of selected Tidyverse functions</p>
+<div class="section level2">
+<h2 id="to-get-started">To get started<a class="anchor" aria-label="anchor" href="#to-get-started"></a>
+</h2>
+<ul>
+<li>Install dsTidyverse on your armadillo or opal server.</li>
+<li>Whitelist dsTidyverse if required</li>
+<li>Install dsTidyverseClient on your local machine</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="currently-implemented-functions-are">Currently implemented functions are:<a class="anchor" aria-label="anchor" href="#currently-implemented-functions-are"></a>
+</h2>
+<ul>
+<li><code>select</code></li>
+<li><code>rename</code></li>
+<li><code>mutate</code></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="planned-functions-to-implement">Planned functions to implement:<a class="anchor" aria-label="anchor" href="#planned-functions-to-implement"></a>
+</h2>
+<ul>
+<li><code>if_else</code></li>
+<li><code>case_when</code></li>
+<li><code>filter</code></li>
+<li><code>bind_cols</code></li>
+<li><code>bind_rows</code></li>
+<li><code>inner_join</code></li>
+<li><code>left_join</code></li>
+<li><code>right_join</code></li>
+<li><code>full_join</code></li>
+<li><code>pivot_longer</code></li>
+<li><code>pivot_wider</code></li>
+<li><code>arrange</code></li>
+<li><code>distinct</code></li>
+<li><code>group_by</code></li>
+<li><code>ungroup</code></li>
+<li><code>slice</code></li>
+<li><code>group_split</code></li>
+<li><code>group_map</code></li>
+<li><code>summarise</code></li>
+</ul>
+<p>If there are functions in this list you would like implemented, please either attempt to do so yourself and submit a pull request, or submit a feature request in the <code>issues</code> section.</p>
+</div>
 </div>
   </div>
 
@@ -113,7 +157,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

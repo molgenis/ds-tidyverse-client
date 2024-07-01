@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using tidyverse within DataSHIELD • dsTidyverseClient</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -80,187 +80,179 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span></code></pre></div>
-<p>Here is a simple illustration how to use ds.select, and how it
-improves on ds.dataFrameSubset</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>dsTidyVerseClient is the DataSHIELD implementation of selected
+functions from the Tidyverse. Most of these functions are from
+<code>dplyr</code>, with some planned implementations for functions from
+<code>purrr</code> and <code>tidyr</code>.</p>
+<p>As long as not potentially disclosing, all functionality from the
+Tidyverse functions has been preserved. The main argument which is
+normally passed to <code>...</code> in Tidyverse functions is passed as
+a list to the argument <code>tidy_select</code>.</p>
+<p>To illustrate the useage of these functions, we use DSLite which
+creates a virtual DataSHIELD session.</p>
+</div>
 <div class="section level2">
 <h2 id="set-up-environment">Set up environment<a class="anchor" aria-label="anchor" href="#set-up-environment"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/datashield/DSLite/" class="external-link">DSLite</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSLite"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in install.packages : Updating loaded packages</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsBaseClient"</span><span class="op">)</span>, repos <span class="op">=</span> <span class="st">"https://cran.obiba.org/"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in install.packages : Updating loaded packages</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"molgenis/dsTidyverse"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"molgenis/dsTidyverseClient"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/datashield/DSLite/" class="external-link">DSLite</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBase</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBaseClient</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverse</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSLite/reference/newDSLiteServer.html" class="external-link">newDSLiteServer</a></span><span class="op">(</span>tables<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars<span class="op">=</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"logindata.dslite.cnsim"</span><span class="op">)</span></span>
 <span><span class="va">logindata.dslite.cnsim</span> <span class="op">&lt;-</span> <span class="va">logindata.dslite.cnsim</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>table <span class="op">=</span> <span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">config</span><span class="op">(</span><span class="fu"><a href="https://datashield.github.io/DSLite/reference/defaultDSConfiguration.html" class="external-link">defaultDSConfiguration</a></span><span class="op">(</span>include<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span>, <span class="st">"dsDanger"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">config</span><span class="op">(</span><span class="fu"><a href="https://datashield.github.io/DSLite/reference/defaultDSConfiguration.html" class="external-link">defaultDSConfiguration</a></span><span class="op">(</span>include<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"selectDS"</span>, <span class="st">"selectDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
 <span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="the-old-way">The old way<a class="anchor" aria-label="anchor" href="#the-old-way"></a>
+<h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
 </h2>
-<p>With ds.dataFrameSubset, you could only subset columns by their
-index. E.g.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">len</span> <span class="op">&lt;-</span> <span class="fu">ds.length</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Error in ds.length("mtcars"): could not find function "ds.length"</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu">ds.rep</span><span class="op">(</span>x1 <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>        times <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>        length.out <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>        each <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>        source.x1 <span class="op">=</span> <span class="st">"clientside"</span>,</span>
-<span>        source.times <span class="op">=</span> <span class="st">"c"</span>,</span>
-<span>        source.length.out <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>        source.each <span class="op">=</span> <span class="st">"c"</span>,</span>
-<span>        x1.includes.characters <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>        newobj <span class="op">=</span> <span class="st">"ONES"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.rep(x1 = 4, times = 6, length.out = NA, each = 1, source.x1 = "clientside", : could not find function "ds.rep"</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu">ds.dataFrameSubset</span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>                   V1.name <span class="op">=</span> <span class="st">"ONES"</span>,</span>
-<span>                   V2.name <span class="op">=</span> <span class="st">"ONES"</span>,</span>
-<span>                   Boolean.operator <span class="op">=</span> <span class="st">"=="</span>,</span>
-<span>                   keep.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>                   rm.cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                   keep.NAs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                   newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.dataFrameSubset(df.name = "mtcars", V1.name = "ONES", V2.name = "ONES", : could not find function "ds.dataFrameSubset"</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="ds-select">ds.select<a class="anchor" aria-label="anchor" href="#ds-select"></a>
-</h2>
+<p>Currently 3 functions are implements: <code>ds.select</code>,
+<code>ds.rename</code> and <code>ds.mutate</code>.</p>
+<div class="section level3">
+<h3 id="select">Select<a class="anchor" aria-label="anchor" href="#select"></a>
+</h3>
 <p>ds.select implements all the flexibility of dplyr::select in
-subsetting columns. This includes: (i) ability to pass enquoted column
+subsetting columns. This includes: (i) ability to pass unquoted column
 names which are evaluated as columns of .data (ii) ability to use
 tidyselect helper functions, such as <code>contains</code>.</p>
 <p>For example:</p>
-<div class="section level3">
-<h3 id="subset-columns-by-name">Subset columns by name<a class="anchor" aria-label="anchor" href="#subset-columns-by-name"></a>
-</h3>
+<div class="section level4">
+<h4 id="subset-columns-by-name">Subset columns by name<a class="anchor" aria-label="anchor" href="#subset-columns-by-name"></a>
+</h4>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "mpg"  "disp" "wt"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="specify-column-to-exclude">Specify column to exclude<a class="anchor" aria-label="anchor" href="#specify-column-to-exclude"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="specify-range-of-columns">Specify range of columns<a class="anchor" aria-label="anchor" href="#specify-range-of-columns"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "mpg"  "cyl"  "disp" "hp"   "drat"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="match-by-first-letter">Match by first letter<a class="anchor" aria-label="anchor" href="#match-by-first-letter"></a>
+</h4>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'m'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "mpg"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="match-by-last-letter">Match by last letter<a class="anchor" aria-label="anchor" href="#match-by-last-letter"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">ends_with</span><span class="op">(</span><span class="st">'m'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "am"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="pattern-matching">Pattern matching<a class="anchor" aria-label="anchor" href="#pattern-matching"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">matches</span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "disp" "drat" "qsec" "am"   "gear" "carb"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="multiple-conditions-with">Multiple conditions with ‘&amp;’<a class="anchor" aria-label="anchor" href="#multiple-conditions-with"></a>
+</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), : could not find function "ds.select"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu">ends_with</span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "carb"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="multiple-conditions-with-1">Multiple conditions with ‘|’<a class="anchor" aria-label="anchor" href="#multiple-conditions-with-1"></a>
+</h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu">ends_with</span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="specify-column-to-exclude">Specify column to exclude<a class="anchor" aria-label="anchor" href="#specify-column-to-exclude"></a>
-</h3>
+<div class="section level4">
+<h4 id="rename-columns-on-the-fly-with">Rename columns on the fly with ‘=’<a class="anchor" aria-label="anchor" href="#rename-columns-on-the-fly-with"></a>
+</h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; [1] "test"</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="rename">Rename<a class="anchor" aria-label="anchor" href="#rename"></a>
+</h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test"): could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    </span></span>
+<span><span class="co">#&gt;  [8] "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="specify-range-of-columns">Specify range of columns<a class="anchor" aria-label="anchor" href="#specify-range-of-columns"></a>
-</h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test"): could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="match-by-first-letter">Match by first letter<a class="anchor" aria-label="anchor" href="#match-by-first-letter"></a>
-</h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'m'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("m")), : could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="match-by-last-letter">Match by last letter<a class="anchor" aria-label="anchor" href="#match-by-last-letter"></a>
-</h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">ends_with</span><span class="op">(</span><span class="st">'m'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(ends_with("m")), : could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="pattern-matching">Pattern matching<a class="anchor" aria-label="anchor" href="#pattern-matching"></a>
-</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">matches</span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(matches("[aeiou]")), : could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="multiple-conditions-with">Multiple conditions with ‘&amp;’<a class="anchor" aria-label="anchor" href="#multiple-conditions-with"></a>
-</h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu">ends_with</span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") &amp; : could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="multiple-conditions-with-1">Multiple conditions with ‘|’<a class="anchor" aria-label="anchor" href="#multiple-conditions-with-1"></a>
-</h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu">ends_with</span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") | : could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="rename-columns-on-the-fly-with">Rename columns on the fly with ‘=’<a class="anchor" aria-label="anchor" href="#rename-columns-on-the-fly-with"></a>
-</h3>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("mtcars"): could not find function "ds.colnames"</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test"): could not find function "ds.select"</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ds.colnames</span><span class="op">(</span><span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in ds.colnames("test"): could not find function "ds.colnames"</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -282,7 +274,7 @@ tidyselect helper functions, such as <code>contains</code>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
