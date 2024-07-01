@@ -9,11 +9,11 @@ Clientside implementation of selected Tidyverse functions
 ## Currently implemented functions are:
 - `select`
 - `rename`
+- `mutate`
 
 ## Planned functions to implement:
 - `if_else`
 - `case_when`
-- `mutate`
 - `filter`
 - `bind_cols`
 - `bind_rows`
