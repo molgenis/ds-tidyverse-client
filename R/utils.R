@@ -246,7 +246,7 @@
 #' @importFrom DSI datashield.aggregate
 #' @noRd
 .check_tidy_disclosure <- function(df.name, tidyselect, datasources) {
-  disc_settings <- datashield.aggregate(datasources, call("dsListDisclosureSettingsTidyVerse"))
+  disc_settings <- datashield.aggregate(datasources, call("listDisclosureSettingsDS"))
   .check_data_name_length(df.name, disc_settings)
   .check_function_names(tidyselect)
   .check_variable_length(tidyselect, disc_settings)
