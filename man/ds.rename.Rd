@@ -12,6 +12,7 @@ ds.rename(
 )
 }
 \arguments{
+
 \item{tidy_select}{List of Tidyselect syntax to be passed to dplyr::rename}
 
 \item{newobj}{Optionally, character specifying name for new server-side data frame. Default is
@@ -19,7 +20,6 @@ to overwrite original object.}
 
 \item{datasources}{datashield connections object.}
 
-\item{.data}{Character specifying a serverside data frame or tibble.}
 }
 \value{
 the object specified by the \code{newobj} argument or

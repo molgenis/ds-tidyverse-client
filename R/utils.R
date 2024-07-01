@@ -97,8 +97,9 @@
 #' @noRd
 .get_encode_dictionary <- function() {
   encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
-    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^"),
+    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
+               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$")
   )
   return(encode_list)
 }
@@ -154,7 +155,7 @@
 .check_function_names <- function(args_as_string) {
   permitted_tidy_select <- c(
     "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
-    "matches", "num_range", "all_of", "any_of", "where", "c"
+    "matches", "num_range", "all_of", "any_of", "where", "c", "rename", "mutate"
   )
 
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
@@ -236,15 +237,91 @@
 }
 
 
-
-#' Checks both for length of variable names and names of functions passed to `tidy_args`
+#' Check tidyverse disclosure Settings
 #'
-#' @param args_as_string The string representation of the arguments.
-#' @param disclosure list of disclosure settings, length of number of cohorts
-#' @param datasources DataSHIELD connections object
-#' @param nfilter.string The maximum length of variable names allowed.
+#' @param df.name A character string specifying the name of the dataframe.
+#' @param tidy_select A tidy selection specification of columns.
+#' @param datasources A list of Opal connection objects obtained after logging into the Opal servers.
+#' @return None. This function is used for its side effects of checking disclosure settings.
+#' @importFrom DSI datashield.aggregate
 #' @noRd
-.check_tidy_disclosure <- function(args_as_string, disclosure, datasources) {
-  .check_function_names(args_as_string)
-  .check_variable_length(args_as_string, disclosure)
+.check_tidy_disclosure <- function(df.name, tidyselect, datasources) {
+  disc_settings <- datashield.aggregate(datasources, call("listDisclosureSettingsDS"))
+  .check_data_name_length(df.name, disc_settings)
+  .check_function_names(tidyselect)
+  .check_variable_length(tidyselect, disc_settings)
 }
+
+#' Check Select Arguments
+#'
+#' @param .data Character specifying a serverside data frame or tibble.
+#' @param newobj Optionally, character specifying name for new server-side data frame.
+#' @return This function does not return a value but is used for argument validation.
+#'
+#' @importFrom assertthat assert_that
+#'
+#' @noRd
+.check_tidy_args <- function(df.name, newobj) {
+  assert_that(is.character(df.name))
+  assert_that(is.character(newobj))
+}
+
+#' Create a Tidy Evaluation Call
+#'
+#' This function constructs a call object for a tidy evaluation function.
+#' It allows for the dynamic creation of function calls in a tidyverse-compatible manner.
+#'
+#' @param tidy_select Encoded tidyselect arguments
+#' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
+#' @param df.name The name of the data frame (as a string) to which the function will be applied.
+#' @param other_args A list of additional arguments to be passed to the function (optional).
+#' @return A call object that can be evaluated to perform the specified operation.
+#' @noRD
+.make_serverside_call <- function(fun_name, df.name, tidy_select, other_args) {
+  tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
+  cally <- .build_cally(fun_name, df.name, tidy_select, other_args)
+  return(cally)
+}
+
+#' Construct a Call Object
+#'
+#' This function constructs and returns a call object based on the provided
+#' function name, dataframe name, tidyselect specification, and additional arguments.
+#'
+#' @param fun_name A character string representing the function name.
+#' @param df.name The name of the dataframe.
+#' @param tidy_select Tidyselect specification (e.g., column names or selection helpers).
+#' @param other_args Additional arguments to be included in the call. If NULL, no additional arguments are added.
+#' @importFrom rlang sym
+#' @return A call object constructed from the provided arguments.
+#' @noRd
+.build_cally <- function(fun_name, df.name, tidy_select, other_args){
+  arg_list <- list(sym(fun_name), df.name, tidy_select)
+  if(is.null(other_args)) {
+    return(as.call(arg_list))
+  } else {
+    return(as.call(c(arg_list, other_args)))
+  }
+}
+
+#' Perform Tidyverse Checks
+#'
+#' This function performs checks related to tidyverse operations, ensuring that
+#' the arguments and disclosures are valid and appropriate.
+#'
+#' @param df.name The name of the dataframe being checked.
+#' @param newobj The new object or result of some tidyverse operation.
+#' @param tidy_select Tidyselect specification (e.g., column names or selection helpers).
+#' @param datasources Data sources involved in the operation.
+#' @return None. This function is called for its side effects (checking validity and compliance).
+#' @noRd
+.perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources){
+  .check_tidy_args(df.name, newobj)
+  .check_tidy_disclosure(df.name, tidy_select, datasources)
+}
+
+# .make_tidyverse_call <- function(.data, tidy_select, extra_args){
+#   extra_args <- .paste_character_args(extra_args)
+#   tidy_string <- .make_tidyselect_arg(.data, fun, tidy_select_args, extra_args)
+#   return(rlang::parse_expr(tidy_string))
+# }

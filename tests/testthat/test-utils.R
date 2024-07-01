@@ -94,8 +94,9 @@ test_that(".check_data_name_length does not throw an error if length of .data is
 
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "="),
-    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$", "$APO$", "$LSQ$", "$RSQ", "$EQU$")
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^"),
+    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
+               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$")
   )
   actual_encode_list <- .get_encode_dictionary()
   expect_equal(actual_encode_list, expected_encode_list)
@@ -150,8 +151,8 @@ test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
 
 test_that(".encode_tidy_eval correctly encodes strings with unpermitted values", {
   encode_key <- .get_encode_dictionary()
-  input_string <- "asd, qwe, wer == rew ^}{}/&%"
-  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$^}{}/$AND$%"
+  input_string <- "asd, qwe, wer == rew &}{}%"
+  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$$AND$}{}%"
   result <- .encode_tidy_eval(input_string, encode_key)
   expect_equal(result, expected_output)
 })
@@ -188,13 +189,13 @@ test_that(".check_variable_length blocks variables with value greater than than 
 })
 
 test_that(".tidy_disclosure_checks allows permitted arg to pass", {
-  expect_silent(.check_tidy_disclosure(arg_permitted, disc_settings, conns))
+  expect_silent(.check_tidy_disclosure("dataframe", arg_permitted, conns))
 })
 
 test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {
   arg_unpermitted_2 <- paste0(large_var, arg_permitted)
   expect_snapshot(
-    .check_tidy_disclosure(arg_unpermitted_2, disc_settings, conns),
+    .check_tidy_disclosure("dataframe", arg_unpermitted_2, conns),
     error = TRUE
   )
 })
@@ -202,7 +203,78 @@ test_that(".tidy_disclosure_checks blocks argument with unpermitted variable len
 test_that(".tidy_disclosure_checks blocks argument with unpermitted function names", {
   arg_unpermitted_3 <- arg_unpermitted
   expect_snapshot(
-    .check_tidy_disclosure(arg_unpermitted_3, disc_settings, conns),
+    .check_tidy_disclosure("dataset", arg_unpermitted_3, conns),
     error = TRUE
+  )
+})
+
+test_that(".check_tidy_args returns correct errors", {
+  expect_error(
+    .check_tidy_args(df.name = NULL, newobj = "test"),
+    "df.name is not a character vector"
+  )
+
+  expect_error(
+    .check_tidy_args(df.name = "test", newobj = NULL),
+    "newobj is not a character vector"
+  )
+
+  expect_silent(
+    .check_tidy_args(df.name = "test", newobj = "test")
+  )
+})
+
+test_that(".build_cally build correct call object", {
+  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
+  expected <- call("mutateDS", "mydata", "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")")
+  returned <- .build_cally("mutateDS", "mydata", input_string, NULL)
+  expect_equal(expected, returned)
+
+  expected <- call("mutateDS", "mydata", "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")",
+                   "extra_arg_1", "extra_arg_2")
+  returned <- .build_cally("mutateDS", "mydata", input_string, list("extra_arg_1", "extra_arg_2"))
+  expect_equal(expected, returned)
+})
+
+test_that(".make_serverside_call encodes and builds call object", {
+ input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
+ tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+ returned <- .make_serverside_call("mutateDS", "mydata", tidy_select, NULL)
+ expected <- call("mutateDS", "mydata", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$")
+ expect_equal(expected, returned)
+
+ returned <- .make_serverside_call("mutateDS", "mydata", tidy_select, list("extra_arg_1", "extra_arg_2"))
+ expected <- call("mutateDS", "mydata", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$",
+                  "extra_arg_1", "extra_arg_2")
+ expect_equal(expected, returned)
+})
+
+test_that(".perform_tidyverse_checks checks argument validity and disclosure", {
+  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
+  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+  expect_error(
+    .perform_tidyverse_checks(NULL, "new_data", tidy_select, conns),
+    "df.name is not a character vector"
+  )
+
+  expect_error(
+    .perform_tidyverse_checks("my_data", NULL, tidy_select, conns),
+    "newobj is not a character vector"
+  )
+
+  expect_silent(
+    .perform_tidyverse_checks("my_data", "new_data", tidy_select, conns)
+  )
+
+  expect_error(
+    .perform_tidyverse_checks(paste(rep("a", 101), collapse = ""), "new_data", tidy_select, conns),
+    "Error: The length of string passed to"
+  )
+
+  arg_unpermitted <- "asd, sdf, dfg, everything(), filter(test == 2), slice(3), mutate(new_name = old_name), starts_with(\"A\"), ends_with(\"Z\")"
+  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+  expect_error(
+    .perform_tidyverse_checks("my_data", "new_data", arg_unpermitted, conns),
+    "tidy_select` must only contain Tidyverse select functions"
   )
 })

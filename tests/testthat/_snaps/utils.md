@@ -19,7 +19,7 @@
     Condition
       Error:
       ! `tidy_select` must only contain Tidyverse select functions
-      x You have included the following unpermitted functions: filter, slice, and mutate
+      x You have included the following unpermitted functions: filter and slice
       Search ?select for more information
 
 # .check_variable_length blocks variables with value greater than than nfilter.string
@@ -41,7 +41,7 @@
 # .tidy_disclosure_checks blocks argument with unpermitted variable length
 
     Code
-      .check_tidy_disclosure(arg_unpermitted_2, disc_settings, conns)
+      .check_tidy_disclosure("dataframe", arg_unpermitted_2, conns)
     Condition
       Error:
       ! Error: The maximum length of columns specified in `tidy_select` must be shorter than nfilter.string.
@@ -57,10 +57,10 @@
 # .tidy_disclosure_checks blocks argument with unpermitted function names
 
     Code
-      .check_tidy_disclosure(arg_unpermitted_3, disc_settings, conns)
+      .check_tidy_disclosure("dataset", arg_unpermitted_3, conns)
     Condition
       Error:
       ! `tidy_select` must only contain Tidyverse select functions
-      x You have included the following unpermitted functions: filter, slice, and mutate
+      x You have included the following unpermitted functions: filter and slice
       Search ?select for more information
 
