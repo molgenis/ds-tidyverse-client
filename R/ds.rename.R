@@ -1,8 +1,8 @@
-#' @title Clientside dplyr select function
-#' @description This function is similar to R function \code{select}.
-#' @details Performs dplyr select
+#' @title Clientside dplyr rename function
+#' @description This function is similar to R function \code{rename}.
+#' @details Performs dplyr rename
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_select List of Tidyselect syntax to be passed to dplyr::select.
+#' @param tidy_select List of Tidyselect syntax to be passed to dplyr::rename
 #' @param newobj Optionally, character specifying name for new server-side data frame. Default is
 #' to overwrite original object.
 #' @param datasources datashield connections object.
@@ -10,10 +10,10 @@
 #' as default same name as input object is written to the serverside.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
-ds.select <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
+ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("selectDS", df.name, tidy_select, NULL)
+  cally <- .make_serverside_call("renameDS", df.name, tidy_select, NULL)
   datashield.assign(datasources, newobj, cally)
 }
