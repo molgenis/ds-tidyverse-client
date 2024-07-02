@@ -33,11 +33,13 @@ test_that("ds.rename fails with correct error message if data not present ", {
 })
 
 test_that("ds.rename correctly passes =", {
-    ds.rename(
+    tryCatch(
+      ds.rename(
       df.name = "mtcars",
       tidy_select = list(test_1 = mpg, test_2 = drat),
-      newobj = "mpg_drat"
-  )
+      newobj = "mpg_drat"),
+    error = function(e){print(datashield.errors())}
+    )
   expected <- c("test_1", "cyl", "disp", "hp", "test_2", "wt", "qsec", "vs", "am", "gear", "carb")
   .check_cols_as_expected(expected, "mpg_drat")
 })
