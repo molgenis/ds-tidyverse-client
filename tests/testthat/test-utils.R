@@ -80,7 +80,7 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
   expect_equal(result, "my_data")
 })
 
-disc_settings <- datashield.aggregate(conns, call("dsListDisclosureSettingsTidyVerse"))
+disc_settings <- datashield.aggregate(conns, call("listDisclosureSettingsDS"))
 
 test_that(".check_data_name_length throws an error if length of .data exceeds nfilter.string", {
   .data <- paste(rep("a", 101), collapse = "")
