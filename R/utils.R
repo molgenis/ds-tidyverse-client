@@ -245,9 +245,11 @@
 #' @return None. This function is used for its side effects of checking disclosure settings.
 #' @importFrom DSI datashield.aggregate
 #' @noRd
-.check_tidy_disclosure <- function(df.name, tidyselect, datasources) {
+.check_tidy_disclosure <- function(df.name, tidyselect, datasources, check_df = TRUE) {
   disc_settings <- datashield.aggregate(datasources, call("listDisclosureSettingsDS"))
-  .check_data_name_length(df.name, disc_settings)
+  if(check_df) {
+    .check_data_name_length(df.name, disc_settings)
+  }
   .check_function_names(tidyselect)
   .check_variable_length(tidyselect, disc_settings)
 }
@@ -261,8 +263,9 @@
 #' @importFrom assertthat assert_that
 #'
 #' @noRd
-.check_tidy_args <- function(df.name, newobj) {
-  assert_that(is.character(df.name))
+.check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE) {
+  if(check_df) {
+    assert_that(is.character(df.name)) }
   assert_that(is.character(newobj))
 }
 
@@ -296,12 +299,12 @@
 #' @return A call object constructed from the provided arguments.
 #' @noRd
 .build_cally <- function(fun_name, df.name, tidy_select, other_args){
-  arg_list <- list(sym(fun_name), df.name, tidy_select)
-  if(is.null(other_args)) {
-    return(as.call(arg_list))
-  } else {
-    return(as.call(c(arg_list, other_args)))
-  }
+  arg_list <- c(
+    list(sym(fun_name)),
+    list(df.name),
+    list(tidy_select),
+    other_args)
+  return(as.call(compact(arg_list)))
 }
 
 #' Perform Tidyverse Checks
@@ -315,9 +318,9 @@
 #' @param datasources Data sources involved in the operation.
 #' @return None. This function is called for its side effects (checking validity and compliance).
 #' @noRd
-.perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources){
-  .check_tidy_args(df.name, newobj)
-  .check_tidy_disclosure(df.name, tidy_select, datasources)
+.perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources, check_df = TRUE){
+  .check_tidy_args(df.name, newobj, check_df)
+  .check_tidy_disclosure(df.name, tidy_select, datasources, check_df)
 }
 
 # .make_tidyverse_call <- function(.data, tidy_select, extra_args){
