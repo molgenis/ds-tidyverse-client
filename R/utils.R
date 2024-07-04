@@ -298,9 +298,13 @@
 #' @importFrom rlang sym
 #' @return A call object constructed from the provided arguments.
 #' @noRd
-.build_cally <- function(fun_name, other_args){
-  arg_list <- c(list(sym(fun_name)), other_args)
-  return(as.call(arg_list))
+.build_cally <- function(fun_name, df.name, tidy_select, other_args){
+  arg_list <- c(
+    list(sym(fun_name)),
+    list(df.name),
+    list(tidy_select),
+    other_args)
+  return(as.call(compact(arg_list)))
 }
 
 #' Perform Tidyverse Checks
