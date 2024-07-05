@@ -1,19 +1,12 @@
 #' @title Clientside dplyr mutate function
 #' @description DataSHIELD implementation of \code{dplyr::mutate}.
 #' @details Performs dplyr mutate
-#' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_select List of Tidyselect syntax to be passed to dplyr::mutate
-#' @param .keep Control which columns from .data are retained in the output. Grouping columns and
-#' columns created by ... are always kept. "all" retains all columns from .data. This is the default.
-#' "used" retains only the columns used in `tidy_select` to create new columns. "unused" retains
-#' only the columns not used in `tidy_select` to create new columns. This is useful if you generate
-#' new columns, but no longer need the columns used to generate them. "none" doesn't retain any
-#' extra columns from `df.name`. Only the grouping variables and columns created by `tidy_select`
-#' are kept.
-#' @param .before <tidy-select> Optionally, control where new columns should appear (the default is
-#' to add to the right hand side). See `relocate` for more details.
-#' @param .after <tidy-select> Optionally, control where new columns should appear (the default is
-#' to add to the right hand side). See `relocate` for more details.
+#' @param condition A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.
+#' @param TRUE Vector to use for TRUE value of condition.
+#' @param FALSE Vector to use for FALSE value of condition.
+#' @param missing If not NULL, will be used as the value for NA values of condition. Follows the same size and type rules as true and false.
+#' @param ptype An optional prototype declaring the desired output type. If supplied, this overrides the common type of true, false, and missing.
+#' @param size An optional size declaring the desired output size. If supplied, this overrides the size of condition.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
