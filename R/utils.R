@@ -283,6 +283,7 @@
 .make_serverside_call <- function(fun_name, tidy_select, other_args) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
   cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
+  cally <- .build_cally(fun_name, c(tidy_select, other_args))
   return(cally)
 }
 
