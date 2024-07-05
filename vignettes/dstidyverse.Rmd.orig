@@ -54,7 +54,6 @@ logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
 dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
-dslite.server$assignMethod("mutateDS", "mutateDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
