@@ -1,5 +1,5 @@
 # dsTidyverseClient
-This package implements selected functions from the Tidyverse family of R packages (https://www.tidyverse.org/).
+This R package implements selected functions from the Tidyverse family of R packages (https://www.tidyverse.org/).
 It is designed to make data manipulation easier and more intuitive within DataSHIELD, so that researchers
 can spend more time doing research and less time data wrangling.
 

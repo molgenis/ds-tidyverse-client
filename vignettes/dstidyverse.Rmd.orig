@@ -27,11 +27,11 @@ library(dsTidyverseClient)
 ```
 
 ## Overview
-`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse. Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
+`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
 
 As long as not potentially disclosing, all functionality from the original Tidyverse functions has been preserved. The main argument which is normally passed to the `...` parameter in Tidyverse functions is passed as a list to the parameter `tidy_select`. Other arguments are passed to the relevant parameters which retain the same names as the original function.
 
-To illustrate the useage of these functions, we use DSLite which creates a virtual DataSHIELD session.
+To illustrate the usage of these functions, we use DSLite which creates a virtual DataSHIELD session.
 
 ## Install and load packages
 ```{r}
@@ -48,7 +48,7 @@ require(dsTidyverse)
 require(dsTidyverseClient)
 ```
 
-## Set up DSLite environement and log in.
+## Set up DSLite environment and log in.
 ```{r}
 data("mtcars")
 dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
@@ -63,7 +63,7 @@ conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 
 ## Functions
 ### Select
-`ds.select`, implements all the flexibility of `dplyr::select` in subsetting columns. This includes:
+`ds.select`, implements all the flexibility of `dplyr::select` in sub-setting columns. This includes:
 (i) the ability to pass unquoted column names which are evaluated as columns of `df.name`, and
 (ii) the ability to use tidyselect helper functions, such as `contains`. Below are some examples,
 for full details see the documentation for `dplyr::select`.
@@ -105,7 +105,7 @@ ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b
 ds.colnames("new_df")
 ```
 ### Rename
-`ds.rename` renames columns within a serverside dataframe. Column names are passed unquoted and are
+`ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
 
 ```{r}
@@ -115,8 +115,7 @@ ds.colnames("new_df")
 ```
 
 ### Mutate
-`ds.mutate` creates new columns in a serverside dataframe. These new columns are normally transformations
-of existing columns. This reduces the number of steps currently required in DataSHIELD, i.e. creating
+`ds.mutate` creates new columns in a server-side dataframe. These new columns are normally transformations of existing columns. This reduces the number of steps currently required in DataSHIELD, i.e. creating
 a new vector and joining it back to an existing data frame. Again, column names are passed unquoted.
 Below are some examples, see `dplyr::mutate` for full details.
 
@@ -136,7 +135,7 @@ ds.mean("mtcars$qsec")
 ds.mean("new_df$new_var")
 ```
 
-#### Choose where the new columns are positioned in the dataframe with `.before` and `.after`:
+#### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 ```{r}
 ds.colnames("mtcars")
 ds.mutate(
