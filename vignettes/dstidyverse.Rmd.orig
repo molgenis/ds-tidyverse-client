@@ -22,10 +22,6 @@ knitr::opts_chunk$set(warning = FALSE)
 options(knitr.duplicate.label = "allow")
 ```
 
-```r
-library(dsTidyverseClient)
-```
-
 ## Overview
 `dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
 
