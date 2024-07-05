@@ -22,205 +22,115 @@ knitr::opts_chunk$set(warning = FALSE)
 options(knitr.duplicate.label = "allow")
 ```
 
-## Overview
-`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
-
-As long as not potentially disclosing, all functionality from the original Tidyverse functions has been preserved. The main argument which is normally passed to the `...` parameter in Tidyverse functions is passed as a list to the parameter `tidy_select`. Other arguments are passed to the relevant parameters which retain the same names as the original function.
-
-To illustrate the usage of these functions, we use DSLite which creates a virtual DataSHIELD session.
-
-## Install and load packages
-```{r}
-## install.packages("dplyr")
-## install.packages("DSLite")
-## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
-## devtools::install_github("molgenis/dsTidyverse")
-## devtools::install_github("molgenis/dsTidyverseClient")
-require(DSLite)
-require(dplyr)
-require(dsBase)
-require(dsBaseClient)
-require(dsTidyverse)
-require(dsTidyverseClient)
+```r
+library(dsTidyverseClient)
 ```
 
-## Set up DSLite environment and log in.
-```{r}
+Here is a simple illustration how to use ds.select, and how it improves on ds.dataFrameSubset
+
+## Set up environment
+```r
+require(DSLite)
 data("mtcars")
 dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
 data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
+dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$assignMethod("selectDS", "selectDS")
-dslite.server$assignMethod("renameDS", "renameDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
-## Functions
-### Select
-`ds.select`, implements all the flexibility of `dplyr::select` in sub-setting columns. This includes:
-(i) the ability to pass unquoted column names which are evaluated as columns of `df.name`, and
-(ii) the ability to use tidyselect helper functions, such as `contains`. Below are some examples,
-for full details see the documentation for `dplyr::select`.
-
-#### Subset columns by name
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
-ds.colnames("new_df")
-```
-#### Specify columns to exclude
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
-ds.colnames("new_df")
-```
-#### Specify a range of columns to keep
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
-ds.colnames("new_df")
-```
-#### Specify column names using a regular expression
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
-ds.colnames("new_df")
-```
-#### Combine multiple conditions with '&'
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
-ds.colnames("new_df")
-```
-#### Combine multiple conditions with '|'
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
-ds.colnames("new_df")
-```
-### Rename
-`ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
-evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
-
-```{r}
-ds.colnames("mtcars")
-ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
-ds.colnames("new_df")
-```
-
-### Mutate
-`ds.mutate` creates new columns in a server-side dataframe. These new columns are normally transformations of existing columns. This reduces the number of steps currently required in DataSHIELD, i.e. creating
-a new vector and joining it back to an existing data frame. Again, column names are passed unquoted.
-Below are some examples, see `dplyr::mutate` for full details.
-
-#### Create columns which are transformations of existing variables:
-```{r}
-ds.colnames("mtcars")
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df")
-ds.colnames("new_df")
-ds.mean("mtcars$cyl")
-ds.mean("new_df$mpg_trans")
-ds.mean("mtcars$hp")
-ds.mean("mtcars$drat")
-ds.mean("mtcars$qsec")
-ds.mean("new_df$new_var")
-```
-
-#### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
-```{r}
-ds.colnames("mtcars")
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df",
-  .before = "disp")
-ds.colnames("new_df")
-```
-
-#### Only keep the newly created variables with `.keep`:
-```{r}
-ds.colnames("mtcars")
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df",
-  .keep = "none")
-ds.colnames("new_df")
-```
-
-### if_else
-A shinier version of `base::ifelse`. As with the other implementations of tidyverse, variable/object
-names can be passed unquoted, this time in the `condition` argument.
-
-```{r}
-ds.if_else(
-  condition = list(mtcars$mpg > 20),
-  "high",
-  "low",
-  newobj = "mpg_cat")
-
-ds.table("mpg_cat")
-```
-
-### bind_rows
-Bind any number of data frames by row, making a longer result. This is similar to
-do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
-
-```{r}
-ds.dim("mtcars")
-
-ds.bind_rows(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns
-)
-
-ds.dim("df_bound")
-```
-The argument `.id` can be used to create an additional column which records which dataframe each
-row came from:
-
-```{r}
-ds.bind_rows(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns,
-  .id = "where_it_came_from"
-)
-
-ds.colnames("df_bound")
-```
-
-### bind_cols
-Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
-
+## The old way
+With ds.dataFrameSubset, you could only subset columns by their index. E.g.
 ```{r}
 ds.colnames("mtcars")
 
-ds.bind_cols(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns
-)
+len <- ds.length("mtcars")[[1]]
 
-ds.colnames("df_bound")
+ds.rep(x1 = 4,
+        times = 6,
+        length.out = NA,
+        each = 1,
+        source.x1 = "clientside",
+        source.times = "c",
+        source.length.out = NULL,
+        source.each = "c",
+        x1.includes.characters = FALSE,
+        newobj = "ONES")
+
+ds.dataFrameSubset(df.name = "mtcars",
+                   V1.name = "ONES",
+                   V2.name = "ONES",
+                   Boolean.operator = "==",
+                   keep.cols = c(1, 3, 6),
+                   rm.cols = NULL,
+                   keep.NAs = FALSE,
+                   newobj = "test")
+
+ds.colnames("test")
 ```
-The argument `.name_repair` handles duplicate or broken names, e.g.
+## ds.select
+ds.select implements all the flexibility of dplyr::select in subsetting columns. This includes:
+(i) ability to pass enquoted column names which are evaluated as columns of .data
+(ii) ability to use tidyselect helper functions, such as `contains`.
+
+For example:
+
+### Subset columns by name
 ```{r}
 ds.colnames("mtcars")
-
-ds.bind_cols(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  .name_repair = "minimal",
-  datasources = conns
-)
-
-ds.colnames("df_bound")
-
+ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "test")
+ds.colnames("test")
 ```
+
+### Specify column to exclude
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test")
+ds.colnames("test")
+```
+### Specify range of columns
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test")
+ds.colnames("test")
+```
+### Match by first letter
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(starts_with('m')), newobj = "test")
+ds.colnames("test")
+```
+### Match by last letter
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(ends_with('m')), newobj = "test")
+ds.colnames("test")
+```
+### Pattern matching
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "test")
+ds.colnames("test")
+```
+### Multiple conditions with '&'
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "test")
+ds.colnames("test")
+```
+### Multiple conditions with '|'
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "test")
+ds.colnames("test")
+```
+### Rename columns on the fly with '='
+```{r}
+ds.colnames("mtcars")
+ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test")
+ds.colnames("test")
+```
+
+

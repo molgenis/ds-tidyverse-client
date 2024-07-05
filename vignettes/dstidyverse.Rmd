@@ -10,366 +10,223 @@ vignette: >
 
 
 
-## Overview
-`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
-
-As long as not potentially disclosing, all functionality from the original Tidyverse functions has been preserved. The main argument which is normally passed to the `...` parameter in Tidyverse functions is passed as a list to the parameter `tidy_select`. Other arguments are passed to the relevant parameters which retain the same names as the original function.
-
-To illustrate the usage of these functions, we use DSLite which creates a virtual DataSHIELD session.
-
-## Install and load packages
-
 ```r
-## install.packages("dplyr")
-## install.packages("DSLite")
-## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
-## devtools::install_github("molgenis/dsTidyverse")
-## devtools::install_github("molgenis/dsTidyverseClient")
-require(DSLite)
-require(dplyr)
-require(dsBase)
-require(dsBaseClient)
-require(dsTidyverse)
-require(dsTidyverseClient)
+library(dsTidyverseClient)
 ```
 
-## Set up DSLite environment and log in.
+Here is a simple illustration how to use ds.select, and how it improves on ds.dataFrameSubset
 
+## Set up environment
 ```r
+require(DSLite)
 data("mtcars")
 dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
 data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
+dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$assignMethod("selectDS", "selectDS")
-dslite.server$assignMethod("renameDS", "renameDS")
-dslite.server$assignMethod("mutateDS", "mutateDS")
-dslite.server$assignMethod("if_elseDS", "if_elseDS")
-dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
-dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
-## Functions
-### Select
-`ds.select`, implements all the flexibility of `dplyr::select` in sub-setting columns. This includes:
-(i) the ability to pass unquoted column names which are evaluated as columns of `df.name`, and
-(ii) the ability to use tidyselect helper functions, such as `contains`. Below are some examples,
-for full details see the documentation for `dplyr::select`.
-
-#### Subset columns by name
+## The old way
+With ds.dataFrameSubset, you could only subset columns by their index. E.g.
 
 ```r
 ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg"  "disp" "wt"
-```
-#### Specify columns to exclude
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-#### Specify a range of columns to keep
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
-```
-#### Specify column names using a regular expression
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
-```
-#### Combine multiple conditions with '&'
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "carb"
-```
-#### Combine multiple conditions with '|'
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "cyl"  "carb"
-```
-### Rename
-`ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
-evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
-
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
-#> Error:
-#> ! There are some DataSHIELD errors, list them with datashield.errors()
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
 ```
 
 ``` r
-ds.colnames("new_df")
-#> $sim1
-#> [1] "cyl"  "carb"
-```
 
-### Mutate
-`ds.mutate` creates new columns in a server-side dataframe. These new columns are normally transformations of existing columns. This reduces the number of steps currently required in DataSHIELD, i.e. creating
-a new vector and joining it back to an existing data frame. Again, column names are passed unquoted.
-Below are some examples, see `dplyr::mutate` for full details.
-
-#### Create columns which are transformations of existing variables:
-
-```r
-ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df")
-ds.colnames("new_df")
-#> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
-#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
-#> [13] "new_var"
+len <- ds.length("mtcars")[[1]]
+#> Error in ds.length("mtcars"): could not find function "ds.length"
 ```
 
 ``` r
-ds.mean("mtcars$cyl")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1        6.1875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
-ds.mean("new_df$mpg_trans")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1        6187.5        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
-ds.mean("mtcars$hp")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      146.6875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
-ds.mean("mtcars$drat")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      3.596563        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
-ds.mean("mtcars$qsec")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      17.84875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
-ds.mean("new_df$new_var")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      8.372669        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
+
+ds.rep(x1 = 4,
+        times = 6,
+        length.out = NA,
+        each = 1,
+        source.x1 = "clientside",
+        source.times = "c",
+        source.length.out = NULL,
+        source.each = "c",
+        x1.includes.characters = FALSE,
+        newobj = "ONES")
+#> Error in ds.rep(x1 = 4, times = 6, length.out = NA, each = 1, source.x1 = "clientside", : could not find function "ds.rep"
 ```
 
-#### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
+``` r
+
+ds.dataFrameSubset(df.name = "mtcars",
+                   V1.name = "ONES",
+                   V2.name = "ONES",
+                   Boolean.operator = "==",
+                   keep.cols = c(1, 3, 6),
+                   rm.cols = NULL,
+                   keep.NAs = FALSE,
+                   newobj = "test")
+#> Error in ds.dataFrameSubset(df.name = "mtcars", V1.name = "ONES", V2.name = "ONES", : could not find function "ds.dataFrameSubset"
+```
+
+``` r
+
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+## ds.select
+ds.select implements all the flexibility of dplyr::select in subsetting columns. This includes:
+(i) ability to pass enquoted column names which are evaluated as columns of .data
+(ii) ability to use tidyselect helper functions, such as `contains`.
+
+For example:
+
+### Subset columns by name
 
 ```r
 ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df",
-  .before = "disp")
-ds.colnames("new_df")
-#> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
-#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [13] "carb"
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
 ```
 
-#### Only keep the newly created variables with `.keep`:
+``` r
+ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(mpg, disp, wt), : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+
+### Specify column to exclude
 
 ```r
 ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-ds.mutate(
-  df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-  newobj = "new_df",
-  .keep = "none")
-ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg_trans" "new_var"
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
 ```
 
-### if_else
-A shinier version of `base::ifelse`. As with the other implementations of tidyverse, variable/object
-names can be passed unquoted, this time in the `condition` argument.
-
-
-```r
-ds.if_else(
-  condition = list(mtcars$mpg > 20),
-  "high",
-  "low",
-  newobj = "mpg_cat")
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
-
-ds.table("mpg_cat")
-#> Error: The input object mpg_cat is not defined in sim1!
+``` r
+ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(!mpg), newobj = "test"): could not find function "ds.select"
 ```
 
-### bind_rows
-Bind any number of data frames by row, making a longer result. This is similar to
-do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
-
-
-```r
-ds.dim("mtcars")
-#> $`dimensions of mtcars in sim1`
-#> [1] 32 11
-#> 
-#> $`dimensions of mtcars in combined studies`
-#> [1] 32 11
-
-ds.bind_rows(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns
-)
-
-ds.dim("df_bound")
-#> $`dimensions of df_bound in sim1`
-#> [1] 64 11
-#> 
-#> $`dimensions of df_bound in combined studies`
-#> [1] 64 11
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
 ```
-The argument `.id` can be used to create an additional column which records which dataframe each
-row came from:
-
-
-```r
-ds.bind_rows(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns,
-  .id = "where_it_came_from"
-)
-
-ds.colnames("df_bound")
-#> $sim1
-#>  [1] "where_it_came_from" "mpg"                "cyl"               
-#>  [4] "disp"               "hp"                 "drat"              
-#>  [7] "wt"                 "qsec"               "vs"                
-#> [10] "am"                 "gear"               "carb"
-```
-
-### bind_cols
-Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
-
+### Specify range of columns
 
 ```r
 ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-
-ds.bind_cols(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  datasources = conns
-)
-
-ds.colnames("df_bound")
-#> $sim1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   
-#>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
-#> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
-#> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
 ```
-The argument `.name_repair` handles duplicate or broken names, e.g.
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(mpg:drat), newobj = "test"): could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Match by first letter
 
 ```r
 ds.colnames("mtcars")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-
-ds.bind_cols(
-  to_combine = list(mtcars, mtcars),
-  newobj = "df_bound",
-  .name_repair = "minimal",
-  datasources = conns
-)
-
-ds.colnames("df_bound")
-#> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-#> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
 ```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(starts_with('m')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("m")), : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Match by last letter
+
+```r
+ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(ends_with('m')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(ends_with("m")), : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Pattern matching
+
+```r
+ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(matches("[aeiou]")), : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Multiple conditions with '&'
+
+```r
+ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") & : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Multiple conditions with '|'
+
+```r
+ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(starts_with("c") | : could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+### Rename columns on the fly with '='
+
+```r
+ds.colnames("mtcars")
+#> Error in ds.colnames("mtcars"): could not find function "ds.colnames"
+```
+
+``` r
+ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test")
+#> Error in ds.select(.data = "mtcars", tidy_select = list(test = mpg), newobj = "test"): could not find function "ds.select"
+```
+
+``` r
+ds.colnames("test")
+#> Error in ds.colnames("test"): could not find function "ds.colnames"
+```
+
+
