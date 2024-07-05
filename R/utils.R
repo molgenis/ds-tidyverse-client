@@ -280,9 +280,9 @@
 #' @param other_args A list of additional arguments to be passed to the function (optional).
 #' @return A call object that can be evaluated to perform the specified operation.
 #' @noRD
-.make_serverside_call <- function(fun_name, df.name, tidy_select, other_args) {
+.make_serverside_call <- function(fun_name, tidy_select, other_args) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- .build_cally(fun_name, df.name, tidy_select, other_args)
+  cally <- .build_cally(fun_name, c(tidy_select, other_args))
   return(cally)
 }
 
@@ -298,13 +298,9 @@
 #' @importFrom rlang sym
 #' @return A call object constructed from the provided arguments.
 #' @noRd
-.build_cally <- function(fun_name, df.name, tidy_select, other_args){
-  arg_list <- c(
-    list(sym(fun_name)),
-    list(df.name),
-    list(tidy_select),
-    other_args)
-  return(as.call(compact(arg_list)))
+.build_cally <- function(fun_name, other_args){
+  arg_list <- c(list(sym(fun_name)), other_args)
+  return(as.call(arg_list))
 }
 
 #' Perform Tidyverse Checks
