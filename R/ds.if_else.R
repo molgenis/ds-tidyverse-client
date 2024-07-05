@@ -19,12 +19,12 @@
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
-ds.if_else <- function(df.name = NULL, condition = NULL, true = NULL, false = NULL, missing = NULL,
+ds.if_else <- function(condition = NULL, true = NULL, false = NULL, missing = NULL,
                        ptype = NULL, size = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(condition))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("if_elseDS", df.name, tidy_select, list(true, false, missing, ptype, size))
+  .perform_tidyverse_checks(df.name = NULL, newobj, tidy_select, datasources, check_df = FALSE)
+  cally <- .make_serverside_call("if_elseDS", tidy_select, list(true, false, missing, ptype, size))
   datashield.assign(datasources, newobj, cally)
 }
 
