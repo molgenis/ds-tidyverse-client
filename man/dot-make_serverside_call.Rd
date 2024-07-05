@@ -4,16 +4,16 @@
 \alias{.make_serverside_call}
 \title{Create a Tidy Evaluation Call}
 \usage{
-.make_serverside_call(fun_name, df.name, tidy_select, other_args)
+.make_serverside_call(fun_name, tidy_select, other_args)
 }
 \arguments{
 \item{fun_name}{The name of the function to be called (as a string), e.g., "select", "mutate".}
 
-\item{df.name}{The name of the data frame (as a string) to which the function will be applied.}
-
 \item{tidy_select}{Encoded tidyselect arguments}
 
 \item{other_args}{A list of additional arguments to be passed to the function (optional).}
+
+\item{df.name}{The name of the data frame (as a string) to which the function will be applied.}
 }
 \value{
 A call object that can be evaluated to perform the specified operation.
