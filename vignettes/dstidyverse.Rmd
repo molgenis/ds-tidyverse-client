@@ -134,10 +134,14 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
+#> Error:
+#> ! There are some DataSHIELD errors, list them with datashield.errors()
+```
+
+``` r
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
-#>  [8] "vs"       "am"       "gear"     "carb"
+#> [1] "cyl"  "carb"
 ```
 
 ### Mutate
@@ -160,6 +164,9 @@ ds.colnames("new_df")
 #>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
 #>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
 #> [13] "new_var"
+```
+
+``` r
 ds.mean("mtcars$cyl")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
