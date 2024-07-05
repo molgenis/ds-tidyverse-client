@@ -14,6 +14,6 @@ ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasou
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("renameDS", df.name, tidy_select, NULL)
+  cally <- .make_serverside_call("renameDS", tidy_select, list(df.name))
   datashield.assign(datasources, newobj, cally)
 }
