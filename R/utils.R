@@ -276,7 +276,6 @@
 #'
 #' @param tidy_select Encoded tidyselect arguments
 #' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
-#' @param df.name The name of the data frame (as a string) to which the function will be applied.
 #' @param other_args A list of additional arguments to be passed to the function (optional).
 #' @return A call object that can be evaluated to perform the specified operation.
 #' @noRD
