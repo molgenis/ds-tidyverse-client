@@ -44,6 +44,7 @@ logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
 dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
+dslite.server$assignMethod("mutateDS", "mutateDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -151,14 +152,9 @@ ds.colnames("mtcars")
 
 ``` r
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
-#> Error:
-#> ! There are some DataSHIELD errors, list them with datashield.errors()
-```
-
-``` r
 ds.colnames("new_df")
 #> $sim1
-#> [1] "cyl"  "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -181,9 +177,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
-#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
-#> [13] "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     
+#> [12] "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -286,9 +281,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
-#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [13] "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [12] "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:

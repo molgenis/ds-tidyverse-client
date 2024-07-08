@@ -122,6 +122,7 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">config</span><span class="op">(</span><span class="fu"><a href="https://datashield.github.io/DSLite/reference/defaultDSConfiguration.html" class="external-link">defaultDSConfiguration</a></span><span class="op">(</span>include<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"selectDS"</span>, <span class="st">"selectDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span><span class="op">)</span></span>
 <span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -228,12 +229,9 @@ names within <code>df.name</code>. Below are some examples, see
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error:</span></span>
-<span><span class="co">#&gt; ! There are some DataSHIELD errors, list them with datashield.errors()</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -247,21 +245,20 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <div class="section level4">
 <h4 id="create-columns-which-are-transformations-of-existing-variables">Create columns which are transformations of existing variables:<a class="anchor" aria-label="anchor" href="#create-columns-which-are-transformations-of-existing-variables"></a>
 </h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       </span></span>
-<span><span class="co">#&gt;  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"</span></span>
-<span><span class="co">#&gt; [13] "new_var"</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     </span></span>
+<span><span class="co">#&gt; [12] "mpg_trans" "new_var"</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -273,7 +270,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $ValidityMessage</span></span>
 <span><span class="co">#&gt;      ValidityMessage </span></span>
 <span><span class="co">#&gt; sim1 "VALID ANALYSIS"</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"new_df$mpg_trans"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -285,7 +282,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $ValidityMessage</span></span>
 <span><span class="co">#&gt;      ValidityMessage </span></span>
 <span><span class="co">#&gt; sim1 "VALID ANALYSIS"</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$hp"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -297,7 +294,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $ValidityMessage</span></span>
 <span><span class="co">#&gt;      ValidityMessage </span></span>
 <span><span class="co">#&gt; sim1 "VALID ANALYSIS"</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$drat"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -309,7 +306,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $ValidityMessage</span></span>
 <span><span class="co">#&gt;      ValidityMessage </span></span>
 <span><span class="co">#&gt; sim1 "VALID ANALYSIS"</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$qsec"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -321,7 +318,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $ValidityMessage</span></span>
 <span><span class="co">#&gt;      ValidityMessage </span></span>
 <span><span class="co">#&gt; sim1 "VALID ANALYSIS"</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"new_df$new_var"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
 <span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -338,11 +335,11 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <h4 id="choose-where-the-new-columns-are-positioned-in-the-data-frame-with--before-and--after">Choose where the new columns are positioned in the data frame with
 <code>.before</code> and <code>.after</code>:<a class="anchor" aria-label="anchor" href="#choose-where-the-new-columns-are-positioned-in-the-data-frame-with--before-and--after"></a>
 </h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
@@ -350,18 +347,17 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  .before <span class="op">=</span> <span class="st">"disp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       </span></span>
-<span><span class="co">#&gt;  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     </span></span>
-<span><span class="co">#&gt; [13] "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       </span></span>
+<span><span class="co">#&gt; [12] "gear"      "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="only-keep-the-newly-created-variables-with--keep">Only keep the newly created variables with <code>.keep</code>:<a class="anchor" aria-label="anchor" href="#only-keep-the-newly-created-variables-with--keep"></a>
 </h4>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
