@@ -18,6 +18,10 @@ ds.if_else(
 \arguments{
 \item{condition}{A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.}
 
+\item{true}{Vector to use for TRUE value of condition.}
+
+\item{false}{Vector to use for FALSE value of condition.}
+
 \item{missing}{If not NULL, will be used as the value for NA values of condition. Follows the same size and type rules as true and false.}
 
 \item{ptype}{An optional prototype declaring the desired output type. If supplied, this overrides the common type of true, false, and missing.}
@@ -27,10 +31,6 @@ ds.if_else(
 \item{newobj}{Character specifying name for new server-side data frame.}
 
 \item{datasources}{datashield connections object.}
-
-\item{TRUE}{Vector to use for TRUE value of condition.}
-
-\item{FALSE}{Vector to use for FALSE value of condition.}
 }
 \value{
 One or more new columns created on the serverside data frame specified in the \code{newobj}.
