@@ -70,7 +70,26 @@
 <div class="section level1">
 <div class="page-header"><h1 id="dstidyverseclient">dsTidyverseClient<a class="anchor" aria-label="anchor" href="#dstidyverseclient"></a>
 </h1></div>
-<p>Clientside implementation of selected Tidyverse functions</p>
+<p>This R package implements selected functions from the Tidyverse family of R packages (<a href="https://www.tidyverse.org/" class="external-link uri">https://www.tidyverse.org/</a>). It is designed to make data manipulation easier and more intuitive within DataSHIELD, so that researchers can spend more time doing research and less time data wrangling.</p>
+<div class="section level2">
+<h2 id="to-get-started">To get started<a class="anchor" aria-label="anchor" href="#to-get-started"></a>
+</h2>
+<ul>
+<li>Install the serverside package <code>dsTidyverse</code> (<a href="https://github.com/molgenis/ds-tidyverse" class="external-link uri">https://github.com/molgenis/ds-tidyverse</a>) on your armadillo or opal server. If you are working as part of a consortium with managed profiles (e.g. ATHLETE), contact the project coordinator to discuss adding this to an installed profile.</li>
+<li>Install dsTidyverseClient on your local machine. Again, if you are working in a consortium whereby analysis is conducted via a Central Analysis Server, contact the project coordinator to discuss adding this package.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="currently-implemented">Currently implemented:<a class="anchor" aria-label="anchor" href="#currently-implemented"></a>
+</h2>
+<p>The currently implemented functions are <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">dplyr::rename</a></code> &amp;<code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate</a></code></p>
+</div>
+<div class="section level2">
+<h2 id="planned-implementation">Planned implementation:<a class="anchor" aria-label="anchor" href="#planned-implementation"></a>
+</h2>
+<p>The functions planned for implementation are <code><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">dplyr::if_else</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">dplyr::bind_cols</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">dplyr::bind_rows</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::inner_join</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::left_join</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::right_join</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::full_join</a></code>, <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">tidyr::pivot_longer</a></code>, <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">tidyr::pivot_wider</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">dplyr::arrange</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">dplyr::distinct</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::ungroup</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">dplyr::slice</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_split.html" class="external-link">dplyr::group_split</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_map.html" class="external-link">dplyr::group_map</a></code> &amp; <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise</a></code>.</p>
+<p>If there are functions not in this list that you would like to see implemented, please either attempt to do so yourself and submit a pull request, or submit a feature request in the <code>issues</code> section of the github repository.</p>
+</div>
 </div>
   </div>
 
