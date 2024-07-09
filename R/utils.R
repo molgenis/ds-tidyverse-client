@@ -278,7 +278,7 @@
 #' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
 #' @param other_args A list of additional arguments to be passed to the function (optional).
 #' @return A call object that can be evaluated to perform the specified operation.
-#' @noRD
+#' @noRd
 .make_serverside_call <- function(fun_name, tidy_select, other_args) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
   cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
