@@ -5,6 +5,7 @@ library(dsBaseClient)
 
 options(datashield.env = environment())
 data("mtcars")
+mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
 dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
 data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
@@ -53,14 +54,14 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     99,
-    1000,
+    100,
     newobj = "test")
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
-    c("99", "1000", "NA")
+    c("99", "100", "NA")
   )
 
   expect_equal(
@@ -68,6 +69,7 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
     "numeric"
   )
 
+  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
     as.numeric(counts),
     c(42, 54, 0)
@@ -75,45 +77,29 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
 
 })
 
-test_that("ds.if_else correctly passes argument with categorical condition and numerical outcome", {
+test_that("ds.if_else correctly passes argument with = ", {
 
   ds.if_else(
-    condition = list(mtcars$mpg > 20),
-    "high",
-    "asdasdasd",
-    newobj = "newdf")
+    condition = list(mtcars$vs == "0"),
+    "no",
+    "yes",
+    newobj = "testcat")
 
-
-
-  ds.table("newdf")
-
-  ds.if_else(
-    condition = list(newdf == "high"),
-    99,
-    100,
-    newobj = "test_2")
-
-  ds.ls()
-
-  ds.class("test_2")
-
-  nqmes <- names(ds.table("test_2")$output.list$TABLES.COMBINED_all.sources_counts)
+  names <- names(ds.table("testcat")$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
-    nqmes,
-    c("99", "1000", "NA")
+    names,
+    c("no", "yes", "NA")
   )
 
   expect_equal(
-    ds.class("test")[[1]],
-    "numeric"
+    ds.class("testcat")[[1]],
+    "character"
   )
 
+  counts <- ds.table("testcat")$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
     as.numeric(counts),
-    c(42, 54, 0)
+    c(54, 42, 0)
   )
-
 })
-
-
