@@ -2,7 +2,7 @@
 % Please edit documentation in R/ds.mutate.R
 \name{ds.mutate}
 \alias{ds.mutate}
-\title{Clientside dplyr mutate function}
+\title{Create, modify, and delete columns}
 \usage{
 ds.mutate(
   df.name = NULL,
@@ -17,7 +17,7 @@ ds.mutate(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_select}{List of Tidyselect syntax to be passed to dplyr::mutate}
+\item{tidy_select}{List of tidyselect syntax to be passed to dplyr::mutate.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
@@ -38,13 +38,20 @@ to add to the right hand side). See `relocate` for more details.}
 \item{datasources}{datashield connections object.}
 }
 \value{
-One or more new columns created on the serverside data frame specified in the \code{newobj}.
+An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
 DataSHIELD implementation of \code{dplyr::mutate}.
 }
-\details{
-Performs dplyr mutate
+\examples{
+First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+
+ds.mutate(
+ df.name = "mtcars",
+ tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+ newobj = "df_with_new_cols")
+
+Refer to the package vignette for more examples.
 }
 \examples{
 \dontrun{

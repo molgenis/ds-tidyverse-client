@@ -2,7 +2,7 @@
 % Please edit documentation in R/ds.rename.R
 \name{ds.rename}
 \alias{ds.rename}
-\title{Clientside dplyr rename function}
+\title{Rename columns.}
 \usage{
 ds.rename(
   df.name = NULL,
@@ -14,22 +14,28 @@ ds.rename(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_select}{List of Tidyselect syntax to be passed to dplyr::rename}
+\item{tidy_select}{List of tidyselect syntax to be passed to \code{dplyr::rename}.}
 
-\item{newobj}{Optionally, character specifying name for new server-side data frame. Default is
-to overwrite original object.}
+\item{newobj}{Character specifying name for new server-side data frame.}
 
-\item{datasources}{datashield connections object.}
+\item{datasources}{DataSHIELD connections object.}
 }
 \value{
-the object specified by the \code{newobj} argument or
-as default same name as input object is written to the serverside.
+An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-This function is similar to R function \code{rename}.
+DataSHIELD implentation of \code{dplyr::rename}.
 }
-\details{
-Performs dplyr rename
+\examples{
+First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+
+ds.rename(
+ df.name = "mtcars",
+ tidy_select = list(new_var_1 = mpg, new_var_2 = cyl),
+ newobj = "df_renamed",
+ dataources = conns)
+
+Refer to the package vignette for more examples.
 }
 \examples{
 \dontrun{
