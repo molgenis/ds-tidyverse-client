@@ -6,7 +6,7 @@
 \usage{
 ds.case_when(
   dynamic_dots = NULL,
-  default = NULL,
+  .default = NULL,
   .ptype = NULL,
   .size = NULL,
   newobj = NULL,
@@ -23,7 +23,7 @@ the same size. Recycling is mainly useful for RHS inputs, where you might supply
 that will be recycled to the size of the LHS inputs.
 NULL inputs are ignored.}
 
-\item{default}{The value used when all of the LHS inputs return either FALSE or NA.}
+\item{.default}{The value used when all of the LHS inputs return either FALSE or NA.}
 
 \item{.ptype}{An optional prototype declaring the desired output type. If supplied, this overrides the common type of true, false, and missing.}
 
