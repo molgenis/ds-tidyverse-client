@@ -232,8 +232,7 @@ names within <code>df.name</code>. Below are some examples, see
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    </span></span>
-<span><span class="co">#&gt; [11] "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -258,8 +257,8 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       </span></span>
-<span><span class="co">#&gt; [10] "gear"      "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     </span></span>
+<span><span class="co">#&gt; [11] "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
@@ -349,8 +348,8 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  .before <span class="op">=</span> <span class="st">"disp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     </span></span>
-<span><span class="co">#&gt; [10] "vs"        "am"        "gear"      "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       </span></span>
+<span><span class="co">#&gt; [11] "am"        "gear"      "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="only-keep-the-newly-created-variables-with--keep">Only keep the newly created variables with <code>.keep</code>:<a class="anchor" aria-label="anchor" href="#only-keep-the-newly-created-variables-with--keep"></a>
@@ -382,47 +381,128 @@ unquoted, this time in the <code>condition</code> argument.</p>
 <span>  <span class="st">"high"</span>,</span>
 <span>  <span class="st">"low"</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"mpg_cat"</span><span class="op">)</span></span>
-<span></span>
+<span><span class="co">#&gt; Error:</span></span>
+<span><span class="co">#&gt; ! There are some DataSHIELD errors:</span></span>
+<span><span class="co">#&gt; ✖ <span style="color: #BBBB00; font-weight: bold;">sim1</span><span style="font-weight: bold;">: ✖ `if_elseDS` returned the following error: ℹ could not find function "eval_tidy"</span></span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"mpg_cat"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: The input object mpg_cat is not defined in sim1!</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="case_when">case_when<a class="anchor" aria-label="anchor" href="#case_when"></a>
+</h3>
+<p>An extension of <code><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">dplyr::if_else</a></code> which allows the
+specification of multiple conditions. Extremely useful for recoding
+variables.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.case_when.html">ds.case_when</a></span><span class="op">(</span></span>
+<span>    dynamic_dots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">20</span> <span class="op">~</span> <span class="st">"low"</span>,</span>
+<span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">20</span> <span class="op">&amp;</span> <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"medium"</span>,</span>
+<span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"high"</span><span class="op">)</span>,</span>
+<span>    newobj <span class="op">=</span> <span class="st">"recoded"</span>,</span>
+<span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"recoded"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Data in all studies were valid </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt; $output.list</span></span>
 <span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_row.props</span></span>
-<span><span class="co">#&gt;        study</span></span>
-<span><span class="co">#&gt; mpg_cat sim1</span></span>
-<span><span class="co">#&gt;    high    1</span></span>
-<span><span class="co">#&gt;    low     1</span></span>
-<span><span class="co">#&gt;    NA    NaN</span></span>
+<span><span class="co">#&gt;         study</span></span>
+<span><span class="co">#&gt; recoded  sim1</span></span>
+<span><span class="co">#&gt;   high      1</span></span>
+<span><span class="co">#&gt;   low       1</span></span>
+<span><span class="co">#&gt;   medium    1</span></span>
+<span><span class="co">#&gt;   NA      NaN</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_col.props</span></span>
-<span><span class="co">#&gt;        study</span></span>
-<span><span class="co">#&gt; mpg_cat   sim1</span></span>
-<span><span class="co">#&gt;    high 0.4375</span></span>
-<span><span class="co">#&gt;    low  0.5625</span></span>
-<span><span class="co">#&gt;    NA   0.0000</span></span>
+<span><span class="co">#&gt;         study</span></span>
+<span><span class="co">#&gt; recoded    sim1</span></span>
+<span><span class="co">#&gt;   high   0.1250</span></span>
+<span><span class="co">#&gt;   low    0.5625</span></span>
+<span><span class="co">#&gt;   medium 0.3125</span></span>
+<span><span class="co">#&gt;   NA     0.0000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_counts</span></span>
-<span><span class="co">#&gt;        study</span></span>
-<span><span class="co">#&gt; mpg_cat sim1</span></span>
-<span><span class="co">#&gt;    high   14</span></span>
-<span><span class="co">#&gt;    low    18</span></span>
-<span><span class="co">#&gt;    NA      0</span></span>
+<span><span class="co">#&gt;         study</span></span>
+<span><span class="co">#&gt; recoded  sim1</span></span>
+<span><span class="co">#&gt;   high      4</span></span>
+<span><span class="co">#&gt;   low      18</span></span>
+<span><span class="co">#&gt;   medium   10</span></span>
+<span><span class="co">#&gt;   NA        0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_proportions</span></span>
-<span><span class="co">#&gt; mpg_cat</span></span>
-<span><span class="co">#&gt;  high   low    NA </span></span>
-<span><span class="co">#&gt; 0.438 0.562 0.000 </span></span>
+<span><span class="co">#&gt; recoded</span></span>
+<span><span class="co">#&gt;   high    low medium     NA </span></span>
+<span><span class="co">#&gt;  0.125  0.562  0.312  0.000 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_counts</span></span>
-<span><span class="co">#&gt; mpg_cat</span></span>
-<span><span class="co">#&gt; high  low   NA </span></span>
-<span><span class="co">#&gt;   14   18    0 </span></span>
+<span><span class="co">#&gt; recoded</span></span>
+<span><span class="co">#&gt;   high    low medium     NA </span></span>
+<span><span class="co">#&gt;      4     18     10      0 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $validity.message</span></span>
 <span><span class="co">#&gt; [1] "Data in all studies were valid"</span></span></code></pre></div>
+<p>You can also use the <code>.default</code> argument to control what
+happens if the condition is not met:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.case_when.html">ds.case_when</a></span><span class="op">(</span></span>
+<span>    dynamic_dots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">20</span> <span class="op">~</span> <span class="st">"low"</span>,</span>
+<span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"high"</span><span class="op">)</span>,</span>
+<span>    newobj <span class="op">=</span> <span class="st">"recoded_missing"</span>,</span>
+<span>    .default <span class="op">=</span> <span class="st">"something_missing"</span>,</span>
+<span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"recoded_missing"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Data in all studies were valid </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
+<span><span class="co">#&gt; $output.list</span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_row.props</span></span>
+<span><span class="co">#&gt;                    study</span></span>
+<span><span class="co">#&gt; recoded_missing     sim1</span></span>
+<span><span class="co">#&gt;   high                 1</span></span>
+<span><span class="co">#&gt;   low                  1</span></span>
+<span><span class="co">#&gt;   something_missing    1</span></span>
+<span><span class="co">#&gt;   NA                 NaN</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_col.props</span></span>
+<span><span class="co">#&gt;                    study</span></span>
+<span><span class="co">#&gt; recoded_missing       sim1</span></span>
+<span><span class="co">#&gt;   high              0.1250</span></span>
+<span><span class="co">#&gt;   low               0.5625</span></span>
+<span><span class="co">#&gt;   something_missing 0.3125</span></span>
+<span><span class="co">#&gt;   NA                0.0000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_counts</span></span>
+<span><span class="co">#&gt;                    study</span></span>
+<span><span class="co">#&gt; recoded_missing     sim1</span></span>
+<span><span class="co">#&gt;   high                 4</span></span>
+<span><span class="co">#&gt;   low                 18</span></span>
+<span><span class="co">#&gt;   something_missing   10</span></span>
+<span><span class="co">#&gt;   NA                   0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_proportions</span></span>
+<span><span class="co">#&gt; recoded_missing</span></span>
+<span><span class="co">#&gt;              high               low something_missing                NA </span></span>
+<span><span class="co">#&gt;             0.125             0.562             0.312             0.000 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_counts</span></span>
+<span><span class="co">#&gt; recoded_missing</span></span>
+<span><span class="co">#&gt;              high               low something_missing                NA </span></span>
+<span><span class="co">#&gt;                 4                18                10                 0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $validity.message</span></span>
+<span><span class="co">#&gt; [1] "Data in all studies were valid"</span></span></code></pre></div>
+<p>See the help file for <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code> for all available
+arguments.</p>
 </div>
 </div>
   </div>

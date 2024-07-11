@@ -155,8 +155,7 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
-#> [11] "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -179,8 +178,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
-#> [10] "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [11] "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -283,8 +282,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
-#> [10] "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
+#> [11] "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -317,50 +316,130 @@ ds.if_else(
   "high",
   "low",
   newobj = "mpg_cat")
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: ✖ `if_elseDS` returned the following error: ℹ could not find function "eval_tidy"[22m
+```
+
+``` r
 
 ds.table("mpg_cat")
+#> Error: The input object mpg_cat is not defined in sim1!
+```
+
+### case_when
+An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
+useful for recoding variables.
+
+
+``` r
+  ds.case_when(
+    dynamic_dots = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded",
+    datasources = conns)
+
+ds.table("recoded")
 #> 
 #>  Data in all studies were valid 
 #> 
 #> Study 1 :  No errors reported from this study
 #> $output.list
 #> $output.list$TABLE_rvar.by.study_row.props
-#>        study
-#> mpg_cat sim1
-#>    high    1
-#>    low     1
-#>    NA    NaN
+#>         study
+#> recoded  sim1
+#>   high      1
+#>   low       1
+#>   medium    1
+#>   NA      NaN
 #> 
 #> $output.list$TABLE_rvar.by.study_col.props
-#>        study
-#> mpg_cat   sim1
-#>    high 0.4375
-#>    low  0.5625
-#>    NA   0.0000
+#>         study
+#> recoded    sim1
+#>   high   0.1250
+#>   low    0.5625
+#>   medium 0.3125
+#>   NA     0.0000
 #> 
 #> $output.list$TABLE_rvar.by.study_counts
-#>        study
-#> mpg_cat sim1
-#>    high   14
-#>    low    18
-#>    NA      0
+#>         study
+#> recoded  sim1
+#>   high      4
+#>   low      18
+#>   medium   10
+#>   NA        0
 #> 
 #> $output.list$TABLES.COMBINED_all.sources_proportions
-#> mpg_cat
-#>  high   low    NA 
-#> 0.438 0.562 0.000 
+#> recoded
+#>   high    low medium     NA 
+#>  0.125  0.562  0.312  0.000 
 #> 
 #> $output.list$TABLES.COMBINED_all.sources_counts
-#> mpg_cat
-#> high  low   NA 
-#>   14   18    0 
+#> recoded
+#>   high    low medium     NA 
+#>      4     18     10      0 
 #> 
 #> 
 #> $validity.message
 #> [1] "Data in all studies were valid"
 ```
 
+You can also use the `.default` argument to control what happens if the condition is not met:
 
 
+``` r
+  ds.case_when(
+    dynamic_dots = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded_missing",
+    .default = "something_missing",
+    datasources = conns)
 
-
+ds.table("recoded_missing")
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#> $output.list
+#> $output.list$TABLE_rvar.by.study_row.props
+#>                    study
+#> recoded_missing     sim1
+#>   high                 1
+#>   low                  1
+#>   something_missing    1
+#>   NA                 NaN
+#> 
+#> $output.list$TABLE_rvar.by.study_col.props
+#>                    study
+#> recoded_missing       sim1
+#>   high              0.1250
+#>   low               0.5625
+#>   something_missing 0.3125
+#>   NA                0.0000
+#> 
+#> $output.list$TABLE_rvar.by.study_counts
+#>                    study
+#> recoded_missing     sim1
+#>   high                 4
+#>   low                 18
+#>   something_missing   10
+#>   NA                   0
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_proportions
+#> recoded_missing
+#>              high               low something_missing                NA 
+#>             0.125             0.562             0.312             0.000 
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_counts
+#> recoded_missing
+#>              high               low something_missing                NA 
+#>                 4                18                10                 0 
+#> 
+#> 
+#> $validity.message
+#> [1] "Data in all studies were valid"
+```
+See the help file for `dplyr::case_when` for all available arguments.
