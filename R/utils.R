@@ -97,9 +97,9 @@
 #' @noRd
 .get_encode_dictionary <- function() {
   encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<"),
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
     output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
-               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$", "$GT$", "$LT$")
+               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$", "$GT$", "$LT$", "$TILDE$", "$LINE$")
   )
   return(encode_list)
 }
@@ -156,7 +156,7 @@
   permitted_tidy_select <- c(
     "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
     "matches", "num_range", "all_of", "any_of", "where", "c", "rename", "mutate", "if_else",
-    "bind_rows"
+    "case_when"
   )
 
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)
@@ -279,10 +279,10 @@
 #' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
 #' @param other_args A list of additional arguments to be passed to the function (optional).
 #' @return A call object that can be evaluated to perform the specified operation.
-#' @noRD
+#' @noRd
 .make_serverside_call <- function(fun_name, tidy_select, other_args) {
   tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- .build_cally(fun_name, c(tidy_select, other_args))
+  cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
   return(cally)
 }
 
