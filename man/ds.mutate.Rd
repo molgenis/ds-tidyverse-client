@@ -44,12 +44,14 @@ An object with the name specified by the \code{newobj} argument is written serve
 DataSHIELD implementation of \code{dplyr::mutate}.
 }
 \examples{
-First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+\dontrun{
+## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.mutate(
  df.name = "mtcars",
  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
  newobj = "df_with_new_cols")
 
-Refer to the package vignette for more examples.
+## Refer to the package vignette for more examples.
+}
 }

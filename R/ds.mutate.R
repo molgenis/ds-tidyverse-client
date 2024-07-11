@@ -16,15 +16,18 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
-#' @examples First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+#' @importFrom DSI datashield.assign datashield.aggregate
+#' @examples
+#'\dontrun{
+#' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
 #' ds.mutate(
 #'  df.name = "mtcars",
 #'  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
 #'  newobj = "df_with_new_cols")
 #'
-#' Refer to the package vignette for more examples.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' ## Refer to the package vignette for more examples.
+#' }
 #' @export
 ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = "all", .before = NULL,
                       .after = NULL, datasources = NULL) {
