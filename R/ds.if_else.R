@@ -1,6 +1,5 @@
-#' @title Clientside dplyr mutate function
-#' @description DataSHIELD implementation of \code{dplyr::mutate}.
-#' @details Performs dplyr mutate
+#' @title Vectorised if-else
+#' @description DataSHIELD implementation of \code{dplyr::if_else}.
 #' @param condition A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.
 #' @param true Vector to use for TRUE value of condition.
 #' @param false Vector to use for FALSE value of condition.
@@ -10,6 +9,15 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
+#' @examples First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+#'
+#' ds.if_else(
+#'  condition = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+#'  true = "high",
+#'  false = "low",
+#'  newobj = "new_var")
+#'
+#' Refer to the package vignette for more examples.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @export
 ds.if_else <- function(condition = NULL, true = NULL, false = NULL, missing = NULL,
