@@ -6,7 +6,9 @@
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign datashield.aggregate
-#' @examples First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+#' @examples
+#'\dontrun{
+#' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
 #' ds.rename(
 #'  df.name = "mtcars",
@@ -14,7 +16,8 @@
 #'  newobj = "df_renamed",
 #'  dataources = conns)
 #'
-#' Refer to the package vignette for more examples.
+#' ## Refer to the package vignette for more examples.
+#' }
 #' @export
 ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))

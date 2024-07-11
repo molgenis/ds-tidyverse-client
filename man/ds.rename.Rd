@@ -27,7 +27,8 @@ An object with the name specified by the \code{newobj} argument is written serve
 DataSHIELD implentation of \code{dplyr::rename}.
 }
 \examples{
-First log in to a DataSHIELD session with \code{mtcars} dataset loaded.
+\dontrun{
+## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.rename(
  df.name = "mtcars",
@@ -35,7 +36,8 @@ ds.rename(
  newobj = "df_renamed",
  dataources = conns)
 
-Refer to the package vignette for more examples.
+## Refer to the package vignette for more examples.
+}
 }
 \examples{
 \dontrun{
