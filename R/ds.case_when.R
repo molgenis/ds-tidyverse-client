@@ -8,7 +8,7 @@
 #' the same size. Recycling is mainly useful for RHS inputs, where you might supply a size 1 input
 #' that will be recycled to the size of the LHS inputs.
 #' NULL inputs are ignored.
-#' @param default The value used when all of the LHS inputs return either FALSE or NA.
+#' @param .default The value used when all of the LHS inputs return either FALSE or NA.
 #' @param .ptype An optional prototype declaring the desired output type. If supplied, this overrides the common type of true, false, and missing.
 #' @param .size An optional size declaring the desired output size. If supplied, this overrides the size of condition.
 #' @param newobj Character specifying name for new server-side data frame.
@@ -30,12 +30,12 @@
 #' ## Refer to the package vignette for more examples.
 #' }
 #' @export
-ds.case_when <- function(dynamic_dots = NULL, default = NULL, .ptype = NULL, .size = NULL,
+ds.case_when <- function(dynamic_dots = NULL, .default = NULL, .ptype = NULL, .size = NULL,
                        newobj = NULL, datasources = NULL) {
   dynamic_dots <- .format_args_as_string(rlang::enquo(dynamic_dots))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name = NULL, newobj, dynamic_dots, datasources, check_df = FALSE)
-  cally <- .make_serverside_call("case_whenDS", dynamic_dots, list(default, .ptype, .size))
+  cally <- .make_serverside_call("case_whenDS", dynamic_dots, list(.default, .ptype, .size))
   datashield.assign(datasources, newobj, cally)
 }
 
