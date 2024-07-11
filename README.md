@@ -11,9 +11,9 @@ Clientside implementation of selected Tidyverse functions
 - `rename`
 - `mutate`
 - `if_else`
+- `case_when`
 
 ## Planned functions to implement:
-- `case_when`
 - `filter`
 - `bind_cols`
 - `bind_rows`
