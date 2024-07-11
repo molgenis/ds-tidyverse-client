@@ -5,7 +5,7 @@
 \title{A general vectorised if-else}
 \usage{
 ds.case_when(
-  tidy_select = NULL,
+  dynamic_dots = NULL,
   default = NULL,
   .ptype = NULL,
   .size = NULL,
@@ -14,6 +14,15 @@ ds.case_when(
 )
 }
 \arguments{
+\item{dynamic_dots}{A sequence of two-sided formulas. The left hand side (LHS) determines which
+values match this case. The right hand side (RHS) provides the replacement value.
+The LHS inputs must evaluate to logical vectors.
+The RHS inputs will be coerced to their common type.
+All inputs will be recycled to their common size. That said, we encourage all LHS inputs to be
+the same size. Recycling is mainly useful for RHS inputs, where you might supply a size 1 input
+that will be recycled to the size of the LHS inputs.
+NULL inputs are ignored.}
+
 \item{default}{The value used when all of the LHS inputs return either FALSE or NA.}
 
 \item{.ptype}{An optional prototype declaring the desired output type. If supplied, this overrides the common type of true, false, and missing.}
@@ -36,11 +45,9 @@ DataSHIELD implementation of \code{dplyr::case_when}.
 
 ds.case_when(
 tidy_select = list(
-  case_when(
     mtcars$mpg < 10 ~ "low",
     mtcars$mpg >= 10 & mtcars$mpg < 20 ~ "medium",
-    mtcars$mpg >= 20 ~ "high")
-    ),
+    mtcars$mpg >= 20 ~ "high"),
   newobj = "test",
   datasources = conns)
 
