@@ -1,12 +1,14 @@
 ## To do
-- [ ] Write clientside wrapper
-- [ ] Write serverside/wrapper
+- [ ] Clientside wrapper
+- [ ] Serverside/wrapper
+- [ ] Update ref of CI to use new serverside branch
 - [ ] Check/fix clientside tests 
 - [ ] Check/fix serverside tests 
-- [ ] Add clientside tests for new function
-- [ ] Add serverside tests for new function
-- [ ] Update clientside readme to include new function
-- [ ] Update clientside vignette to give examples of new function
-- [ ] Update serverside readme to list new function
-- [ ] Run `devtools::check()` and `devtools::build_site()` for the clientside package
-- [ ] Run `devtools::check()` and `devtools::build_site()` for the serverside package
+- [ ] Add new clientside tests 
+- [ ] Add new serverside tests 
+- [ ] Update clientside readme 
+- [ ] Update clientside vignette 
+- [ ] Check clientside function documentation
+- [ ] Check serverside function documentation
+- [ ] Check, build_site clientside 
+- [ ] Check, build_site serverside
