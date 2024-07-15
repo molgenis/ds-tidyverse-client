@@ -1,0 +1,12 @@
+## To do
+- [ ] Write clientside wrapper
+- [ ] Write serverside/wrapper
+- [ ] Check/fix clientside tests 
+- [ ] Check/fix serverside tests 
+- [ ] Add clientside tests for new function
+- [ ] Add serverside tests for new function
+- [ ] Update clientside readme to include new function
+- [ ] Update clientside vignette to give examples of new function
+- [ ] Update serverside readme to list new function
+- [ ] Run `devtools::check()` and `devtools::build_site()` for the clientside package
+- [ ] Run `devtools::check()` and `devtools::build_site()` for the serverside package
