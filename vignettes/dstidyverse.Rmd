@@ -46,6 +46,8 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("case_whenDS", "case_whenDS")
+dslite.server$assignMethod("bind_rowsDS", "bind_rowsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -155,7 +157,8 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
+#> [11] "carb"
 ```
 
 ### Mutate
@@ -178,8 +181,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [11] "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [10] "gear"      "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -282,8 +285,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
-#> [11] "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
+#> [10] "vs"        "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -316,15 +319,47 @@ ds.if_else(
   "high",
   "low",
   newobj = "mpg_cat")
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: ✖ `if_elseDS` returned the following error: ℹ could not find function "eval_tidy"[22m
-```
-
-``` r
 
 ds.table("mpg_cat")
-#> Error: The input object mpg_cat is not defined in sim1!
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#> $output.list
+#> $output.list$TABLE_rvar.by.study_row.props
+#>        study
+#> mpg_cat sim1
+#>    high    1
+#>    low     1
+#>    NA    NaN
+#> 
+#> $output.list$TABLE_rvar.by.study_col.props
+#>        study
+#> mpg_cat   sim1
+#>    high 0.4375
+#>    low  0.5625
+#>    NA   0.0000
+#> 
+#> $output.list$TABLE_rvar.by.study_counts
+#>        study
+#> mpg_cat sim1
+#>    high   14
+#>    low    18
+#>    NA      0
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_proportions
+#> mpg_cat
+#>  high   low    NA 
+#> 0.438 0.562 0.000 
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_counts
+#> mpg_cat
+#> high  low   NA 
+#>   14   18    0 
+#> 
+#> 
+#> $validity.message
+#> [1] "Data in all studies were valid"
 ```
 
 ### case_when
@@ -443,3 +478,51 @@ ds.table("recoded_missing")
 #> [1] "Data in all studies were valid"
 ```
 See the help file for `dplyr::case_when` for all available arguments.
+
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
+
+
+``` r
+ds.dim("mtcars")
+#> $`dimensions of mtcars in sim1`
+#> [1] 32 11
+#> 
+#> $`dimensions of mtcars in combined studies`
+#> [1] 32 11
+```
+
+``` r
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")
+#> $`dimensions of df_bound in sim1`
+#> [1] 64 11
+#> 
+#> $`dimensions of df_bound in combined studies`
+#> [1] 64 11
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
+
+
+``` r
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                
+#>  [6] "drat"               "wt"                 "qsec"               "vs"                 "am"                
+#> [11] "gear"               "carb"
+```
