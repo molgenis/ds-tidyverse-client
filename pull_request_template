@@ -2,6 +2,7 @@
 - [ ] Write clientside function
 - [ ] Write serverside function
 - [ ] Update .circleci/config.yml so that CI installs 'molgenis/tidyverse' from corresponding branch
+- [ ] Add serverside function to inst/DATASHIELD file
 - [ ] On clientside package run `devtools::check()`. Review and fix any broken tests. 
 - [ ] On serverside package run `devtools::check()`. Review and fix any broken tests. 
 - [ ] Add new clientside tests to 'tests/testthat'
