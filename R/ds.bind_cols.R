@@ -14,8 +14,9 @@
 #'\dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
-#'ds.bind_rows(
+#'ds.bind_cols(
 #' to_combine = list(mtcars, mtcars),
+#' .name_repair = "universal",
 #' newobj = "test",
 #' datasources = conns)
 #'
