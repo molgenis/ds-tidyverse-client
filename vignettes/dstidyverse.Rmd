@@ -48,6 +48,7 @@ dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
 dslite.server$assignMethod("case_whenDS", "case_whenDS")
 dslite.server$assignMethod("bind_rowsDS", "bind_rowsDS")
+dslite.server$assignMethod("bind_colsDS", "bind_colsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -157,8 +158,7 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
-#> [11] "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -181,8 +181,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
-#> [10] "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     
+#> [12] "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -285,8 +285,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
-#> [10] "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [12] "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -375,50 +375,15 @@ useful for recoding variables.
       mtcars$mpg >= 30 ~ "high"),
     newobj = "recoded",
     datasources = conns)
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: <text>:1:81: unexpected '$' 1: dplyr::case_when(mtcars$mpg < 20 $TILDE$ "low", mtcars$mpg >= 20 & mtcars$mpg < $ ^[22m
+```
+
+``` r
 
 ds.table("recoded")
-#> 
-#>  Data in all studies were valid 
-#> 
-#> Study 1 :  No errors reported from this study
-#> $output.list
-#> $output.list$TABLE_rvar.by.study_row.props
-#>         study
-#> recoded  sim1
-#>   high      1
-#>   low       1
-#>   medium    1
-#>   NA      NaN
-#> 
-#> $output.list$TABLE_rvar.by.study_col.props
-#>         study
-#> recoded    sim1
-#>   high   0.1250
-#>   low    0.5625
-#>   medium 0.3125
-#>   NA     0.0000
-#> 
-#> $output.list$TABLE_rvar.by.study_counts
-#>         study
-#> recoded  sim1
-#>   high      4
-#>   low      18
-#>   medium   10
-#>   NA        0
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_proportions
-#> recoded
-#>   high    low medium     NA 
-#>  0.125  0.562  0.312  0.000 
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_counts
-#> recoded
-#>   high    low medium     NA 
-#>      4     18     10      0 
-#> 
-#> 
-#> $validity.message
-#> [1] "Data in all studies were valid"
+#> Error: The input object recoded is not defined in sim1!
 ```
 
 You can also use the `.default` argument to control what happens if the condition is not met:
@@ -432,50 +397,15 @@ You can also use the `.default` argument to control what happens if the conditio
     newobj = "recoded_missing",
     .default = "something_missing",
     datasources = conns)
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: ✖ `case_whenDS` returned the following error: ℹ $ operator is invalid for atomic vectors[22m
+```
+
+``` r
 
 ds.table("recoded_missing")
-#> 
-#>  Data in all studies were valid 
-#> 
-#> Study 1 :  No errors reported from this study
-#> $output.list
-#> $output.list$TABLE_rvar.by.study_row.props
-#>                    study
-#> recoded_missing     sim1
-#>   high                 1
-#>   low                  1
-#>   something_missing    1
-#>   NA                 NaN
-#> 
-#> $output.list$TABLE_rvar.by.study_col.props
-#>                    study
-#> recoded_missing       sim1
-#>   high              0.1250
-#>   low               0.5625
-#>   something_missing 0.3125
-#>   NA                0.0000
-#> 
-#> $output.list$TABLE_rvar.by.study_counts
-#>                    study
-#> recoded_missing     sim1
-#>   high                 4
-#>   low                 18
-#>   something_missing   10
-#>   NA                   0
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_proportions
-#> recoded_missing
-#>              high               low something_missing                NA 
-#>             0.125             0.562             0.312             0.000 
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_counts
-#> recoded_missing
-#>              high               low something_missing                NA 
-#>                 4                18                10                 0 
-#> 
-#> 
-#> $validity.message
-#> [1] "Data in all studies were valid"
+#> Error: The input object recoded_missing is not defined in sim1!
 ```
 See the help file for `dplyr::case_when` for all available arguments.
 
@@ -522,7 +452,53 @@ ds.bind_rows(
 
 ds.colnames("df_bound")
 #> $sim1
-#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                
-#>  [6] "drat"               "wt"                 "qsec"               "vs"                 "am"                
-#> [11] "gear"               "carb"
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                 "am"                 "gear"               "carb"
 ```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+
+``` r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+
+``` r
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11"
+#> [12] "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+
+``` r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+
+``` r
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"  
+#> [20] "am"   "gear" "carb"
+```
+
