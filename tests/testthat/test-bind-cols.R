@@ -55,14 +55,6 @@ test_that("ds.bind_cols works with .namerepair arg", {
       "drat...16", "wt...17", "qsec...18", "vs...19", "am...20", "gear...21", "carb...22")
   )
 
-  expect_error(
-      ds.bind_cols(
-        to_combine = list(mtcars, mtcars),
-        .name_repair = "check_unique",
-        newobj = "cols_bound",
-        datasources = conns)
-      )
-
   ds.bind_cols(
     to_combine = list(mtcars, mtcars),
     .name_repair = "minimal",
@@ -76,3 +68,14 @@ test_that("ds.bind_cols works with .namerepair arg", {
   )
 
 })
+
+test_that("ds.bind_cols throws error with .namerepair as 'check_unique'", {
+  expect_error(
+    ds.bind_cols(
+      to_combine = list(mtcars, mtcars),
+      .name_repair = "check_unique",
+      newobj = "cols_bound",
+      datasources = conns)
+  )
+})
+
