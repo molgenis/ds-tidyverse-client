@@ -56,6 +56,8 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("case_whenDS", "case_whenDS")
+dslite.server$assignMethod("bind_rowsDS", "bind_rowsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -169,7 +171,62 @@ ds.if_else(
 ds.table("mpg_cat")
 ```
 
+### case_when
+An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
+useful for recoding variables.
 
+```{r}
+  ds.case_when(
+    dynamic_dots = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded",
+    datasources = conns)
 
+ds.table("recoded")
+```
 
+You can also use the `.default` argument to control what happens if the condition is not met:
 
+```{r}
+  ds.case_when(
+    dynamic_dots = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded_missing",
+    .default = "something_missing",
+    datasources = conns)
+
+ds.table("recoded_missing")
+```
+See the help file for `dplyr::case_when` for all available arguments.
+
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
+
+```{r}
+ds.dim("mtcars")
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
+
+```{r}
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+```
