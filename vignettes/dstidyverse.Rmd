@@ -47,6 +47,7 @@ dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
+dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -64,9 +65,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg"  "disp" "wt"
+#> Error: The input object new_df is not defined in sim1!
 ```
 #### Specify columns to exclude
 
@@ -75,9 +76,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 #### Specify a range of columns to keep
 
@@ -86,9 +87,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
+#> Error: The input object new_df is not defined in sim1!
 ```
 #### Specify column names using a regular expression
 
@@ -97,9 +98,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 #### Combine multiple conditions with '&'
 
@@ -108,9 +109,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 #### Combine multiple conditions with '|'
 
@@ -119,9 +120,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "cyl"  "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 ### Rename
 `ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
@@ -133,10 +134,9 @@ ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
-#>  [8] "vs"       "am"       "gear"     "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 
 ### Mutate
@@ -154,11 +154,9 @@ ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
-#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
-#> [13] "new_var"
+#> Error: The input object new_df is not defined in sim1!
 ds.mean("mtcars$cyl")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -171,16 +169,7 @@ ds.mean("mtcars$cyl")
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
 ds.mean("new_df$mpg_trans")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1        6187.5        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.mean("mtcars$hp")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -215,16 +204,7 @@ ds.mean("mtcars$qsec")
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
 ds.mean("new_df$new_var")
-#> $Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      8.372669        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ```
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
@@ -238,11 +218,9 @@ ds.mutate(
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .before = "disp")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
-#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [13] "carb"
+#> Error: The input object new_df is not defined in sim1!
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -256,9 +234,9 @@ ds.mutate(
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .keep = "none")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ds.colnames("new_df")
-#> $sim1
-#> [1] "mpg_trans" "new_var"
+#> Error: The input object new_df is not defined in sim1!
 ```
 
 ### if_else
@@ -272,7 +250,7 @@ ds.if_else(
   "high",
   "low",
   newobj = "mpg_cat")
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
+#> Error in str_sub(str_replace_all(string, pattern = fixed("list("), replacement = ""), : could not find function "str_sub"
 
 ds.table("mpg_cat")
 #> Error: The input object mpg_cat is not defined in sim1!
@@ -296,13 +274,10 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
+#> Error in str_sub(str_replace_all(string, pattern = fixed("list("), replacement = ""), : could not find function "str_sub"
 
 ds.dim("df_bound")
-#> $`dimensions of df_bound in sim1`
-#> [1] 64 11
-#> 
-#> $`dimensions of df_bound in combined studies`
-#> [1] 64 11
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -315,11 +290,46 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
+#> Error in str_sub(str_replace_all(string, pattern = fixed("list("), replacement = ""), : could not find function "str_sub"
 
 ds.colnames("df_bound")
+#> Error: The input object df_bound is not defined in sim1!
+```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+
+```r
+ds.colnames("mtcars")
 #> $sim1
-#>  [1] "where_it_came_from" "mpg"                "cyl"               
-#>  [4] "disp"               "hp"                 "drat"              
-#>  [7] "wt"                 "qsec"               "vs"                
-#> [10] "am"                 "gear"               "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+#> Error in ds.bind_cols(to_combine = list(mtcars, mtcars), newobj = "df_bound", : could not find function "ds.bind_cols"
+
+ds.colnames("df_bound")
+#> Error: The input object df_bound is not defined in sim1!
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+#> Error in ds.bind_cols(to_combine = list(mtcars, mtcars), newobj = "df_bound", : could not find function "ds.bind_cols"
+
+ds.colnames("df_bound")
+#> Error: The input object df_bound is not defined in sim1!
 ```

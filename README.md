@@ -12,10 +12,10 @@ Clientside implementation of selected Tidyverse functions
 - `mutate`
 - `if_else`
 - `bind_rows`
+- `bind_cols`
 
 ## Planned functions to implement:
 - `filter`
-- `bind_cols`
 - `inner_join`
 - `left_join` 
 - `right_join` 
