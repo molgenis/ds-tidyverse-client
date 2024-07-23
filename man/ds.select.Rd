@@ -22,12 +22,25 @@ to overwrite original object.}
 \item{datasources}{datashield connections object.}
 }
 \value{
-the object specified by the \code{newobj} argument or
+The object specified by the \code{newobj} argument or
 as default same name as input object is written to the serverside.
 }
 \description{
-This function is similar to R function \code{select}.
+This function is similar to R function \code{dplyr::select}.
 }
 \details{
 Performs dplyr select
+}
+\examples{
+\dontrun{
+## First log in to a DataSHIELD session with mtcars dataset loaded.
+
+ds.select(
+ df.name = "mtcars",
+ tidy_select = list(mpg, starts_with("t"),
+ newobj = "df_subset",
+ dataources = conns)
+
+## Refer to the package vignette for more examples.
+}
 }

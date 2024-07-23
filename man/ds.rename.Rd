@@ -31,3 +31,16 @@ This function is similar to R function \code{rename}.
 \details{
 Performs dplyr rename
 }
+\examples{
+\dontrun{
+## First log in to a DataSHIELD session with mtcars dataset loaded.
+
+ds.rename(
+ df.name = "mtcars",
+ tidy_select = list(new_var_1 = mpg, new_var_2 = cyl),
+ newobj = "df_renamed",
+ dataources = conns)
+
+## Refer to the package vignette for more examples.
+}
+}
