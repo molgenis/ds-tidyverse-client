@@ -18,6 +18,17 @@
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign datashield.aggregate
+#' @examples
+#'\dontrun{
+#' ## First log in to a DataSHIELD session with mtcars dataset loaded.
+#'
+#' ds.mutate(
+#'  df.name = "mtcars",
+#'  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+#'  newobj = "df_with_new_cols")
+#'
+#' ## Refer to the package vignette for more examples.
+#' }
 #' @export
 ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = "all", .before = NULL,
                       .after = NULL, datasources = NULL) {

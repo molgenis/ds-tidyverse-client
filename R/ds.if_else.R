@@ -11,6 +11,18 @@
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign datashield.aggregate
+#' @examples
+#'\dontrun{
+#' ## First log in to a DataSHIELD session with mtcars dataset loaded.
+#'
+#' ds.if_else(
+#'  condition = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+#'  true = "high",
+#'  false = "low",
+#'  newobj = "new_var")
+#'
+#' ## Refer to the package vignette for more examples.
+#' }
 #' @export
 ds.if_else <- function(condition = NULL, true = NULL, false = NULL, missing = NULL,
                        ptype = NULL, size = NULL, newobj = NULL, datasources = NULL) {
