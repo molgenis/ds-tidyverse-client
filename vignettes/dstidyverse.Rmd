@@ -297,10 +297,13 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 
 ds.dim("df_bound")
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
+#> $`dimensions of df_bound in sim1`
+#> [1] 64 11
+#> 
+#> $`dimensions of df_bound in combined studies`
+#> [1] 64 11
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -313,10 +316,13 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 
 ds.colnames("df_bound")
-#> Error: The input object df_bound is not defined in sim1!
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"               
+#>  [4] "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                
+#> [10] "am"                 "gear"               "carb"
 ```
 
 ### bind_cols
