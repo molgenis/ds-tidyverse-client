@@ -47,6 +47,7 @@ dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
+dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -322,4 +323,46 @@ ds.colnames("df_bound")
 #>  [4] "disp"               "hp"                 "drat"              
 #>  [7] "wt"                 "qsec"               "vs"                
 #> [10] "am"                 "gear"               "carb"
+```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   
+#>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
+#> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
+#> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+
+```r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ```
