@@ -123,6 +123,7 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"selectDS"</span>, <span class="st">"selectDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"if_elseDS"</span>, <span class="st">"if_elseDS"</span><span class="op">)</span></span>
 <span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -231,7 +232,8 @@ names within <code>df.name</code>. Below are some examples, see
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    </span></span>
+<span><span class="co">#&gt; [11] "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -256,8 +258,8 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     </span></span>
-<span><span class="co">#&gt; [12] "mpg_trans" "new_var"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       </span></span>
+<span><span class="co">#&gt; [10] "gear"      "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Mean.by.Study</span></span>
@@ -347,8 +349,8 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  .before <span class="op">=</span> <span class="st">"disp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       </span></span>
-<span><span class="co">#&gt; [12] "gear"      "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     </span></span>
+<span><span class="co">#&gt; [10] "vs"        "am"        "gear"      "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="only-keep-the-newly-created-variables-with--keep">Only keep the newly created variables with <code>.keep</code>:<a class="anchor" aria-label="anchor" href="#only-keep-the-newly-created-variables-with--keep"></a>
@@ -367,6 +369,60 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt; [1] "mpg_trans" "new_var"</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level3">
+<h3 id="if_else">if_else<a class="anchor" aria-label="anchor" href="#if_else"></a>
+</h3>
+<p>A shinier version of <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">base::ifelse</a></code>. As with the other
+implementations of tidyverse, variable/object names can be passed
+unquoted, this time in the <code>condition</code> argument.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.if_else.html">ds.if_else</a></span><span class="op">(</span></span>
+<span>  condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  <span class="st">"high"</span>,</span>
+<span>  <span class="st">"low"</span>,</span>
+<span>  newobj <span class="op">=</span> <span class="st">"mpg_cat"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"mpg_cat"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Data in all studies were valid </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
+<span><span class="co">#&gt; $output.list</span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_row.props</span></span>
+<span><span class="co">#&gt;        study</span></span>
+<span><span class="co">#&gt; mpg_cat sim1</span></span>
+<span><span class="co">#&gt;    high    1</span></span>
+<span><span class="co">#&gt;    low     1</span></span>
+<span><span class="co">#&gt;    NA    NaN</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_col.props</span></span>
+<span><span class="co">#&gt;        study</span></span>
+<span><span class="co">#&gt; mpg_cat   sim1</span></span>
+<span><span class="co">#&gt;    high 0.4375</span></span>
+<span><span class="co">#&gt;    low  0.5625</span></span>
+<span><span class="co">#&gt;    NA   0.0000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLE_rvar.by.study_counts</span></span>
+<span><span class="co">#&gt;        study</span></span>
+<span><span class="co">#&gt; mpg_cat sim1</span></span>
+<span><span class="co">#&gt;    high   14</span></span>
+<span><span class="co">#&gt;    low    18</span></span>
+<span><span class="co">#&gt;    NA      0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_proportions</span></span>
+<span><span class="co">#&gt; mpg_cat</span></span>
+<span><span class="co">#&gt;  high   low    NA </span></span>
+<span><span class="co">#&gt; 0.438 0.562 0.000 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $output.list$TABLES.COMBINED_all.sources_counts</span></span>
+<span><span class="co">#&gt; mpg_cat</span></span>
+<span><span class="co">#&gt; high  low   NA </span></span>
+<span><span class="co">#&gt;   14   18    0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $validity.message</span></span>
+<span><span class="co">#&gt; [1] "Data in all studies were valid"</span></span></code></pre></div>
 </div>
 </div>
   </div>

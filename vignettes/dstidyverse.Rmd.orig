@@ -55,6 +55,7 @@ dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
+dslite.server$assignMethod("if_elseDS", "if_elseDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -153,3 +154,22 @@ ds.mutate(
   .keep = "none")
 ds.colnames("new_df")
 ```
+
+### if_else
+A shinier version of `base::ifelse`. As with the other implementations of tidyverse, variable/object
+names can be passed unquoted, this time in the `condition` argument.
+
+```{r}
+ds.if_else(
+  condition = list(mtcars$mpg > 20),
+  "high",
+  "low",
+  newobj = "mpg_cat")
+
+ds.table("mpg_cat")
+```
+
+
+
+
+

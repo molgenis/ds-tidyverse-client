@@ -45,6 +45,7 @@ dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
+dslite.server$assignMethod("if_elseDS", "if_elseDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -154,7 +155,8 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
+#> [11] "carb"
 ```
 
 ### Mutate
@@ -177,8 +179,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     
-#> [12] "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [10] "gear"      "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -281,8 +283,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
-#> [12] "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
+#> [10] "vs"        "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -303,3 +305,62 @@ ds.colnames("new_df")
 #> $sim1
 #> [1] "mpg_trans" "new_var"
 ```
+
+### if_else
+A shinier version of `base::ifelse`. As with the other implementations of tidyverse, variable/object
+names can be passed unquoted, this time in the `condition` argument.
+
+
+``` r
+ds.if_else(
+  condition = list(mtcars$mpg > 20),
+  "high",
+  "low",
+  newobj = "mpg_cat")
+
+ds.table("mpg_cat")
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#> $output.list
+#> $output.list$TABLE_rvar.by.study_row.props
+#>        study
+#> mpg_cat sim1
+#>    high    1
+#>    low     1
+#>    NA    NaN
+#> 
+#> $output.list$TABLE_rvar.by.study_col.props
+#>        study
+#> mpg_cat   sim1
+#>    high 0.4375
+#>    low  0.5625
+#>    NA   0.0000
+#> 
+#> $output.list$TABLE_rvar.by.study_counts
+#>        study
+#> mpg_cat sim1
+#>    high   14
+#>    low    18
+#>    NA      0
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_proportions
+#> mpg_cat
+#>  high   low    NA 
+#> 0.438 0.562 0.000 
+#> 
+#> $output.list$TABLES.COMBINED_all.sources_counts
+#> mpg_cat
+#> high  low   NA 
+#>   14   18    0 
+#> 
+#> 
+#> $validity.message
+#> [1] "Data in all studies were valid"
+```
+
+
+
+
+
