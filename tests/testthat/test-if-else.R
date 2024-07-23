@@ -11,7 +11,7 @@ data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("if_elseDS", "dsTidyverse::if_elseDS")
+dslite.server$assignMethod("ifElseDS", "dsTidyverse::ifElseDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
