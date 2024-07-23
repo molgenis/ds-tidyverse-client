@@ -15,28 +15,29 @@
 - [ ] On serverside package run `devtools::check()` and `devtools::build_site()`
 
 ## How to test
-Pull feat/bind-cols branch from molgenis/dsTidyverseClient
-Pull feat/bind-cols branch from molgenis/dsTidyverse
+- [ ] Pull feat/bind-cols branch from molgenis/dsTidyverseClient
+- [ ] Pull feat/bind-cols branch from molgenis/dsTidyverse
+- [ ] Run: `devtools::load_all(path-to-clientside-package)`
+- [ ] Start Armadillo on localhost
+- [ ] Start xenon profile
+- [ ] Install package on server:
 
-Run devtools::load_all(path-to-clientside-package)
-
-Start Armadillo on localhost
-
-Start xenon profile
-
-Install package on server:
-
+```
 devtools::build(path-to-serverside-package)
 local_url <- "http://localhost:8080"
 armadillo.login(local_url)
 armadillo.install_packages(path-to-built-serverside-package, profile = "xenon")
-Upload test data:
+```
 
+- [ ] Upload test data:
+```
 data("mtcars")
 armadillo.create_project("tidyverse")
 armadillo.upload_table("tidyverse", "data", mtcars)
-Log in and assign data:
+```
 
+- [ ] Log in and assign data:
+```
 token <- armadillo.get_token(local_url)
 builder <- newDSLoginBuilder()
 
@@ -68,11 +69,10 @@ datashield.assign(
   symbol = "mtcars",
   value = "tidyverse/data/mtcars",
   conns = conns)
+```
 
-Run the test lines for tests/testthat/[new-function].R
-Ignore the setting up a DSLite environment.
+- [ ] Run the test lines for `tests/testthat/[new-function].R` Ignore the setting up a DSLite environment.
 
 In addition:
-
-run `devtools::check()
-read vignette
+- [ ] run `devtools::check()
+- [ ] read vignette
