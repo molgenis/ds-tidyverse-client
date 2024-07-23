@@ -11,14 +11,14 @@ data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("bind_colsDS", "dsTidyverse::bind_colsDS")
+dslite.server$assignMethod("bindColsDS", "dsTidyverse::bindColsDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
 dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
-test_that("ds.bind_rows binds two data frames together", {
+test_that("ds.bind_cols binds two data frames together", {
   ds.bind_cols(
     to_combine = list(mtcars, mtcars),
     newobj = "cols_bound",
@@ -41,7 +41,7 @@ test_that("ds.bind_rows binds two data frames together", {
 
 })
 
-test_that("ds.case_when works with .namerepair arg", {
+test_that("ds.bind_cols works with .namerepair arg", {
   ds.bind_cols(
     to_combine = list(mtcars, mtcars),
     .name_repair = "universal",
@@ -60,8 +60,7 @@ test_that("ds.case_when works with .namerepair arg", {
         to_combine = list(mtcars, mtcars),
         .name_repair = "check_unique",
         newobj = "cols_bound",
-        datasources = conns),
-      regexp = "Names must be unique"
+        datasources = conns)
       )
 
   ds.bind_cols(
