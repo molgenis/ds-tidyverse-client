@@ -11,12 +11,11 @@ Clientside implementation of selected Tidyverse functions
 - `rename`
 - `mutate`
 - `if_else`
+- `bind_rows`
 
 ## Planned functions to implement:
-- `case_when`
 - `filter`
 - `bind_cols`
-- `bind_rows`
 - `inner_join`
 - `left_join` 
 - `right_join` 

@@ -19,7 +19,7 @@ To illustrate the usage of these functions, we use DSLite which creates a virtua
 
 ## Install and load packages
 
-``` r
+```r
 ## install.packages("dplyr")
 ## install.packages("DSLite")
 ## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
@@ -35,7 +35,7 @@ require(dsTidyverseClient)
 
 ## Set up DSLite environment and log in.
 
-``` r
+```r
 data("mtcars")
 dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
 data("logindata.dslite.cnsim")
@@ -46,6 +46,7 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -58,13 +59,10 @@ for full details see the documentation for `dplyr::select`.
 
 #### Subset columns by name
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -72,13 +70,10 @@ ds.colnames("new_df")
 ```
 #### Specify columns to exclude
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -86,13 +81,10 @@ ds.colnames("new_df")
 ```
 #### Specify a range of columns to keep
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -100,13 +92,10 @@ ds.colnames("new_df")
 ```
 #### Specify column names using a regular expression
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -114,13 +103,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '&'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -128,13 +114,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '|'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -145,18 +128,15 @@ ds.colnames("new_df")
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
 
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
-#> [11] "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
+#>  [8] "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -166,24 +146,19 @@ Below are some examples, see `dplyr::mutate` for full details.
 
 #### Create columns which are transformations of existing variables:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
-#> [10] "gear"      "carb"      "mpg_trans" "new_var"
-```
-
-``` r
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
+#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
+#> [13] "new_var"
 ds.mean("mtcars$cyl")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -195,9 +170,6 @@ ds.mean("mtcars$cyl")
 #> $ValidityMessage
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
-```
-
-``` r
 ds.mean("new_df$mpg_trans")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -209,9 +181,6 @@ ds.mean("new_df$mpg_trans")
 #> $ValidityMessage
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
-```
-
-``` r
 ds.mean("mtcars$hp")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -223,9 +192,6 @@ ds.mean("mtcars$hp")
 #> $ValidityMessage
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
-```
-
-``` r
 ds.mean("mtcars$drat")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -237,9 +203,6 @@ ds.mean("mtcars$drat")
 #> $ValidityMessage
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
-```
-
-``` r
 ds.mean("mtcars$qsec")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -251,9 +214,6 @@ ds.mean("mtcars$qsec")
 #> $ValidityMessage
 #>      ValidityMessage 
 #> sim1 "VALID ANALYSIS"
-```
-
-``` r
 ds.mean("new_df$new_var")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -269,13 +229,10 @@ ds.mean("new_df$new_var")
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -283,19 +240,17 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
-#> [10] "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
+#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [13] "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -311,56 +266,60 @@ A shinier version of `base::ifelse`. As with the other implementations of tidyve
 names can be passed unquoted, this time in the `condition` argument.
 
 
-``` r
+```r
 ds.if_else(
   condition = list(mtcars$mpg > 20),
   "high",
   "low",
   newobj = "mpg_cat")
+#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 
 ds.table("mpg_cat")
-#> 
-#>  Data in all studies were valid 
-#> 
-#> Study 1 :  No errors reported from this study
-#> $output.list
-#> $output.list$TABLE_rvar.by.study_row.props
-#>        study
-#> mpg_cat sim1
-#>    high    1
-#>    low     1
-#>    NA    NaN
-#> 
-#> $output.list$TABLE_rvar.by.study_col.props
-#>        study
-#> mpg_cat   sim1
-#>    high 0.4375
-#>    low  0.5625
-#>    NA   0.0000
-#> 
-#> $output.list$TABLE_rvar.by.study_counts
-#>        study
-#> mpg_cat sim1
-#>    high   14
-#>    low    18
-#>    NA      0
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_proportions
-#> mpg_cat
-#>  high   low    NA 
-#> 0.438 0.562 0.000 
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_counts
-#> mpg_cat
-#> high  low   NA 
-#>   14   18    0 
-#> 
-#> 
-#> $validity.message
-#> [1] "Data in all studies were valid"
+#> Error: The input object mpg_cat is not defined in sim1!
 ```
 
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
 
 
+```r
+ds.dim("mtcars")
+#> $`dimensions of mtcars in sim1`
+#> [1] 32 11
+#> 
+#> $`dimensions of mtcars in combined studies`
+#> [1] 32 11
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")
+#> $`dimensions of df_bound in sim1`
+#> [1] 64 11
+#> 
+#> $`dimensions of df_bound in combined studies`
+#> [1] 64 11
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
 
 
+```r
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"               
+#>  [4] "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                
+#> [10] "am"                 "gear"               "carb"
+```
