@@ -3,7 +3,7 @@
 #' @param to_combine 	Data frames to combine. Each argument can either be a data frame, a list that
 #' could be a data frame, or a list of data frames. Columns are matched by name, and any missing
 #' columns will be filled with NA.
-#' @param .id he name of an optional identifier column. Provide a string to create an output column
+#' @param .id The name of an optional identifier column. Provide a string to create an output column
 #' that identifies each input. The column will use names if available, otherwise it will use
 #' positions.
 #' @param newobj Character specifying name for new server-side data frame.

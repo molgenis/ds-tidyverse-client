@@ -46,8 +46,7 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
-dslite.server$assignMethod("case_whenDS", "case_whenDS")
-dslite.server$assignMethod("bind_rowsDS", "bind_rowsDS")
+dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -157,8 +156,9 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"     
-#>  [8] "vs"        "am"        "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
+#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
+#> [13] "new_var"
 ds.mean("mtcars$cyl")
 #> $Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
@@ -240,8 +240,9 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"     
-#>  [8] "wt"        "qsec"      "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
+#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [13] "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -295,10 +296,13 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 
 ds.dim("df_bound")
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
+#> $`dimensions of df_bound in sim1`
+#> [1] 64 11
+#> 
+#> $`dimensions of df_bound in combined studies`
+#> [1] 64 11
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -311,8 +315,11 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
-#> Error: There are some DataSHIELD errors, list them with datashield.errors()
 
 ds.colnames("df_bound")
-#> Error: The input object df_bound is not defined in sim1!
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"               
+#>  [4] "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                
+#> [10] "am"                 "gear"               "carb"
 ```
