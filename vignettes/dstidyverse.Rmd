@@ -46,6 +46,8 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
+dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -58,7 +60,7 @@ for full details see the documentation for `dplyr::select`.
 
 #### Subset columns by name
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -72,7 +74,7 @@ ds.colnames("new_df")
 ```
 #### Specify columns to exclude
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -86,7 +88,7 @@ ds.colnames("new_df")
 ```
 #### Specify a range of columns to keep
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -100,7 +102,7 @@ ds.colnames("new_df")
 ```
 #### Specify column names using a regular expression
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -114,7 +116,7 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '&'
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -128,7 +130,7 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '|'
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -145,7 +147,7 @@ ds.colnames("new_df")
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
 
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -155,7 +157,8 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      
+#> [10] "gear"     "carb"
 ```
 
 ### Mutate
@@ -165,7 +168,7 @@ Below are some examples, see `dplyr::mutate` for full details.
 
 #### Create columns which are transformations of existing variables:
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -178,8 +181,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [11] "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
+#>  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -268,7 +271,7 @@ ds.mean("new_df$new_var")
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -282,13 +285,13 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
-#> [11] "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"       
+#>  [9] "qsec"      "vs"        "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
 
-```r
+``` r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -327,6 +330,100 @@ ds.table("mpg_cat")
 #> Error: The input object mpg_cat is not defined in sim1!
 ```
 
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
+
+
+``` r
+ds.dim("mtcars")
+#> $`dimensions of mtcars in sim1`
+#> [1] 32 11
+#> 
+#> $`dimensions of mtcars in combined studies`
+#> [1] 32 11
+```
+
+``` r
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")
+#> $`dimensions of df_bound in sim1`
+#> [1] 64 11
+#> 
+#> $`dimensions of df_bound in combined studies`
+#> [1] 64 11
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
+
+
+``` r
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"              
+#>  [5] "hp"                 "drat"               "wt"                 "qsec"              
+#>  [9] "vs"                 "am"                 "gear"               "carb"
+```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+
+``` r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+
+``` r
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   
+#>  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"
+#> [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+
+``` r
+ds.colnames("mtcars")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+
+``` r
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $sim1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"
+#> [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
 useful for recoding variables.

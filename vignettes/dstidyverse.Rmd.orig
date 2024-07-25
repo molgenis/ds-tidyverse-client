@@ -56,6 +56,8 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
+dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -169,6 +171,63 @@ ds.if_else(
 ds.table("mpg_cat")
 ```
 
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
+
+```{r}
+ds.dim("mtcars")
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
+
+```{r}
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+```{r}
+ds.colnames("mtcars")
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+```{r}
+ds.colnames("mtcars")
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+
+```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
 useful for recoding variables.
