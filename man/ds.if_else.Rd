@@ -2,7 +2,7 @@
 % Please edit documentation in R/ds.if_else.R
 \name{ds.if_else}
 \alias{ds.if_else}
-\title{Vectorised if-else}
+\title{Clientside dplyr mutate function}
 \usage{
 ds.if_else(
   condition = NULL,
@@ -36,7 +36,10 @@ ds.if_else(
 One or more new columns created on the serverside data frame specified in the \code{newobj}.
 }
 \description{
-DataSHIELD implementation of \code{dplyr::if_else}.
+DataSHIELD implementation of \code{dplyr::mutate}.
+}
+\details{
+Performs dplyr mutate
 }
 \examples{
 \dontrun{
