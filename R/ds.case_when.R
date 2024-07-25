@@ -35,7 +35,7 @@ ds.case_when <- function(dynamic_dots = NULL, .default = NULL, .ptype = NULL, .s
   dynamic_dots <- .format_args_as_string(rlang::enquo(dynamic_dots))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name = NULL, newobj, dynamic_dots, datasources, check_df = FALSE)
-  cally <- .make_serverside_call("case_whenDS", dynamic_dots, list(.default, .ptype, .size))
+  cally <- .make_serverside_call("caseWhenDS", dynamic_dots, list(.default, .ptype, .size))
   datashield.assign(datasources, newobj, cally)
 }
 
