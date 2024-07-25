@@ -1,5 +1,6 @@
-#' @title Vectorised if-else
-#' @description DataSHIELD implementation of \code{dplyr::if_else}.
+#' @title Clientside dplyr mutate function
+#' @description DataSHIELD implementation of \code{dplyr::mutate}.
+#' @details Performs dplyr mutate
 #' @param condition A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.
 #' @param true Vector to use for TRUE value of condition.
 #' @param false Vector to use for FALSE value of condition.
@@ -28,7 +29,7 @@ ds.if_else <- function(condition = NULL, true = NULL, false = NULL, missing = NU
   tidy_select <- .format_args_as_string(rlang::enquo(condition))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name = NULL, newobj, tidy_select, datasources, check_df = FALSE)
-  cally <- .make_serverside_call("if_elseDS", tidy_select, list(true, false, missing, ptype, size))
+  cally <- .make_serverside_call("ifElseDS", tidy_select, list(true, false, missing, ptype, size))
   datashield.assign(datasources, newobj, cally)
 }
 
