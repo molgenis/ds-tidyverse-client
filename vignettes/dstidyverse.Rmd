@@ -351,13 +351,29 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS Supported function calls are:[22m
+#>   [1mabsDS, asCharacterDS, asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS,[22m
+#>   [1masLogicalDS, asMatrixDS, asNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS,[22m
+#>   [1mboxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
+#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS,[22m
+#>   [1mdataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign,[22m
+#>   [1mglmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign,[22m
+#>   [1mlsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS, matrixMultDS,[22m
+#>   [1mmatrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5,[22m
+#>   [1mrbindDS, rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS,[22m
+#>   [1mrowColCalcDS, rPoisDS, rUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
+#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null, as.numeric, attach, c,[22m
+#>   [1mcomplete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan, sum, unlist, caseWhenDS,[22m
+#>   [1mselectDS, renameDS, mutateDS, if_elseDS, bindRowsDS, bindColsDS[22m
+```
+
+``` r
 
 ds.dim("df_bound")
-#> $`dimensions of df_bound in sim1`
-#> [1] 64 11
-#> 
-#> $`dimensions of df_bound in combined studies`
-#> [1] 64 11
+#> Error:
+#> ! There are some DataSHIELD errors, list them with datashield.errors()
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -370,12 +386,28 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS Supported function calls are:[22m
+#>   [1mabsDS, asCharacterDS, asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS,[22m
+#>   [1masLogicalDS, asMatrixDS, asNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS,[22m
+#>   [1mboxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
+#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS,[22m
+#>   [1mdataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign,[22m
+#>   [1mglmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign,[22m
+#>   [1mlsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS, matrixMultDS,[22m
+#>   [1mmatrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5,[22m
+#>   [1mrbindDS, rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS,[22m
+#>   [1mrowColCalcDS, rPoisDS, rUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
+#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null, as.numeric, attach, c,[22m
+#>   [1mcomplete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan, sum, unlist, caseWhenDS,[22m
+#>   [1mselectDS, renameDS, mutateDS, if_elseDS, bindRowsDS, bindColsDS[22m
+```
+
+``` r
 
 ds.colnames("df_bound")
-#> $sim1
-#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"              
-#>  [5] "hp"                 "drat"               "wt"                 "qsec"              
-#>  [9] "vs"                 "am"                 "gear"               "carb"
+#> Error: The input object df_bound is not defined in sim1!
 ```
 
 ### bind_cols
@@ -438,49 +470,17 @@ useful for recoding variables.
     newobj = "recoded",
     datasources = conns)
 
-ds.table("recoded")
+ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
 #> 
 #>  Data in all studies were valid 
 #> 
 #> Study 1 :  No errors reported from this study
-#> $output.list
-#> $output.list$TABLE_rvar.by.study_row.props
-#>         study
-#> recoded  sim1
-#>   high      1
-#>   low       1
-#>   medium    1
-#>   NA      NaN
-#> 
-#> $output.list$TABLE_rvar.by.study_col.props
-#>         study
-#> recoded    sim1
-#>   high   0.1250
-#>   low    0.5625
-#>   medium 0.3125
-#>   NA     0.0000
-#> 
-#> $output.list$TABLE_rvar.by.study_counts
 #>         study
 #> recoded  sim1
 #>   high      4
 #>   low      18
 #>   medium   10
 #>   NA        0
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_proportions
-#> recoded
-#>   high    low medium     NA 
-#>  0.125  0.562  0.312  0.000 
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_counts
-#> recoded
-#>   high    low medium     NA 
-#>      4     18     10      0 
-#> 
-#> 
-#> $validity.message
-#> [1] "Data in all studies were valid"
 ```
 
 You can also use the `.default` argument to control what happens if the condition is not met:
@@ -495,48 +495,16 @@ You can also use the `.default` argument to control what happens if the conditio
     .default = "something_missing",
     datasources = conns)
 
-ds.table("recoded_missing")
+ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
 #> 
 #>  Data in all studies were valid 
 #> 
 #> Study 1 :  No errors reported from this study
-#> $output.list
-#> $output.list$TABLE_rvar.by.study_row.props
-#>                    study
-#> recoded_missing     sim1
-#>   high                 1
-#>   low                  1
-#>   something_missing    1
-#>   NA                 NaN
-#> 
-#> $output.list$TABLE_rvar.by.study_col.props
-#>                    study
-#> recoded_missing       sim1
-#>   high              0.1250
-#>   low               0.5625
-#>   something_missing 0.3125
-#>   NA                0.0000
-#> 
-#> $output.list$TABLE_rvar.by.study_counts
 #>                    study
 #> recoded_missing     sim1
 #>   high                 4
 #>   low                 18
 #>   something_missing   10
 #>   NA                   0
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_proportions
-#> recoded_missing
-#>              high               low something_missing                NA 
-#>             0.125             0.562             0.312             0.000 
-#> 
-#> $output.list$TABLES.COMBINED_all.sources_counts
-#> recoded_missing
-#>              high               low something_missing                NA 
-#>                 4                18                10                 0 
-#> 
-#> 
-#> $validity.message
-#> [1] "Data in all studies were valid"
 ```
 See the help file for `dplyr::case_when` for all available arguments.

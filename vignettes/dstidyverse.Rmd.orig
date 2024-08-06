@@ -241,7 +241,7 @@ useful for recoding variables.
     newobj = "recoded",
     datasources = conns)
 
-ds.table("recoded")
+ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
 ```
 
 You can also use the `.default` argument to control what happens if the condition is not met:
@@ -255,6 +255,6 @@ You can also use the `.default` argument to control what happens if the conditio
     .default = "something_missing",
     datasources = conns)
 
-ds.table("recoded_missing")
+ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
 ```
 See the help file for `dplyr::case_when` for all available arguments.
