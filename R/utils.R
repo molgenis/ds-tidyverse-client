@@ -156,7 +156,7 @@
   permitted_tidy_select <- c(
     "everything", "last_col", "group_cols", "starts_with", "ends_with", "contains",
     "matches", "num_range", "all_of", "any_of", "where", "c", "rename", "mutate", "if_else",
-    "bind_rows"
+    "case_when"
   )
 
   function_names <- str_extract_all(args_as_string, "\\w+(?=\\()", simplify = T)

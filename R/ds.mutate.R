@@ -1,8 +1,7 @@
-#' @title Clientside dplyr mutate function
+#' @title Create, modify, and delete columns
 #' @description DataSHIELD implementation of \code{dplyr::mutate}.
-#' @details Performs dplyr mutate
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_select List of Tidyselect syntax to be passed to dplyr::mutate
+#' @param tidy_select List of tidyselect syntax to be passed to dplyr::mutate.
 #' @param .keep Control which columns from .data are retained in the output. Grouping columns and
 #' columns created by ... are always kept. "all" retains all columns from .data. This is the default.
 #' "used" retains only the columns used in `tidy_select` to create new columns. "unused" retains
@@ -16,7 +15,7 @@
 #' to add to the right hand side). See `relocate` for more details.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
-#' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
+#' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #'\dontrun{

@@ -18,12 +18,6 @@ dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
 dslite.server$aggregateMethod("dsListDisclosureSettingsTidyVerse", "dsTidyverse::dsListDisclosureSettingsTidyVerse")
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
-.check_cols_as_expected <- function(expected, df) {
-  observed <- ds.colnames(df)[[1]]
-  expected <- expected
-  expect_equal(observed, expected)
-}
-
 test_that("ds.mutate correctly passes good argument", {
   ds.mutate(
     df.name = "mtcars",
