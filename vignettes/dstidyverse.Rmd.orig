@@ -55,7 +55,7 @@ dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
-dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("ifElseDS", "ifElseDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
@@ -127,12 +127,12 @@ ds.mutate(
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
-ds.mean("mtcars$cyl")
-ds.mean("new_df$mpg_trans")
-ds.mean("mtcars$hp")
-ds.mean("mtcars$drat")
-ds.mean("mtcars$qsec")
-ds.mean("new_df$new_var")
+ds.mean("mtcars$cyl")$Mean.by.Study
+ds.mean("new_df$mpg_trans")$Mean.by.Study
+ds.mean("mtcars$hp")$Mean.by.Study
+ds.mean("mtcars$drat")$Mean.by.Study
+ds.mean("mtcars$qsec")$Mean.by.Study
+ds.mean("new_df$new_var")$Mean.by.Study
 ```
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
@@ -168,7 +168,7 @@ ds.if_else(
   "low",
   newobj = "mpg_cat")
 
-ds.table("mpg_cat")
+ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
 ```
 
 ### bind_rows
@@ -176,7 +176,7 @@ Bind any number of data frames by row, making a longer result. This is similar t
 do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
 
 ```{r}
-ds.dim("mtcars")
+ds.dim("mtcars")[[1]]
 
 ds.bind_rows(
   to_combine = list(mtcars, mtcars),
@@ -184,7 +184,7 @@ ds.bind_rows(
   datasources = conns
 )
 
-ds.dim("df_bound")
+ds.dim("df_bound")[[1]]
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:

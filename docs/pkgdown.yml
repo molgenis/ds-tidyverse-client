@@ -1,7 +1,7 @@
-pandoc: 3.1.1
+pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   dstidyverse: dstidyverse.html
-last_built: 2024-08-06T10:06Z
+last_built: 2024-08-09T13:43Z
 
