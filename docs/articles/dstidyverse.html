@@ -124,6 +124,7 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span><span class="op">)</span></span>
 <span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -438,26 +439,21 @@ variables.</p>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>    newobj <span class="op">=</span> <span class="st">"recoded"</span>,</span>
 <span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error:</span></span>
-<span><span class="co">#&gt; ! There are some DataSHIELD errors:</span></span>
-<span><span class="co">#&gt; ✖ <span style="color: #BBBB00; font-weight: bold;">sim1</span><span style="font-weight: bold;">: DataSHIELD configuration does not allow expression: caseWhenDS Supported function calls are: absDS, asCharacterDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS, blackBoxDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">changeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">matrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5, rbindDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS, rUnifDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign, tapplyDS.assign, uniqueDS, unListDS, vectorDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">as.character, as.null, as.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">sum, unlist, selectDS, renameDS, mutateDS, ifElseDS, bindRowsDS, bindColsDS</span></span></span></code></pre></div>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"recoded"</span><span class="op">)</span><span class="op">$</span><span class="va">output.list</span><span class="op">$</span><span class="va">TABLE_rvar.by.study_counts</span></span>
-<span><span class="co">#&gt; Error: The input object recoded is not defined in sim1!</span></span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Data in all studies were valid </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
+<span><span class="co">#&gt;         study</span></span>
+<span><span class="co">#&gt; recoded  sim1</span></span>
+<span><span class="co">#&gt;   high      4</span></span>
+<span><span class="co">#&gt;   low      18</span></span>
+<span><span class="co">#&gt;   medium   10</span></span>
+<span><span class="co">#&gt;   NA        0</span></span></code></pre></div>
 <p>You can also use the <code>.default</code> argument to control what
 happens if the condition is not met:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.case_when.html">ds.case_when</a></span><span class="op">(</span></span>
 <span>    dynamic_dots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">20</span> <span class="op">~</span> <span class="st">"low"</span>,</span>
@@ -465,23 +461,18 @@ happens if the condition is not met:</p>
 <span>    newobj <span class="op">=</span> <span class="st">"recoded_missing"</span>,</span>
 <span>    .default <span class="op">=</span> <span class="st">"something_missing"</span>,</span>
 <span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error:</span></span>
-<span><span class="co">#&gt; ! There are some DataSHIELD errors:</span></span>
-<span><span class="co">#&gt; ✖ <span style="color: #BBBB00; font-weight: bold;">sim1</span><span style="font-weight: bold;">: DataSHIELD configuration does not allow expression: caseWhenDS Supported function calls are: absDS, asCharacterDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS, blackBoxDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">changeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">matrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5, rbindDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS, rUnifDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign, tapplyDS.assign, uniqueDS, unListDS, vectorDS,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">as.character, as.null, as.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan,</span></span></span>
-<span><span class="co">#&gt;   <span style="font-weight: bold;">sum, unlist, selectDS, renameDS, mutateDS, ifElseDS, bindRowsDS, bindColsDS</span></span></span></code></pre></div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.table.html" class="external-link">ds.table</a></span><span class="op">(</span><span class="st">"recoded_missing"</span><span class="op">)</span><span class="op">$</span><span class="va">output.list</span><span class="op">$</span><span class="va">TABLE_rvar.by.study_counts</span></span>
-<span><span class="co">#&gt; Error: The input object recoded_missing is not defined in sim1!</span></span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Data in all studies were valid </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
+<span><span class="co">#&gt;                    study</span></span>
+<span><span class="co">#&gt; recoded_missing     sim1</span></span>
+<span><span class="co">#&gt;   high                 4</span></span>
+<span><span class="co">#&gt;   low                 18</span></span>
+<span><span class="co">#&gt;   something_missing   10</span></span>
+<span><span class="co">#&gt;   NA                   0</span></span></code></pre></div>
 <p>See the help file for <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code> for all available
 arguments.</p>
 </div>

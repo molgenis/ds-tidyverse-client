@@ -46,6 +46,7 @@ dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
 dslite.server$assignMethod("ifElseDS", "ifElseDS")
+dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
@@ -382,25 +383,18 @@ useful for recoding variables.
       mtcars$mpg >= 30 ~ "high"),
     newobj = "recoded",
     datasources = conns)
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: caseWhenDS Supported function calls are: absDS, asCharacterDS,[22m
-#>   [1masDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS, blackBoxDS,[22m
-#>   [1mblackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS,[22m
-#>   [1melsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS,[22m
-#>   [1mlexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
-#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5, rbindDS,[22m
-#>   [1mrBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS, rUnifDS,[22m
-#>   [1msampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign, tapplyDS.assign, uniqueDS, unListDS, vectorDS,[22m
-#>   [1mas.character, as.null, as.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan,[22m
-#>   [1msum, unlist, selectDS, renameDS, mutateDS, ifElseDS, bindRowsDS, bindColsDS[22m
-```
-
-``` r
 
 ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
-#> Error: The input object recoded is not defined in sim1!
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>         study
+#> recoded  sim1
+#>   high      4
+#>   low      18
+#>   medium   10
+#>   NA        0
 ```
 
 You can also use the `.default` argument to control what happens if the condition is not met:
@@ -414,24 +408,17 @@ You can also use the `.default` argument to control what happens if the conditio
     newobj = "recoded_missing",
     .default = "something_missing",
     datasources = conns)
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: caseWhenDS Supported function calls are: absDS, asCharacterDS,[22m
-#>   [1masDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS, blackBoxDS,[22m
-#>   [1mblackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS,[22m
-#>   [1melsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS,[22m
-#>   [1mlexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
-#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5, rbindDS,[22m
-#>   [1mrBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS, rUnifDS,[22m
-#>   [1msampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign, tapplyDS.assign, uniqueDS, unListDS, vectorDS,[22m
-#>   [1mas.character, as.null, as.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan,[22m
-#>   [1msum, unlist, selectDS, renameDS, mutateDS, ifElseDS, bindRowsDS, bindColsDS[22m
-```
-
-``` r
 
 ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
-#> Error: The input object recoded_missing is not defined in sim1!
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>                    study
+#> recoded_missing     sim1
+#>   high                 4
+#>   low                 18
+#>   something_missing   10
+#>   NA                   0
 ```
 See the help file for `dplyr::case_when` for all available arguments.
