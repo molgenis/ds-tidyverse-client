@@ -45,7 +45,8 @@ dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
 dslite.server$assignMethod("mutateDS", "mutateDS")
-dslite.server$assignMethod("if_elseDS", "if_elseDS")
+dslite.server$assignMethod("ifElseDS", "ifElseDS")
+dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
@@ -157,8 +158,7 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      
-#> [10] "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -181,92 +181,44 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
-#>  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [11] "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
-ds.mean("mtcars$cyl")
-#> $Mean.by.Study
+ds.mean("mtcars$cyl")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1        6.1875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 ``` r
-ds.mean("new_df$mpg_trans")
-#> $Mean.by.Study
+ds.mean("new_df$mpg_trans")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1        6187.5        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 ``` r
-ds.mean("mtcars$hp")
-#> $Mean.by.Study
+ds.mean("mtcars$hp")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      146.6875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 ``` r
-ds.mean("mtcars$drat")
-#> $Mean.by.Study
+ds.mean("mtcars$drat")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      3.596563        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 ``` r
-ds.mean("mtcars$qsec")
-#> $Mean.by.Study
+ds.mean("mtcars$qsec")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      17.84875        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 ``` r
-ds.mean("new_df$new_var")
-#> $Mean.by.Study
+ds.mean("new_df$new_var")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      8.372669        0     32     32
-#> 
-#> $Nstudies
-#> [1] 1
-#> 
-#> $ValidityMessage
-#>      ValidityMessage 
-#> sim1 "VALID ANALYSIS"
 ```
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
@@ -285,8 +237,8 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"       
-#>  [9] "qsec"      "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
+#> [11] "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -319,15 +271,17 @@ ds.if_else(
   "high",
   "low",
   newobj = "mpg_cat")
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: ✖ `if_elseDS` returned the following error: ℹ could not find function "eval_tidy"[22m
-```
 
-``` r
-
-ds.table("mpg_cat")
-#> Error: The input object mpg_cat is not defined in sim1!
+ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>        study
+#> mpg_cat sim1
+#>    high   14
+#>    low    18
+#>    NA      0
 ```
 
 ### bind_rows
@@ -336,11 +290,7 @@ do.call(rbind, dfs), but the output will contain all columns that appear in any 
 
 
 ``` r
-ds.dim("mtcars")
-#> $`dimensions of mtcars in sim1`
-#> [1] 32 11
-#> 
-#> $`dimensions of mtcars in combined studies`
+ds.dim("mtcars")[[1]]
 #> [1] 32 11
 ```
 
@@ -351,29 +301,9 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS Supported function calls are:[22m
-#>   [1mabsDS, asCharacterDS, asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS,[22m
-#>   [1masLogicalDS, asMatrixDS, asNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS,[22m
-#>   [1mboxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS,[22m
-#>   [1mdataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign,[22m
-#>   [1mglmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign,[22m
-#>   [1mlsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS, matrixMultDS,[22m
-#>   [1mmatrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5,[22m
-#>   [1mrbindDS, rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS,[22m
-#>   [1mrowColCalcDS, rPoisDS, rUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
-#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null, as.numeric, attach, c,[22m
-#>   [1mcomplete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan, sum, unlist, caseWhenDS,[22m
-#>   [1mselectDS, renameDS, mutateDS, if_elseDS, bindRowsDS, bindColsDS[22m
-```
 
-``` r
-
-ds.dim("df_bound")
-#> Error:
-#> ! There are some DataSHIELD errors, list them with datashield.errors()
+ds.dim("df_bound")[[1]]
+#> [1] 64 11
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -386,28 +316,12 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS Supported function calls are:[22m
-#>   [1mabsDS, asCharacterDS, asDataMatrixDS, asFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS,[22m
-#>   [1masLogicalDS, asMatrixDS, asNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS,[22m
-#>   [1mboxPlotGG_data_TreatmentDS, boxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS, dataFrameSortDS,[22m
-#>   [1mdataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign, glmPredictDS.as, glmSLMADS.assign,[22m
-#>   [1mglmSummaryDS.as, getWGSRDS, igb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign,[22m
-#>   [1mlsplineDS, matrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS, matrixMultDS,[22m
-#>   [1mmatrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2, ranksSecureDS4, ranksSecureDS5,[22m
-#>   [1mrbindDS, rBinomDS, recodeLevelsDS, recodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS,[22m
-#>   [1mrowColCalcDS, rPoisDS, rUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
-#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null, as.numeric, attach, c,[22m
-#>   [1mcomplete.cases, list, exp, log, sqrt, abs, sin, cos, tan, asin, acos, atan, sum, unlist, caseWhenDS,[22m
-#>   [1mselectDS, renameDS, mutateDS, if_elseDS, bindRowsDS, bindColsDS[22m
-```
-
-``` r
 
 ds.colnames("df_bound")
-#> Error: The input object df_bound is not defined in sim1!
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                
+#>  [6] "drat"               "wt"                 "qsec"               "vs"                 "am"                
+#> [11] "gear"               "carb"
 ```
 
 ### bind_cols
@@ -430,9 +344,9 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $sim1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   
-#>  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"
-#> [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10"
+#> [11] "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"  
+#> [21] "gear...21" "carb...22"
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
@@ -453,8 +367,8 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"
-#> [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"  
+#> [18] "qsec" "vs"   "am"   "gear" "carb"
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
