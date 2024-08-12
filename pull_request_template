@@ -7,7 +7,7 @@
 - [ ] On clientside package run `devtools::check()`. Review and fix any broken tests. 
 - [ ] On serverside package run `devtools::check()`. Review and fix any broken tests. 
 - [ ] Add new clientside tests to 'tests/testthat'
-- [ ] Add new clientside tests to 'tests/testthat'
+- [ ] Add new serverside tests to 'tests/testthat'
 - [ ] Update clientside README.md to list function as included 
 - [ ] Update clientside vignette with example(s) of new function use
 - [ ] Check clientside function documentation is correct and complete
