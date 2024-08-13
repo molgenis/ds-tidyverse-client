@@ -422,3 +422,63 @@ ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
 #>   NA                   0
 ```
 See the help file for `dplyr::case_when` for all available arguments.
+
+### filter
+Subset set a data frame flexibly, retaining all rows that satisfy the condition supplied to
+`expression`
+
+
+``` r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+```
+
+``` r
+  ds.filter(
+    df.name = "mtcars",
+    expr = list(cyl == 4 & mpg > 20),
+    newobj = "filtered",
+    datasources = conns)
+ds.dim("filtered")[[1]]
+#> [1] 11 11
+```
+
+Use the .by argument to perform the filtering by a specified group.
+
+``` r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+```
+
+``` r
+  ds.filter(
+    df.name = "mtcars",
+    expr = list(mpg > median(mpg)),
+    .by = "cyl",
+    newobj = "filtered_by",
+    datasources = conns)
+ds.dim("filtered_by")[[1]]
+#> [1] 14 11
+```
+
+If filtering on an already grouped tibble, use the `preserve` argument to specify whether to retain
+the original groups or recalculate groups based on the resulting data. See the help file for
+`dplyr::filter` for more information.
+
+
+``` r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+```
+
+``` r
+    ds.filter(
+      df.name = "mtcars",
+      expr = list(mpg > median(mpg)),
+      .preserve = T,
+      newobj = "preserved_t",
+      datasources = conns
+      )
+ds.dim("preserved_t")[[1]]
+#> [1] 15 11
+```
