@@ -37,5 +37,10 @@ DataSHIELD implentation of  \code{dplyr::filter}.
 }
 \examples{
 \dontrun{
+ ds.filter(
+  df.name = "mtcars",
+  expr = list(cyl == 4 & mpg > 20),
+  newobj = "filtered",
+  datasources = conns)
 }
 }

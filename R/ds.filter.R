@@ -13,6 +13,11 @@
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #'\dontrun{
+#'  ds.filter(
+#'   df.name = "mtcars",
+#'   expr = list(cyl == 4 & mpg > 20),
+#'   newobj = "filtered",
+#'   datasources = conns)
 #' }
 #' @export
 ds.filter <- function(df.name = NULL, expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL, datasources = NULL) {
