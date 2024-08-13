@@ -7,7 +7,8 @@
 ds.filter(
   df.name = NULL,
   expr = NULL,
-  .preserve = NULL,
+  .by = NULL,
+  .preserve = FALSE,
   newobj = NULL,
   datasources = NULL
 )
@@ -17,6 +18,8 @@ ds.filter(
 
 \item{expr}{Expressions that return a logical value, and are defined in terms of the
 variables in .data}
+
+\item{.by}{Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}}
 
 \item{.preserve}{Relevant when the .data input is grouped. If .preserve = FALSE (the default),
 the grouping structure is recalculated based on the resulting data, otherwise the grouping is
