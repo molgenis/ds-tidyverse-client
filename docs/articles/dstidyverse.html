@@ -476,54 +476,6 @@ happens if the condition is not met:</p>
 <p>See the help file for <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code> for all available
 arguments.</p>
 </div>
-<div class="section level3">
-<h3 id="filter">filter<a class="anchor" aria-label="anchor" href="#filter"></a>
-</h3>
-<p>Subset set a data frame flexibly, retaining all rows that satisfy the
-condition supplied to <code>expression</code></p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 32 11</span></span></code></pre></div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
-<span>    df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>    expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">&amp;</span> <span class="va">mpg</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span>,</span>
-<span>    newobj <span class="op">=</span> <span class="st">"filtered"</span>,</span>
-<span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"filtered"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 11 11</span></span></code></pre></div>
-<p>Use the .by argument to perform the filtering by a specified
-group.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 32 11</span></span></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
-<span>    df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>    expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    .by <span class="op">=</span> <span class="st">"cyl"</span>,</span>
-<span>    newobj <span class="op">=</span> <span class="st">"filtered_by"</span>,</span>
-<span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"filtered_by"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 14 11</span></span></code></pre></div>
-<p>If filtering on an already grouped tibble, use the
-<code>preserve</code> argument to specify whether to retain the original
-groups or recalculate groups based on the resulting data. See the help
-file for <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter</a></code> for more information.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 32 11</span></span></code></pre></div>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>    <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
-<span>      df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>      expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>      .preserve <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>      newobj <span class="op">=</span> <span class="st">"preserved_t"</span>,</span>
-<span>      datasources <span class="op">=</span> <span class="va">conns</span></span>
-<span>      <span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"preserved_t"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 15 11</span></span></code></pre></div>
-</div>
 </div>
   </div>
 
