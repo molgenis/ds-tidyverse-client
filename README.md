@@ -17,6 +17,9 @@ Clientside implementation of selected Tidyverse functions
 - `filter`
 - `slice`
 - `arrange`
+- `group_by` 
+- `ungroup`
+- `group_keys`
 
 ## Planned functions to implement:
 - `inner_join`
@@ -26,6 +29,7 @@ Clientside implementation of selected Tidyverse functions
 - `pivot_longer`
 - `pivot_wider`
 - `distinct`
+- `as_tibble`
 - `group_split`
 - `group_map`
 - `summarise`
