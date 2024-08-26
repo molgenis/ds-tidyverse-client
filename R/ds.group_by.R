@@ -1,5 +1,5 @@
 #' @title Group by one or more variables
-#' @description DataSHIELD implentation of  \code{dplyr::group_by}.
+#' @description DataSHIELD implentation of \code{dplyr::group_by}.
 #' @param df.name Character specifying a serverside data frame or tibble.
 #' @param expr Variables or computations to group by.
 #' @param .add 	When FALSE, the default, group_by() will override existing groups. To add to the
@@ -19,6 +19,19 @@ ds.group_by <- function(df.name = NULL, expr, .add = NULL, .drop = NULL, newobj 
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("groupBy", tidy_select, list(df.name, .add, .drop))
+  cally <- .make_serverside_call("groupByDS", tidy_select, list(df.name, .add, .drop))
+  datashield.assign(datasources, newobj, cally)
+}
+
+#' @title Remove grouping
+#' @description DataSHIELD implentation of \code{dplyr::ungroup}.
+#' @param x a tbl.
+#' @param newobj Character specifying name for new server-side data frame.
+#' @param datasources DataSHIELD connections object.
+#' @export
+ds.ungroup <- function(x = NULL, newobj = NULL, datasources = NULL) {
+  datasources <- .set_datasources(datasources)
+  .perform_tidyverse_checks(df.name, newobj, datasources)
+  cally <- .make_serverside_call("ungroupDS", list(df.name))
   datashield.assign(datasources, newobj, cally)
 }
