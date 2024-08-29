@@ -17,19 +17,18 @@ Clientside implementation of selected Tidyverse functions
 - `filter`
 
 ## Planned functions to implement:
+- `group_by` 
+- `ungroup`
+- `group_keys`
+- `arrange`
+- `distinct`
+- `slice`
 - `inner_join`
 - `left_join` 
 - `right_join` 
 - `full_join`
 - `pivot_longer`
 - `pivot_wider`
-- `arrange`
-- `distinct`
-- `group_by` 
-- `ungroup`
-- `slice`
-- `group_split`
-- `group_map`
 - `summarise`
 
 If there are functions in this list you would like implemented, please either attempt to do so yourself and submit a pull request, or submit a feature request in the `issues` section.
