@@ -15,7 +15,7 @@
 #'  ds.filter(
 #' }
 #' @export
-ds.group_by <- function(df.name = NULL, expr, .add = NULL, .drop = NULL, newobj = NULL, datasources = NULL) {
+ds.group_by <- function(df.name = NULL, expr, .add = FALSE, .drop = TRUE, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
@@ -31,7 +31,7 @@ ds.group_by <- function(df.name = NULL, expr, .add = NULL, .drop = NULL, newobj 
 #' @export
 ds.ungroup <- function(x = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(x, newobj, datasources)
-  cally <- .make_serverside_call("ungroupDS", list(x))
+  .perform_tidyverse_checks(x, newobj, tidy_select = NULL, datasources = datasources)
+  cally <- .make_serverside_call("ungroupDS", tidy_select = NULL, list(x))
   datashield.assign(datasources, newobj, cally)
 }
