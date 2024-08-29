@@ -31,7 +31,7 @@ ds.group_by <- function(df.name = NULL, expr, .add = NULL, .drop = NULL, newobj 
 #' @export
 ds.ungroup <- function(x = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name, newobj, datasources)
-  cally <- .make_serverside_call("ungroupDS", list(df.name))
+  .perform_tidyverse_checks(x, newobj, datasources)
+  cally <- .make_serverside_call("ungroupDS", list(x))
   datashield.assign(datasources, newobj, cally)
 }
