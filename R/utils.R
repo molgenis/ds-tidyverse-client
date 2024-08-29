@@ -264,10 +264,15 @@
 #' @importFrom assertthat assert_that
 #'
 #' @noRd
-.check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE) {
+.check_tidy_args <- function(df.name = NULL, newobj, check_df, check_obj) {
   if(check_df) {
-    assert_that(is.character(df.name)) }
-  assert_that(is.character(newobj))
+    assert_that(is.character(df.name))
+    }
+
+  if(check_obj) {
+    assert_that(is.character(newobj))
+  }
+
 }
 
 #' Create a Tidy Evaluation Call
@@ -281,8 +286,13 @@
 #' @return A call object that can be evaluated to perform the specified operation.
 #' @noRd
 .make_serverside_call <- function(fun_name, tidy_select, other_args) {
-  tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-  cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
+  if(!is.null(tidy_select)) {
+    tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
+    cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
+  } else {
+    cally <- .build_cally(fun_name, other_args)
+  }
+
   return(cally)
 }
 
@@ -314,8 +324,8 @@
 #' @param datasources Data sources involved in the operation.
 #' @return None. This function is called for its side effects (checking validity and compliance).
 #' @noRd
-.perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources, check_df = TRUE){
-  .check_tidy_args(df.name, newobj, check_df)
+.perform_tidyverse_checks <- function(df.name, newobj, tidy_select, datasources, check_df = TRUE, check_obj = TRUE){
+  .check_tidy_args(df.name, newobj, check_df, check_obj)
   .check_tidy_disclosure(df.name, tidy_select, datasources, check_df)
 }
 
