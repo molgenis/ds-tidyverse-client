@@ -218,17 +218,17 @@ test_that(".tidy_disclosure_checks blocks argument with unpermitted function nam
 
 test_that(".check_tidy_args returns correct errors", {
   expect_error(
-    .check_tidy_args(df.name = NULL, newobj = "test"),
+    .check_tidy_args(df.name = NULL, newobj = "test", check_df = TRUE, check_obj = TRUE),
     "df.name is not a character vector"
   )
 
   expect_error(
-    .check_tidy_args(df.name = "test", newobj = NULL),
+    .check_tidy_args(df.name = "test", newobj = NULL, check_df = TRUE, check_obj = TRUE),
     "newobj is not a character vector"
   )
 
   expect_silent(
-    .check_tidy_args(df.name = "test", newobj = "test")
+    .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
   )
 })
 
