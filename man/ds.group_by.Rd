@@ -7,8 +7,8 @@
 ds.group_by(
   df.name = NULL,
   expr,
-  .add = NULL,
-  .drop = NULL,
+  .add = FALSE,
+  .drop = TRUE,
   newobj = NULL,
   datasources = NULL
 )
