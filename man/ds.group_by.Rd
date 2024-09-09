@@ -36,6 +36,9 @@ DataSHIELD implentation of \code{dplyr::group_by}.
 }
 \examples{
 \dontrun{
- ds.filter(
+ ds.group_by(
+ df.name = "mtcars",
+ expr = list(mpg, cyl),
+ newobj = "grouped_df")
 }
 }

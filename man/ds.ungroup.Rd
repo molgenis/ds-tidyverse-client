@@ -16,3 +16,8 @@ ds.ungroup(x = NULL, newobj = NULL, datasources = NULL)
 \description{
 DataSHIELD implentation of \code{dplyr::ungroup}.
 }
+\examples{
+\dontrun{
+ ds.ungroup("grouped_df")
+ }
+}

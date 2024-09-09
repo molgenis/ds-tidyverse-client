@@ -12,7 +12,10 @@
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #'\dontrun{
-#'  ds.filter(
+#'  ds.group_by(
+#'  df.name = "mtcars",
+#'  expr = list(mpg, cyl),
+#'  newobj = "grouped_df")
 #' }
 #' @export
 ds.group_by <- function(df.name = NULL, expr, .add = FALSE, .drop = TRUE, newobj = NULL, datasources = NULL) {
@@ -28,6 +31,10 @@ ds.group_by <- function(df.name = NULL, expr, .add = FALSE, .drop = TRUE, newobj
 #' @param x a tbl.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
+#' @examples
+#'\dontrun{
+#'  ds.ungroup("grouped_df")
+#'  }
 #' @export
 ds.ungroup <- function(x = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)

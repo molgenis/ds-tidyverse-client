@@ -19,6 +19,6 @@ DataSHIELD implentation of \code{dplyr::group_keys}.
 }
 \examples{
 \dontrun{
- ds.filter(
-}
+ my_groups <- ds.group_keys("grouped_df")
+ }
 }
