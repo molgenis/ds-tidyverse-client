@@ -37,6 +37,12 @@ builder$append(
 logindata <- builder$build()
 conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
 
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_group",
+  symbol = "mtcars_group")
+
 test_that("ds.group_by correctly groups a data frame", {
   ds.group_by(
     df.name = "mtcars",

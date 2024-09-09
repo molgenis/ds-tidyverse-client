@@ -35,7 +35,18 @@ builder$append(
 logindata <- builder$build()
 conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
 
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_group",
+  symbol = "mtcars_group")
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_bad_group",
+  symbol = "mtcars_bad_group")
+
 test_that("ds.group_keys correctly returns groups", {
+
   groups <- ds.group_keys("mtcars_group")
 
   expect_equal(
