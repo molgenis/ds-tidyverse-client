@@ -12,7 +12,7 @@ data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("case_whenDS", "dsTidyverse::caseWhenDS")
+dslite.server$assignMethod("caseWhenDS", "dsTidyverse::caseWhenDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
@@ -20,13 +20,17 @@ dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDi
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
+
+  tryCatch(
   ds.case_when(
     dynamic_dots = list(
       mtcars$mpg < 20 ~ "low",
       mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
       mtcars$mpg >= 30 ~ "high"),
     newobj = "test",
-    datasources = conns)
+    datasources = conns),
+  error = function(e){print(datashield.errors())}
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
