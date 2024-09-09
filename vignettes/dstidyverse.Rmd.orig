@@ -42,15 +42,24 @@ require(dsBase)
 require(dsBaseClient)
 require(dsTidyverse)
 require(dsTidyverseClient)
+require(DSI)
 ```
 
 ## Set up DSLite environment and log in.
 ```{r}
+
 data("mtcars")
-dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
+mtcars_group <- mtcars %>%
+  group_by(cyl) %>%
+  mutate(drop_test = factor("a", levels = c("a", "b")))
+
+dslite.server <- newDSLiteServer(
+  tables = list(
+    mtcars = mtcars,
+    mtcars_group = mtcars_group
+  )
+)
+
 dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
@@ -60,12 +69,39 @@ dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 <<<<<<< HEAD
+<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 =======
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
 >>>>>>> 5ccd846 (docs: added vignette)
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
+=======
+dslite.server$assignMethod("groupByDS", "groupByDS")
+dslite.server$assignMethod("ungroupDS", "ungroupDS")
+dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
+
+builder <- DSI::newDSLoginBuilder()
+
+builder$append(
+  server="server_1",
+  url="dslite.server",
+  table = "mtcars",
+  driver = "DSLiteDriver")
+
+logindata <- builder$build()
+conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars",
+  symbol = "mtcars")
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_group",
+  symbol = "mtcars_group")
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 
 ## Functions
@@ -347,3 +383,31 @@ ds.dim("sliced_df_group")[1]
       )
 ```
 `arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
+
+### Grouping
+Many data operations are performed on groups defined by variables. `group_by` takes an existing tibble or data frame and converts it into a grouped tibble. Subsequent operations can then be performed 'by group' rather than to the whole dataframe.
+
+To group a data frame:
+```{r}
+ds.group_by(
+  df.name = "mtcars",
+  expr = list(mpg, cyl),
+  newobj = "grouped"
+)
+ds.class("grouped")[[1]]
+```
+
+To ungroup a data frame:
+```{r}
+ds.ungroup("grouped", "no_longer_grouped")
+ds.class("no_longer_grouped")[[1]]
+```
+
+To return to clientside details of the groups, use `ds.group_keys`. Note that
+this is subject to disclosure controls and will return an error if the number
+of groups is too high.
+
+```{r}
+my_groups <- ds.group_keys("mtcars_group")
+my_groups
+```
