@@ -20,7 +20,7 @@ dslite.server <- newDSLiteServer(
   )
 )
 
-dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse", "dsDanger")))
+dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$assignMethod("groupByDS", "groupByDS")
 dslite.server$assignMethod("ungroupDS", "ungroupDS")
 dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
@@ -29,10 +29,11 @@ dslite.server$aggregateMethod("listDisclosureSettingsDS", "listDisclosureSetting
 builder <- DSI::newDSLoginBuilder()
 
 builder$append(
-  server="server_1",
-  url="dslite.server",
+  server = "server_1",
+  url = "dslite.server",
   table = "mtcars",
-  driver = "DSLiteDriver")
+  driver = "DSLiteDriver"
+)
 
 logindata <- builder$build()
 conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
@@ -41,7 +42,8 @@ conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
 datashield.assign.table(
   conns = conns,
   table = "mtcars_group",
-  symbol = "mtcars_group")
+  symbol = "mtcars_group"
+)
 
 test_that("ds.group_by correctly groups a data frame", {
   ds.group_by(
@@ -52,9 +54,8 @@ test_that("ds.group_by correctly groups a data frame", {
 
   expect_equal(
     ds.class("grouped")[[1]],
-   c("grouped_df","tbl_df", "tbl", "data.frame")
+    c("grouped_df", "tbl_df", "tbl", "data.frame")
   )
-
 }) ## Not currently possible to test ,add and .drop arguments due to issues with dslite. Tested in serverside tests
 
 test_that("ds.ungroup correctly ungroups a data frame", {
@@ -62,7 +63,6 @@ test_that("ds.ungroup correctly ungroups a data frame", {
 
   expect_equal(
     ds.class("grouped")[[1]],
-    c("grouped_df","tbl_df", "tbl", "data.frame")
+    c("grouped_df", "tbl_df", "tbl", "data.frame")
   )
-
 })

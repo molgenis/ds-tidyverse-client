@@ -37,6 +37,12 @@
     <loc>/reference/ds.filter.html</loc>
   </url>
   <url>
+    <loc>/reference/ds.group_by.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.group_keys.html</loc>
+  </url>
+  <url>
     <loc>/reference/ds.if_else.html</loc>
   </url>
   <url>
@@ -49,7 +55,11 @@
     <loc>/reference/ds.select.html</loc>
   </url>
   <url>
+<<<<<<< HEAD
     <loc>/reference/ds.slice.html</loc>
+=======
+    <loc>/reference/ds.ungroup.html</loc>
+>>>>>>> 4003aa6 (docs: built site, styled code)
   </url>
   <url>
     <loc>/reference/index.html</loc>

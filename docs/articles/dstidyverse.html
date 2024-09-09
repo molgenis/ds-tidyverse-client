@@ -19,7 +19,7 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -45,7 +45,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -63,21 +63,21 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using tidyverse within DataSHIELD</h1>
-            
-      
-      
+
+
+
       <div class="hidden name"><code>dstidyverse.Rmd</code></div>
 
     </div>
 
-    
-    
+
+
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -108,11 +108,13 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBase</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBaseClient</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverse</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/datashield/DSI/" class="external-link">DSI</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="set-up-dslite-environment-and-log-in-">Set up DSLite environment and log in.<a class="anchor" aria-label="anchor" href="#set-up-dslite-environment-and-log-in-"></a>
 </h2>
+<<<<<<< HEAD
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>dslite.server <span class="ot">&lt;-</span> <span class="fu">newDSLiteServer</span>(<span class="at">tables=</span><span class="fu">list</span>(<span class="at">mtcars=</span>mtcars))</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"logindata.dslite.cnsim"</span>)</span>
@@ -133,6 +135,60 @@ creates a virtual DataSHIELD session.</p>
 <span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"arrangeDS"</span>, <span class="st">"arrangeDS"</span>)</span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 5ccd846 (docs<span class="sc">:</span> added vignette)</span>
 <span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>conns <span class="ot">&lt;-</span> <span class="fu">datashield.login</span>(logindata.dslite.cnsim[<span class="dv">1</span>, ], <span class="at">assign=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+=======
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="va">mtcars_group</span> <span class="op">&lt;-</span> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>drop_test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="st">"a"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dslite.server</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSLite/reference/newDSLiteServer.html" class="external-link">newDSLiteServer</a></span><span class="op">(</span></span>
+<span>  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    mtcars <span class="op">=</span> <span class="va">mtcars</span>,</span>
+<span>    mtcars_group <span class="op">=</span> <span class="va">mtcars_group</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">config</span><span class="op">(</span><span class="fu"><a href="https://datashield.github.io/DSLite/reference/defaultDSConfiguration.html" class="external-link">defaultDSConfiguration</a></span><span class="op">(</span>include<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"selectDS"</span>, <span class="st">"selectDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span><span class="op">)</span></span>
+<<<<<<< HEAD
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"filterDS"</span>, <span class="st">"filterDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span><span class="op">)</span></span>
+<span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+=======
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"groupByDS"</span>, <span class="st">"groupByDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"ungroupDS"</span>, <span class="st">"ungroupDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">aggregateMethod</span><span class="op">(</span><span class="st">"groupKeysDS"</span>, <span class="st">"groupKeysDS"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">builder</span> <span class="op">&lt;-</span> <span class="fu">DSI</span><span class="fu">::</span><span class="fu"><a href="https://datashield.github.io/DSI/reference/newDSLoginBuilder.html" class="external-link">newDSLoginBuilder</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">builder</span><span class="op">$</span><span class="fu">append</span><span class="op">(</span></span>
+<span>  server<span class="op">=</span><span class="st">"server_1"</span>,</span>
+<span>  url<span class="op">=</span><span class="st">"dslite.server"</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  driver <span class="op">=</span> <span class="st">"DSLiteDriver"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">logindata</span> <span class="op">&lt;-</span> <span class="va">builder</span><span class="op">$</span><span class="fu">build</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu">DSI</span><span class="fu">::</span><span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span>logins <span class="op">=</span> <span class="va">logindata</span>, assign <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.assign.table.html" class="external-link">datashield.assign.table</a></span><span class="op">(</span></span>
+<span>  conns <span class="op">=</span> <span class="va">conns</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  symbol <span class="op">=</span> <span class="st">"mtcars"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.assign.table.html" class="external-link">datashield.assign.table</a></span><span class="op">(</span></span>
+<span>  conns <span class="op">=</span> <span class="va">conns</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"mtcars_group"</span>,</span>
+<span>  symbol <span class="op">=</span> <span class="st">"mtcars_group"</span><span class="op">)</span></span></code></pre></div>
+>>>>>>> 4003aa6 (docs: built site, styled code)
+>>>>>>> 7f62153 (docs: built site, styled code)
 </div>
 <div class="section level2">
 <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
@@ -151,11 +207,17 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 </h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+=======
+<span><span class="co">#&gt; $server_1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span><span class="co">#&gt; [10] "gear" "carb"</span></span>
+>>>>>>> 4003aa6 (docs: built site, styled code)
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "disp" "wt"</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -163,23 +225,36 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+=======
+<span><span class="co">#&gt; $server_1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span><span class="co">#&gt; [10] "gear" "carb"</span></span>
+>>>>>>> 4003aa6 (docs: built site, styled code)
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt; $server_1</span></span>
+<span><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"</span></span>
+<span><span class="co">#&gt; [10] "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="specify-a-range-of-columns-to-keep">Specify a range of columns to keep<a class="anchor" aria-label="anchor" href="#specify-a-range-of-columns-to-keep"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; $sim1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+=======
+<span><span class="co">#&gt; $server_1</span></span>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span><span class="co">#&gt; [10] "gear" "carb"</span></span>
+>>>>>>> 4003aa6 (docs: built site, styled code)
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "cyl"  "disp" "hp"   "drat"</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -191,7 +266,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "disp" "drat" "qsec" "am"   "gear" "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -203,7 +278,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -215,7 +290,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
 <span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
 </div>
 </div>
@@ -312,7 +387,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span>,</span>
 <span>  .keep <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "mpg_trans" "new_var"</span></span></code></pre></div>
 </div>
 </div>
@@ -335,10 +410,10 @@ unquoted, this time in the <code>condition</code> argument.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;        study</span></span>
-<span><span class="co">#&gt; mpg_cat sim1</span></span>
-<span><span class="co">#&gt;    high   14</span></span>
-<span><span class="co">#&gt;    low    18</span></span>
-<span><span class="co">#&gt;    NA      0</span></span></code></pre></div>
+<span><span class="co">#&gt; mpg_cat server_1</span></span>
+<span><span class="co">#&gt;    high       14</span></span>
+<span><span class="co">#&gt;    low        18</span></span>
+<span><span class="co">#&gt;    NA          0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="bind_rows">bind_rows<a class="anchor" aria-label="anchor" href="#bind_rows"></a>
@@ -437,11 +512,11 @@ variables.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;         study</span></span>
-<span><span class="co">#&gt; recoded  sim1</span></span>
-<span><span class="co">#&gt;   high      4</span></span>
-<span><span class="co">#&gt;   low      18</span></span>
-<span><span class="co">#&gt;   medium   10</span></span>
-<span><span class="co">#&gt;   NA        0</span></span></code></pre></div>
+<span><span class="co">#&gt; recoded  server_1</span></span>
+<span><span class="co">#&gt;   high          4</span></span>
+<span><span class="co">#&gt;   low          18</span></span>
+<span><span class="co">#&gt;   medium       10</span></span>
+<span><span class="co">#&gt;   NA            0</span></span></code></pre></div>
 <p>You can also use the <code>.default</code> argument to control what
 happens if the condition is not met:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -459,11 +534,11 @@ happens if the condition is not met:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;                    study</span></span>
-<span><span class="co">#&gt; recoded_missing     sim1</span></span>
-<span><span class="co">#&gt;   high                 4</span></span>
-<span><span class="co">#&gt;   low                 18</span></span>
-<span><span class="co">#&gt;   something_missing   10</span></span>
-<span><span class="co">#&gt;   NA                   0</span></span></code></pre></div>
+<span><span class="co">#&gt; recoded_missing     server_1</span></span>
+<span><span class="co">#&gt;   high                     4</span></span>
+<span><span class="co">#&gt;   low                     18</span></span>
+<span><span class="co">#&gt;   something_missing       10</span></span>
+<span><span class="co">#&gt;   NA                       0</span></span></code></pre></div>
 <p>See the help file for <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code> for all available
 arguments.</p>
 </div>
@@ -591,10 +666,10 @@ whether or not data is sorted by group.</p>
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

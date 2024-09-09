@@ -7,7 +7,7 @@
 ds.ungroup(x = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
-\item{x}{a tbl.}
+\item{x}{a tibble.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 

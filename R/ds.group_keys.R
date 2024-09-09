@@ -5,9 +5,9 @@
 #' @return A tibble describing the groups.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
-#'\dontrun{
-#'  my_groups <- ds.group_keys("grouped_df")
-#'  }
+#' \dontrun{
+#' my_groups <- ds.group_keys("grouped_df")
+#' }
 #' @export
 ds.group_keys <- function(df.name = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)

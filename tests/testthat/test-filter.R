@@ -14,7 +14,7 @@ dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
 dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
 builder <- DSI::newDSLoginBuilder()
-builder$append(server="test", url="dslite.server", driver = "DSLiteDriver")
+builder$append(server = "test", url = "dslite.server", driver = "DSLiteDriver")
 login_data <- builder$build()
 conns <- datashield.login(logins = login_data)
 
@@ -25,21 +25,24 @@ test_that("ds.filter correctly filters", {
     df.name = "mtcars",
     expr = list(cyl == 4 & mpg > 20),
     newobj = "filtered",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("filtered")[[1]],
-    "data.frame")
+    "data.frame"
+  )
 
   expect_equal(
     ds.dim("filtered")[[1]],
-    c(11, 11))
+    c(11, 11)
+  )
 
   expect_equal(
     ds.mean("filtered$mpg")$Mean.by.Study[[1]],
     26.66364,
-    tolerance = 0.001)
-
+    tolerance = 0.001
+  )
 })
 
 test_that("ds.filter works with .by arg", {
@@ -48,7 +51,8 @@ test_that("ds.filter works with .by arg", {
     expr = list(mpg > median(mpg)),
     .by = "cyl",
     newobj = "filtered_by",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("filtered_by")[[1]],
@@ -63,14 +67,13 @@ test_that("ds.filter works with .by arg", {
 })
 
 test_that("ds.filter works with .preserve arg", {
-
-    ds.filter(
-      df.name = "mtcars",
-      expr = list(mpg > median(mpg)),
-      .preserve = T,
-      newobj = "preserved_t",
-      datasources = conns
-      )
+  ds.filter(
+    df.name = "mtcars",
+    expr = list(mpg > median(mpg)),
+    .preserve = T,
+    newobj = "preserved_t",
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("preserved_t")[[1]],
@@ -83,7 +86,7 @@ test_that("ds.filter works with .preserve arg", {
     .preserve = F,
     newobj = "preserved_f",
     datasources = conns
-    )
+  )
 
   expect_equal(
     ds.class("preserved_f")[[1]],

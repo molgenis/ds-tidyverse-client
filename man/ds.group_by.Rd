@@ -18,7 +18,7 @@ ds.group_by(
 
 \item{expr}{Variables or computations to group by.}
 
-\item{.add}{When FALSE, the default, group_by() will override existing groups. To add to the
+\item{.add}{When FALSE, the default, \code{group_by()} will override existing groups. To add to the
 existing groups, use .add = TRUE.}
 
 \item{.drop}{Drop groups formed by factor levels that don't appear in the data? The default is

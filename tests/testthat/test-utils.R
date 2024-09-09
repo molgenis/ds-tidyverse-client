@@ -98,9 +98,11 @@ test_that(".check_data_name_length does not throw an error if length of .data is
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
     input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
-    output = c("$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
-               "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$",
-               "$GT$", "$LT$", "$TILDE$", "$LINE$")
+    output = c(
+      "$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
+      "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$",
+      "$GT$", "$LT$", "$TILDE$", "$LINE$"
+    )
   )
   actual_encode_list <- .get_encode_dictionary()
   expect_equal(actual_encode_list, expected_encode_list)
@@ -238,23 +240,27 @@ test_that(".build_cally build correct call object", {
   returned <- .build_cally("mutateDS", list(input_string, "mydata"))
   expect_equal(expected, returned)
 
-  expected <- call("mutateDS", "LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")", "mydata",
-                   "extra_arg_1", "extra_arg_2")
+  expected <- call(
+    "mutateDS", "LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")", "mydata",
+    "extra_arg_1", "extra_arg_2"
+  )
   returned <- .build_cally("mutateDS", list(input_string, "mydata", "extra_arg_1", "extra_arg_2"))
   expect_equal(expected, returned)
 })
 
 test_that(".make_serverside_call encodes and builds call object", {
- input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
- tidy_select <- .format_args_as_string(rlang::enquo(input_string))
- returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata"))
- expected <- call("mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$", "mydata")
- expect_equal(expected, returned)
+  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
+  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+  returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata"))
+  expected <- call("mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$", "mydata")
+  expect_equal(expected, returned)
 
- returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata", "extra_arg_1", "extra_arg_2"))
- expected <- call("mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$",
-                  "mydata", "extra_arg_1", "extra_arg_2")
- expect_equal(expected, returned)
+  returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata", "extra_arg_1", "extra_arg_2"))
+  expected <- call(
+    "mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$",
+    "mydata", "extra_arg_1", "extra_arg_2"
+  )
+  expect_equal(expected, returned)
 })
 
 test_that(".perform_tidyverse_checks checks argument validity and disclosure", {

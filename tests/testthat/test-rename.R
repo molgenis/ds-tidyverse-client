@@ -19,19 +19,20 @@ dslite.server$aggregateMethod("dsListDisclosureSettingsTidyVerse", "dsTidyverse:
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 test_that("ds.rename fails with correct error message if data not present ", {
-    expect_error(
-      ds.rename(
-        df.name = "datanotthere",
-        tidy_select = list(test_1 = mpg, test_2 = drat),
-        newobj = "nodata")
+  expect_error(
+    ds.rename(
+      df.name = "datanotthere",
+      tidy_select = list(test_1 = mpg, test_2 = drat),
+      newobj = "nodata"
     )
+  )
 })
 
 test_that("ds.rename correctly passes =", {
-    ds.rename(
-      df.name = "mtcars",
-      tidy_select = list(test_1 = mpg, test_2 = drat),
-      newobj = "mpg_drat"
+  ds.rename(
+    df.name = "mtcars",
+    tidy_select = list(test_1 = mpg, test_2 = drat),
+    newobj = "mpg_drat"
   )
   expected <- c("test_1", "cyl", "disp", "hp", "test_2", "wt", "qsec", "vs", "am", "gear", "carb")
   .check_cols_as_expected(expected, "mpg_drat")

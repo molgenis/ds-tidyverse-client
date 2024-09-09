@@ -12,13 +12,14 @@
 #' first element of `to_combine`.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
-#'ds.bind_rows(
-#' to_combine = list(mtcars, mtcars),
-#' newobj = "test",
-#' datasources = conns)
+#' ds.bind_rows(
+#'   to_combine = list(mtcars, mtcars),
+#'   newobj = "test",
+#'   datasources = conns
+#' )
 #'
 #' ## Refer to the package vignette for more examples.
 #' }
@@ -30,4 +31,3 @@ ds.bind_rows <- function(to_combine = NULL, .id = NULL, newobj = NULL, datasourc
   cally <- .make_serverside_call("bindRowsDS", to_combine, list(.id))
   datashield.assign(datasources, newobj, cally)
 }
-
