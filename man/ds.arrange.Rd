@@ -33,5 +33,10 @@ DataSHIELD implentation of  \code{dplyr::arrange}.
 }
 \examples{
 \dontrun{
+ds.arrange(
+ "mtcars",
+ expr = list(drat),
+ newobj = "sorted_df"
+ )
 }
 }

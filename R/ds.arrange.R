@@ -11,6 +11,11 @@
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #'\dontrun{
+#'ds.arrange(
+#'  "mtcars",
+#'  expr = list(drat),
+#'  newobj = "sorted_df"
+#'  )
 #' }
 #' @export
 ds.arrange <- function(df.name = NULL, expr = NULL, .by_group = NULL, newobj = NULL, datasources = NULL) {
