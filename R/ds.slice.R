@@ -22,6 +22,6 @@ ds.slice <- function(df.name = NULL, expr = NULL, .by = NULL, .preserve = FALSE,
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
-  cally <- .make_serverside_call("filterDS", tidy_select, list(df.name, .by, .preserve))
+  cally <- .make_serverside_call("sliceDS", tidy_select, list(df.name, .by, .preserve))
   datashield.assign(datasources, newobj, cally)
 }
