@@ -49,8 +49,12 @@ dslite.server$assignMethod("ifElseDS", "ifElseDS")
 dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
+<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
+=======
+dslite.server$assignMethod("arrangeDS", "arrangeDS")
+>>>>>>> 5ccd846 (docs: added vignette)
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -460,3 +464,17 @@ ds.dim("sliced_df_group")[1]
 #> $`dimensions of sliced_df_group in sim1`
 #> [1]  3 11
 ```
+
+### Arrange
+`arrange` is a more flexible version of `base::sort`, which orders the rows of a data frame by the values of selected columns.
+
+
+```r
+    ds.arrange(
+      df.name = "mtcars",
+      expr = list(mpg, cyl),
+      newobj = "arranged_df",
+      datasources = conns
+      )
+```
+`arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
