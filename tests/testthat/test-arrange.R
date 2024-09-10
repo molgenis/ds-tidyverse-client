@@ -57,3 +57,18 @@ test_that("ds.arrange returns error if data doesn't exist", {
     )
 
 })
+
+test_that("ds.arrange works with desc() specification", {
+
+  ds.arrange(
+    df.name = "mtcars",
+    expr = list(desc(cyl)),
+    newobj = "desc_df",
+    datasources = conns)
+
+  expect_equal(
+    ds.class("desc_df")[[1]],
+    "data.frame"
+  )
+
+})
