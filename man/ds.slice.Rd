@@ -39,5 +39,10 @@ DataSHIELD implentation of  \code{dplyr::slice}.
 }
 \examples{
 \dontrun{
+ds.slice(
+df.name = "mtcars",
+expr = list(1:10),
+.by = "cyl",
+newobj = "sliced_df")
 }
 }

@@ -15,6 +15,11 @@
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #'\dontrun{
+#'ds.slice(
+#' df.name = "mtcars",
+#' expr = list(1:10),
+#' .by = "cyl",
+#' newobj = "sliced_df")
 #' }
 #' @export
 ds.slice <- function(df.name = NULL, expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL,
