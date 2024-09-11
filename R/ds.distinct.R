@@ -1,0 +1,24 @@
+#' @title Keep distinct/unique rows
+#' @description DataSHIELD implentation of  \code{dplyr::distinct}.
+#' @param df.name Character specifying a serverside data frame or tibble.
+#' @param expr Optional variables to use when determining uniqueness. If there are multiple rows
+#' for a given combination of inputs, only the first row will be preserved. If omitted, will use all
+#' variables in the data frame.
+#' @param .keep_all If TRUE, keep all variables in .data. If a combination of ... is not distinct,
+#' this keeps the first row of values.
+#' @param newobj Character specifying name for new server-side data frame.
+#' @param datasources DataSHIELD connections object.
+#' @return An object with the name specified by the \code{newobj} argument is written serverside.
+#' @importFrom DSI datashield.assign datashield.aggregate
+#' @examples
+#'\dontrun{
+#' }
+#' @export
+ds.distinct <- function(df.name = NULL, expr = NULL, .keep_all = NULL, newobj = NULL,
+                        datasources = NULL) {
+  tidy_select <- .format_args_as_string(rlang::enquo(expr))
+  datasources <- .set_datasources(datasources)
+  .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
+  cally <- .make_serverside_call("distinctDS", tidy_select, list(df.name, .keep_all))
+  datashield.assign(datasources, newobj, cally)
+}
