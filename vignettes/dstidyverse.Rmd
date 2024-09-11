@@ -228,29 +228,17 @@ ds.if_else(
   "high",
   "low",
   newobj = "mpg_cat")
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: if_elseDS Supported[22m
-#>   [1mfunction calls are: absDS, asCharacterDS, asDataMatrixDS, asFactorDS2,[22m
-#>   [1masFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS,[22m
-#>   [1mblackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
-#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
-#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
-#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
-#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
-#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
-#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
-#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
-#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
-#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
-#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
-#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
-#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
-#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
-#> Error: The input object mpg_cat is not defined in sim1!
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>        study
+#> mpg_cat sim1
+#>    high   14
+#>    low    18
+#>    NA      0
 ```
 
 ### bind_rows
@@ -267,30 +255,9 @@ ds.bind_rows(
   newobj = "df_bound",
   datasources = conns
 )
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS[22m
-#>   [1mSupported function calls are: absDS, asCharacterDS, asDataMatrixDS,[22m
-#>   [1masFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS,[22m
-#>   [1masNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
-#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
-#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
-#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
-#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
-#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
-#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
-#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
-#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
-#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
-#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
-#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
-#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
-#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.dim("df_bound")[[1]]
-#> Error:
-#> ! There are some DataSHIELD errors, list them with datashield.errors()
+#> [1] 64 11
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
@@ -303,29 +270,13 @@ ds.bind_rows(
   datasources = conns,
   .id = "where_it_came_from"
 )
-#> Error:
-#> ! There are some DataSHIELD errors:
-#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS[22m
-#>   [1mSupported function calls are: absDS, asCharacterDS, asDataMatrixDS,[22m
-#>   [1masFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS,[22m
-#>   [1masNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
-#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
-#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
-#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
-#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
-#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
-#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
-#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
-#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
-#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
-#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
-#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
-#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
-#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
-#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.colnames("df_bound")
-#> Error: The input object df_bound is not defined in sim1!
+#> $sim1
+#>  [1] "where_it_came_from" "mpg"                "cyl"               
+#>  [4] "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                
+#> [10] "am"                 "gear"               "carb"
 ```
 
 ### bind_cols
