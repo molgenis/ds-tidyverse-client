@@ -19,7 +19,7 @@ To illustrate the usage of these functions, we use DSLite which creates a virtua
 
 ## Install and load packages
 
-``` r
+```r
 ## install.packages("dplyr")
 ## install.packages("DSLite")
 ## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
@@ -35,7 +35,7 @@ require(dsTidyverseClient)
 
 ## Set up DSLite environment and log in.
 
-``` r
+```r
 data("mtcars")
 dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
 data("logindata.dslite.cnsim")
@@ -49,6 +49,8 @@ dslite.server$assignMethod("ifElseDS", "ifElseDS")
 dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
+dslite.server$assignMethod("filterDS", "filterDS")
+dslite.server$assignMethod("sliceDS", "sliceDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -61,13 +63,10 @@ for full details see the documentation for `dplyr::select`.
 
 #### Subset columns by name
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -75,13 +74,10 @@ ds.colnames("new_df")
 ```
 #### Specify columns to exclude
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -89,13 +85,10 @@ ds.colnames("new_df")
 ```
 #### Specify a range of columns to keep
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -103,13 +96,10 @@ ds.colnames("new_df")
 ```
 #### Specify column names using a regular expression
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -117,13 +107,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '&'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -131,13 +118,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '|'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
@@ -148,17 +132,15 @@ ds.colnames("new_df")
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
 
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
+#>  [8] "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -168,54 +150,34 @@ Below are some examples, see `dplyr::mutate` for full details.
 
 #### Create columns which are transformations of existing variables:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
-#> [11] "carb"      "mpg_trans" "new_var"
-```
-
-``` r
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
+#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
+#> [13] "new_var"
 ds.mean("mtcars$cyl")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1        6.1875        0     32     32
-```
-
-``` r
 ds.mean("new_df$mpg_trans")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1        6187.5        0     32     32
-```
-
-``` r
 ds.mean("mtcars$hp")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      146.6875        0     32     32
-```
-
-``` r
 ds.mean("mtcars$drat")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      3.596563        0     32     32
-```
-
-``` r
 ds.mean("mtcars$qsec")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      17.84875        0     32     32
-```
-
-``` r
 ds.mean("new_df$new_var")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      8.372669        0     32     32
@@ -223,13 +185,10 @@ ds.mean("new_df$new_var")$Mean.by.Study
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -237,19 +196,17 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $sim1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
-#> [11] "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
+#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [13] "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -265,23 +222,35 @@ A shinier version of `base::ifelse`. As with the other implementations of tidyve
 names can be passed unquoted, this time in the `condition` argument.
 
 
-``` r
+```r
 ds.if_else(
   condition = list(mtcars$mpg > 20),
   "high",
   "low",
   newobj = "mpg_cat")
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: if_elseDS Supported[22m
+#>   [1mfunction calls are: absDS, asCharacterDS, asDataMatrixDS, asFactorDS2,[22m
+#>   [1masFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS, asNumericDS,[22m
+#>   [1mblackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
+#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
+#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
+#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
+#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
+#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
+#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
+#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
+#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
+#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
+#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
+#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
+#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
+#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
+#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
-#> 
-#>  Data in all studies were valid 
-#> 
-#> Study 1 :  No errors reported from this study
-#>        study
-#> mpg_cat sim1
-#>    high   14
-#>    low    18
-#>    NA      0
+#> Error: The input object mpg_cat is not defined in sim1!
 ```
 
 ### bind_rows
@@ -289,52 +258,84 @@ Bind any number of data frames by row, making a longer result. This is similar t
 do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
 
 ds.bind_rows(
   to_combine = list(mtcars, mtcars),
   newobj = "df_bound",
   datasources = conns
 )
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS[22m
+#>   [1mSupported function calls are: absDS, asCharacterDS, asDataMatrixDS,[22m
+#>   [1masFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS,[22m
+#>   [1masNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
+#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
+#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
+#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
+#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
+#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
+#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
+#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
+#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
+#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
+#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
+#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
+#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
+#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
+#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.dim("df_bound")[[1]]
-#> [1] 64 11
+#> Error:
+#> ! There are some DataSHIELD errors, list them with datashield.errors()
 ```
 The argument `.id` can be used to create an additional column which records which dataframe each
 row came from:
 
 
-``` r
+```r
 ds.bind_rows(
   to_combine = list(mtcars, mtcars),
   newobj = "df_bound",
   datasources = conns,
   .id = "where_it_came_from"
 )
+#> Error:
+#> ! There are some DataSHIELD errors:
+#> ✖ [1m[33msim1[39m: DataSHIELD configuration does not allow expression: bind_rowsDS[22m
+#>   [1mSupported function calls are: absDS, asCharacterDS, asDataMatrixDS,[22m
+#>   [1masFactorDS2, asFactorSimpleDS, asIntegerDS, asListDS, asLogicalDS, asMatrixDS,[22m
+#>   [1masNumericDS, blackBoxDS, blackBoxRanksDS, BooleDS, boxPlotGG_data_TreatmentDS,[22m
+#>   [1mboxPlotGG_data_Treatment_numericDS, bp_standardsDS, cbindDS, cDS,[22m
+#>   [1mchangeRefGroupDS, completeCasesDS, dataFrameDS, dataFrameFillDS,[22m
+#>   [1mdataFrameSortDS, dataFrameSubsetDS2, dmtC2SDS, elsplineDS, glmerSLMADS.assign,[22m
+#>   [1mglmPredictDS.as, glmSLMADS.assign, glmSummaryDS.as, getWGSRDS,[22m
+#>   [1migb_standardsDS, listDS, lexisDS2, lexisDS3, lmerSLMADS.assign, lsplineDS,[22m
+#>   [1mmatrixDetDS2, matrixDiagDS, matrixDimnamesDS, matrixDS, matrixInvertDS,[22m
+#>   [1mmatrixMultDS, matrixTransposeDS, mergeDS, nsDS, qlsplineDS, ranksSecureDS2,[22m
+#>   [1mranksSecureDS4, ranksSecureDS5, rbindDS, rBinomDS, recodeLevelsDS,[22m
+#>   [1mrecodeValuesDS, repDS, replaceNaDS, reShapeDS, rNormDS, rowColCalcDS, rPoisDS,[22m
+#>   [1mrUnifDS, sampleDS, seqDS, sqrtDS, subsetByClassDS, subsetDS, tableDS.assign,[22m
+#>   [1mtapplyDS.assign, uniqueDS, unListDS, vectorDS, as.character, as.null,[22m
+#>   [1mas.numeric, attach, c, complete.cases, list, exp, log, sqrt, abs, sin, cos,[22m
+#>   [1mtan, asin, acos, atan, sum, unlist, selectDS, renameDS, mutateDS, ifElseDS,[22m
+#>   [1mcaseWhenDS, bindRowsDS, bindColsDS, filterDS, sliceDS[22m
 
 ds.colnames("df_bound")
-#> $sim1
-#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                
-#>  [6] "drat"               "wt"                 "qsec"               "vs"                 "am"                
-#> [11] "gear"               "carb"
+#> Error: The input object df_bound is not defined in sim1!
 ```
 
 ### bind_cols
 Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
 
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -344,19 +345,17 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $sim1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10"
-#> [11] "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"  
-#> [21] "gear...21" "carb...22"
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   
+#>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
+#> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
+#> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -367,15 +366,15 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $sim1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"  
-#> [18] "qsec" "vs"   "am"   "gear" "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
 useful for recoding variables.
 
 
-``` r
+```r
   ds.case_when(
     dynamic_dots = list(
       mtcars$mpg < 20 ~ "low",
@@ -400,7 +399,7 @@ ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
 You can also use the `.default` argument to control what happens if the condition is not met:
 
 
-``` r
+```r
   ds.case_when(
     dynamic_dots = list(
       mtcars$mpg < 20 ~ "low",
@@ -428,12 +427,9 @@ Subset set a data frame flexibly, retaining all rows that satisfy the condition 
 `expression`
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
   ds.filter(
     df.name = "mtcars",
     expr = list(cyl == 4 & mpg > 20),
@@ -445,12 +441,9 @@ ds.dim("filtered")[[1]]
 
 Use the .by argument to perform the filtering by a specified group.
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
   ds.filter(
     df.name = "mtcars",
     expr = list(mpg > median(mpg)),
@@ -466,12 +459,9 @@ the original groups or recalculate groups based on the resulting data. See the h
 `dplyr::filter` for more information.
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
     ds.filter(
       df.name = "mtcars",
       expr = list(mpg > median(mpg)),
@@ -481,4 +471,41 @@ ds.dim("mtcars")[[1]]
       )
 ds.dim("preserved_t")[[1]]
 #> [1] 15 11
+```
+
+### Slice
+Subset rows using their positions. This is particularly useful if you want to take one observation
+within a group (for example if you have repeated measures data, and want to take one measurements
+per individual within an age group). Currently this can be done using `dh.createSubset`, however
+this should be replaced by `group_by` and `slice` as it will be vastly quicker.
+
+
+```r
+ds.dim("mtcars")[1]
+#> $`dimensions of mtcars in sim1`
+#> [1] 32 11
+ds.slice(
+  df.name = "mtcars",
+  expr = list(1:10),
+  newobj = "sliced_df"
+)
+ds.dim("sliced_df")[1]
+#> $`dimensions of sliced_df in sim1`
+#> [1] 10 11
+```
+
+
+```r
+ds.dim("mtcars")[1]
+#> $`dimensions of mtcars in sim1`
+#> [1] 32 11
+ds.slice(
+  df.name = "mtcars",
+  expr = list(1),
+  .by = "cyl",
+  newobj = "sliced_df_group"
+)
+ds.dim("sliced_df_group")[1]
+#> $`dimensions of sliced_df_group in sim1`
+#> [1]  3 11
 ```
