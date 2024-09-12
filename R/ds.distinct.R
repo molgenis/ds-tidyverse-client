@@ -14,7 +14,7 @@
 #'\dontrun{
 #' }
 #' @export
-ds.distinct <- function(df.name = NULL, expr = NULL, .keep_all = NULL, newobj = NULL,
+ds.distinct <- function(df.name = NULL, expr = NULL, .keep_all = FALSE, newobj = NULL,
                         datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
