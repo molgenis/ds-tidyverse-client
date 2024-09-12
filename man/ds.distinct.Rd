@@ -19,8 +19,8 @@ ds.distinct(
 for a given combination of inputs, only the first row will be preserved. If omitted, will use all
 variables in the data frame.}
 
-\item{.keep_all}{If TRUE, keep all variables in .data. If a combination of ... is not distinct,
-this keeps the first row of values.}
+\item{.keep_all}{If TRUE, keep all variables in .data. If a combination of `expr` is not
+distinct, this keeps the first row of values.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
@@ -34,5 +34,9 @@ DataSHIELD implentation of  \code{dplyr::distinct}.
 }
 \examples{
 \dontrun{
+ds.distinct(
+df.name = "mtcars",
+expr = list(mpg, cyl),
+newobj = "distinct_df")
 }
 }
