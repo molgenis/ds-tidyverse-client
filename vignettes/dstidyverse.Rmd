@@ -38,9 +38,12 @@ require(DSI)
 
 ```r
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 data("mtcars")
 mtcars_group <- mtcars %>%
   group_by(cyl) %>%
@@ -63,11 +66,16 @@ dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 =======
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
 >>>>>>> 5ccd846 (docs: added vignette)
+=======
+dslite.server$assignMethod("filterDS", "filterDS")
+dslite.server$assignMethod("distinctDS", "distinctDS")
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 =======
 dslite.server$assignMethod("groupByDS", "groupByDS")
@@ -111,11 +119,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -128,11 +139,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -146,11 +160,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -163,11 +180,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -180,11 +200,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -197,11 +220,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -222,6 +248,7 @@ ds.colnames("new_df")
 #> $sim1
 #>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
 #>  [8] "vs"       "am"       "gear"     "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
@@ -233,6 +260,8 @@ ds.colnames("new_df")
 #>  [6] "wt"       "qsec"     "vs"       "am"       "gear"    
 #> [11] "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ```
 
 ### Mutate
@@ -247,11 +276,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -277,6 +309,7 @@ ds.mean("mtcars$drat")$Mean.by.Study
 ds.mean("mtcars$qsec")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      17.84875        0     32     32
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"     
@@ -298,6 +331,8 @@ ds.mean("mtcars$qsec")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      17.84875        0     32     32
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.mean("new_df$new_var")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      8.372669        0     32     32
@@ -310,11 +345,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -326,12 +364,15 @@ ds.colnames("new_df")
 #>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
 #>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
 #> [13] "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"     
 #>  [6] "hp"        "drat"      "wt"        "qsec"      "vs"       
 #> [11] "am"        "gear"      "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -341,11 +382,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -413,9 +457,12 @@ ds.bind_rows(
 ds.colnames("df_bound")
 <<<<<<< HEAD
 #> $sim1
+<<<<<<< HEAD
 =======
 #> $server_1
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 #>  [1] "where_it_came_from" "mpg"                "cyl"               
 #>  [4] "disp"               "hp"                 "drat"              
 #>  [7] "wt"                 "qsec"               "vs"                
@@ -431,11 +478,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -450,6 +500,7 @@ ds.colnames("df_bound")
 #>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
 #> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
 #> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5" 
@@ -458,6 +509,8 @@ ds.colnames("df_bound")
 #> [16] "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"  
 #> [21] "gear...21" "carb...22"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
@@ -466,11 +519,14 @@ ds.colnames("mtcars")
 <<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -484,12 +540,15 @@ ds.colnames("df_bound")
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 #> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+<<<<<<< HEAD
 =======
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
 #> [10] "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"
 #> [19] "vs"   "am"   "gear" "carb"
 >>>>>>> 2999dd7 (docs: added group examples to vignette)
+=======
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
@@ -685,3 +744,30 @@ my_groups
 #> 2     6
 #> 3     8
 ```
+### distinct
+Use `distinct` to keep only unique rows. Leave the `expr` argument empty to check uniqueness across all variables:
+
+
+```r
+ds.distinct(
+  df.name = "mtcars",
+  newobj = "distinct_df"
+)
+ds.dim("distinct_df")[[1]]
+#> [1] 32 11
+```
+In this example the dimensions of the resulting dataset are the same because all rows are distinct. Alternatively you can specify a subset of variables in which to check for unique rows:
+
+
+```r
+ds.distinct(
+  df.name = "mtcars",
+  expr = list(cyl, drat),
+  newobj = "distinct_subset"
+)
+ds.dim("distinct_subset")[[1]]
+#> [1] 26  2
+ds.colnames("distinct_subset")[[1]]
+#> [1] "cyl"  "drat"
+```
+See the help file of `dplyr::distinct` for information about other arguments.

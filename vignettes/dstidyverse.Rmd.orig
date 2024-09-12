@@ -70,11 +70,16 @@ dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 =======
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
 >>>>>>> 5ccd846 (docs: added vignette)
+=======
+dslite.server$assignMethod("filterDS", "filterDS")
+dslite.server$assignMethod("distinctDS", "distinctDS")
+>>>>>>> a4ca412 (docs: added distinct example to vignette)
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 =======
 dslite.server$assignMethod("groupByDS", "groupByDS")
@@ -411,3 +416,26 @@ of groups is too high.
 my_groups <- ds.group_keys("mtcars_group")
 my_groups
 ```
+
+### distinct
+Use `distinct` to keep only unique rows. Leave the `expr` argument empty to check uniqueness across all variables:
+
+```{r}
+ds.distinct(
+  df.name = "mtcars",
+  newobj = "distinct_df"
+)
+ds.dim("distinct_df")[[1]]
+```
+In this example the dimensions of the resulting dataset are the same because all rows are distinct. Alternatively you can specify a subset of variables in which to check for unique rows:
+
+```{r}
+ds.distinct(
+  df.name = "mtcars",
+  expr = list(cyl, drat),
+  newobj = "distinct_subset"
+)
+ds.dim("distinct_subset")[[1]]
+ds.colnames("distinct_subset")[[1]]
+```
+See the help file of `dplyr::distinct` for information about other arguments.
