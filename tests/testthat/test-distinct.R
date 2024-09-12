@@ -92,3 +92,15 @@ test_that("ds.distinct works with `.keep_all` argument", {
   )
 
 })
+
+test_that("ds.distinct fails if created subset is too small", {
+
+  expect_error(
+    ds.distinct(
+      df.name = "mtcars",
+      expr = list(vs),
+      newobj = "dist_df",
+      datasources = conns)
+  )
+
+})
