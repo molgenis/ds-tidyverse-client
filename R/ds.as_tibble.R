@@ -23,10 +23,10 @@
 #'\dontrun{
 #' }
 #' @export
-ds.as_tibble <- function(x = NULL, .rows = NULL, .name_repair = NULL, rownames = NULL,
+ds.as_tibble <- function(x = NULL, .rows = NULL, .name_repair = "check_unique", rownames = NULL,
                          column_name = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name = NULL, newobj, datasources)
-  cally <- .make_serverside_call("asTibbleDS", list(.rows, .name_repair, column_name))
+  .perform_tidyverse_checks(df.name = x, newobj = newobj, tidy_select = NULL, datasources)
+  cally <- .make_serverside_call("asTibbleDS", NULL, list(x, .rows, .name_repair, rownames, column_name))
   datashield.assign(datasources, newobj, cally)
 }

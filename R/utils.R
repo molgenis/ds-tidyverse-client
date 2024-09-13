@@ -113,9 +113,11 @@
 #' @importFrom stringr str_replace_all str_sub
 #' @noRd
 .remove_list <- function(string) {
+  if(string != "NULL") {
   string |>
     str_replace_all(pattern = fixed("list("), replacement = "") |>
     str_sub(end = -2)
+  }
 }
 
 #' Converts expressions to a string and remove the 'list(' portion.
