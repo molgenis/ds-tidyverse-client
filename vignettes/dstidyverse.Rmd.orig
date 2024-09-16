@@ -59,6 +59,8 @@ dslite.server$assignMethod("ifElseDS", "ifElseDS")
 dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
+dslite.server$assignMethod("filterDS", "filterDS")
+dslite.server$assignMethod("sliceDS", "sliceDS")
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
 ```
 
@@ -300,4 +302,31 @@ ds.dim("mtcars")[[1]]
       datasources = conns
       )
 ds.dim("preserved_t")[[1]]
+```
+
+### Slice
+Subset rows using their positions. This is particularly useful if you want to take one observation
+within a group (for example if you have repeated measures data, and want to take one measurements
+per individual within an age group). Currently this can be done using `dh.createSubset`, however
+this should be replaced by `group_by` and `slice` as it will be vastly quicker.
+
+```{r}
+ds.dim("mtcars")[1]
+ds.slice(
+  df.name = "mtcars",
+  expr = list(1:10),
+  newobj = "sliced_df"
+)
+ds.dim("sliced_df")[1]
+```
+
+```{r}
+ds.dim("mtcars")[1]
+ds.slice(
+  df.name = "mtcars",
+  expr = list(1),
+  .by = "cyl",
+  newobj = "sliced_df_group"
+)
+ds.dim("sliced_df_group")[1]
 ```

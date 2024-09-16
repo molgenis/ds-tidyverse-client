@@ -54,7 +54,7 @@ jobs:
           if [  $CIRCLE_BRANCH = "master" ]; then
             Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
           else
-            Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")' # This can be changed for each PR so circle CI loads correct serverside package
+            Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git", ref = "feat/slice")' # This can be changed for each PR so circle CI loads correct serverside package
           fi
 
     - save_cache:
