@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dsTidyverseClient</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -113,23 +113,26 @@ creates a virtual DataSHIELD session.</p>
 <div class="section level2">
 <h2 id="set-up-dslite-environment-and-log-in-">Set up DSLite environment and log in.<a class="anchor" aria-label="anchor" href="#set-up-dslite-environment-and-log-in-"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSLite/reference/newDSLiteServer.html" class="external-link">newDSLiteServer</a></span><span class="op">(</span>tables<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars<span class="op">=</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"logindata.dslite.cnsim"</span><span class="op">)</span></span>
-<span><span class="va">logindata.dslite.cnsim</span> <span class="op">&lt;-</span> <span class="va">logindata.dslite.cnsim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">config</span><span class="op">(</span><span class="fu"><a href="https://datashield.github.io/DSLite/reference/defaultDSConfiguration.html" class="external-link">defaultDSConfiguration</a></span><span class="op">(</span>include<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"selectDS"</span>, <span class="st">"selectDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"renameDS"</span>, <span class="st">"renameDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"filterDS"</span>, <span class="st">"filterDS"</span><span class="op">)</span></span>
-<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span><span class="op">)</span></span>
-<span><span class="va">conns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://datashield.github.io/DSI/reference/datashield.login.html" class="external-link">datashield.login</a></span><span class="op">(</span><span class="va">logindata.dslite.cnsim</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>dslite.server <span class="ot">&lt;-</span> <span class="fu">newDSLiteServer</span>(<span class="at">tables=</span><span class="fu">list</span>(<span class="at">mtcars=</span>mtcars))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"logindata.dslite.cnsim"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>logindata.dslite.cnsim <span class="ot">&lt;-</span> logindata.dslite.cnsim <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">table =</span> <span class="st">"mtcars"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">config</span>(<span class="fu">defaultDSConfiguration</span>(<span class="at">include=</span><span class="fu">c</span>(<span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span>)))</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"selectDS"</span>, <span class="st">"selectDS"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"renameDS"</span>, <span class="st">"renameDS"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"filterDS"</span>, <span class="st">"filterDS"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"arrangeDS"</span>, <span class="st">"arrangeDS"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 5ccd846 (docs<span class="sc">:</span> added vignette)</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>conns <span class="ot">&lt;-</span> <span class="fu">datashield.login</span>(logindata.dslite.cnsim[<span class="dv">1</span>, ], <span class="at">assign=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
@@ -544,6 +547,23 @@ quicker.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"sliced_df_group"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $`dimensions of sliced_df_group in sim1`</span></span>
 <span><span class="co">#&gt; [1]  3 11</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="arrange">Arrange<a class="anchor" aria-label="anchor" href="#arrange"></a>
+</h3>
+<p><code>arrange</code> is a more flexible version of
+<code><a href="https://rdrr.io/r/base/sort.html" class="external-link">base::sort</a></code>, which orders the rows of a data frame by the
+values of selected columns.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>    <span class="fu"><a href="../reference/ds.arrange.html">ds.arrange</a></span><span class="op">(</span></span>
+<span>      df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>      expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
+<span>      newobj <span class="op">=</span> <span class="st">"arranged_df"</span>,</span>
+<span>      datasources <span class="op">=</span> <span class="va">conns</span></span>
+<span>      <span class="op">)</span></span></code></pre></div>
+<p><code>arrange</code> can be used on a sorted data frame or tibble.
+The arrange argument <code>.by_group</code> (TRUE or FALSE) determines
+whether or not data is sorted by group.</p>
 </div>
 </div>
   </div>
