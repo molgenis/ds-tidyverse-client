@@ -18,13 +18,14 @@
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
 #' ds.mutate(
-#'  df.name = "mtcars",
-#'  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
-#'  newobj = "df_with_new_cols")
+#'   df.name = "mtcars",
+#'   tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
+#'   newobj = "df_with_new_cols"
+#' )
 #'
 #' ## Refer to the package vignette for more examples.
 #' }

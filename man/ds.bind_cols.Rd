@@ -35,10 +35,11 @@ DataSHIELD implementation of \code{dplyr::bind_cold}.
 ## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.bind_cols(
-to_combine = list(mtcars, mtcars),
-.name_repair = "universal",
-newobj = "test",
-datasources = conns)
+  to_combine = list(mtcars, mtcars),
+  .name_repair = "universal",
+  newobj = "test",
+  datasources = conns
+)
 
 ## Refer to the package vignette for more examples.
 }

@@ -31,9 +31,10 @@ DataSHIELD implementation of \code{dplyr::bind_rows}.
 ## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.bind_rows(
-to_combine = list(mtcars, mtcars),
-newobj = "test",
-datasources = conns)
+  to_combine = list(mtcars, mtcars),
+  newobj = "test",
+  datasources = conns
+)
 
 ## Refer to the package vignette for more examples.
 }

@@ -29,7 +29,8 @@ test_that("ds.if_else correctly passes argument with numeric condition and categ
     condition = list(mtcars$mpg > 20),
     "high",
     "low",
-    newobj = "test")
+    newobj = "test"
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -55,7 +56,8 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
     condition = list(mtcars$mpg > 20),
     99,
     100,
-    newobj = "test")
+    newobj = "test"
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -74,16 +76,15 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
     as.numeric(counts),
     c(42, 54, 0)
   )
-
 })
 
 test_that("ds.if_else correctly passes argument with = ", {
-
   ds.if_else(
     condition = list(mtcars$vs == "0"),
     "no",
     "yes",
-    newobj = "testcat")
+    newobj = "testcat"
+  )
 
   names <- names(ds.table("testcat")$output.list$TABLES.COMBINED_all.sources_counts)
 

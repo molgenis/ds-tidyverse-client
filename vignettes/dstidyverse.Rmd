@@ -31,16 +31,28 @@ require(dsBase)
 require(dsBaseClient)
 require(dsTidyverse)
 require(dsTidyverseClient)
+require(DSI)
 ```
 
 ## Set up DSLite environment and log in.
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 data("mtcars")
-dslite.server <- newDSLiteServer(tables=list(mtcars=mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
+mtcars_group <- mtcars %>%
+  group_by(cyl) %>%
+  mutate(drop_test = factor("a", levels = c("a", "b")))
+
+dslite.server <- newDSLiteServer(
+  tables = list(
+    mtcars = mtcars,
+    mtcars_group = mtcars_group
+  )
+)
+
 dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
 dslite.server$assignMethod("selectDS", "selectDS")
 dslite.server$assignMethod("renameDS", "renameDS")
@@ -50,12 +62,39 @@ dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
 <<<<<<< HEAD
+<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 =======
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
 >>>>>>> 5ccd846 (docs: added vignette)
 conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
+=======
+dslite.server$assignMethod("groupByDS", "groupByDS")
+dslite.server$assignMethod("ungroupDS", "ungroupDS")
+dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
+
+builder <- DSI::newDSLoginBuilder()
+
+builder$append(
+  server="server_1",
+  url="dslite.server",
+  table = "mtcars",
+  driver = "DSLiteDriver")
+
+logindata <- builder$build()
+conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars",
+  symbol = "mtcars")
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_group",
+  symbol = "mtcars_group")
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 
 ## Functions
@@ -69,66 +108,103 @@ for full details see the documentation for `dplyr::select`.
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "mpg"  "disp" "wt"
 ```
 #### Specify columns to exclude
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
-#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> $server_1
+#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"
+#> [10] "carb"
 ```
 #### Specify a range of columns to keep
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
 ```
 #### Specify column names using a regular expression
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
 ```
 #### Combine multiple conditions with '&'
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "carb"
 ```
 #### Combine multiple conditions with '|'
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "cyl"  "carb"
 ```
 ### Rename
@@ -138,6 +214,7 @@ evaluated as column names within `df.name`. Below are some examples, see `dplyr:
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
@@ -145,6 +222,17 @@ ds.colnames("new_df")
 #> $sim1
 #>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
 #>  [8] "vs"       "am"       "gear"     "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"    
+#>  [6] "wt"       "qsec"     "vs"       "am"       "gear"    
+#> [11] "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 
 ### Mutate
@@ -156,13 +244,20 @@ Below are some examples, see `dplyr::mutate` for full details.
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
 #>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
@@ -182,42 +277,82 @@ ds.mean("mtcars$drat")$Mean.by.Study
 ds.mean("mtcars$qsec")$Mean.by.Study
 #>      EstimatedMean Nmissing Nvalid Ntotal
 #> sim1      17.84875        0     32     32
+=======
+#> $server_1
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"     
+#>  [6] "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [11] "carb"      "mpg_trans" "new_var"
+ds.mean("mtcars$cyl")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1        6.1875        0     32     32
+ds.mean("new_df$mpg_trans")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1        6187.5        0     32     32
+ds.mean("mtcars$hp")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      146.6875        0     32     32
+ds.mean("mtcars$drat")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      3.596563        0     32     32
+ds.mean("mtcars$qsec")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      17.84875        0     32     32
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.mean("new_df$new_var")$Mean.by.Study
-#>      EstimatedMean Nmissing Nvalid Ntotal
-#> sim1      8.372669        0     32     32
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      8.372669        0     32     32
 ```
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .before = "disp")
 ds.colnames("new_df")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
 #>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
 #> [13] "carb"
+=======
+#> $server_1
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"     
+#>  [6] "hp"        "drat"      "wt"        "qsec"      "vs"       
+#> [11] "am"        "gear"      "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 
 #### Only keep the newly created variables with `.keep`:
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ds.mutate(
   df.name = "mtcars",
   tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .keep = "none")
 ds.colnames("new_df")
-#> $sim1
+#> $server_1
 #> [1] "mpg_trans" "new_var"
 ```
 
@@ -239,10 +374,10 @@ ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
 #> 
 #> Study 1 :  No errors reported from this study
 #>        study
-#> mpg_cat sim1
-#>    high   14
-#>    low    18
-#>    NA      0
+#> mpg_cat server_1
+#>    high       14
+#>    low        18
+#>    NA          0
 ```
 
 ### bind_rows
@@ -276,7 +411,11 @@ ds.bind_rows(
 )
 
 ds.colnames("df_bound")
+<<<<<<< HEAD
 #> $sim1
+=======
+#> $server_1
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 #>  [1] "where_it_came_from" "mpg"                "cyl"               
 #>  [4] "disp"               "hp"                 "drat"              
 #>  [7] "wt"                 "qsec"               "vs"                
@@ -289,8 +428,14 @@ Bind any number of data frames by column, making a wider result. This is similar
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -299,18 +444,33 @@ ds.bind_cols(
 )
 
 ds.colnames("df_bound")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   
 #>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
 #> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
 #> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
+=======
+#> $server_1
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5" 
+#>  [6] "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10"
+#> [11] "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"  
+#> [16] "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"  
+#> [21] "gear...21" "carb...22"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
 ```r
 ds.colnames("mtcars")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -320,9 +480,16 @@ ds.bind_cols(
 )
 
 ds.colnames("df_bound")
+<<<<<<< HEAD
 #> $sim1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 #> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+=======
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  
+#> [10] "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"
+#> [19] "vs"   "am"   "gear" "carb"
+>>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
@@ -344,11 +511,11 @@ ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
 #> 
 #> Study 1 :  No errors reported from this study
 #>         study
-#> recoded  sim1
-#>   high      4
-#>   low      18
-#>   medium   10
-#>   NA        0
+#> recoded  server_1
+#>   high          4
+#>   low          18
+#>   medium       10
+#>   NA            0
 ```
 
 You can also use the `.default` argument to control what happens if the condition is not met:
@@ -369,11 +536,11 @@ ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
 #> 
 #> Study 1 :  No errors reported from this study
 #>                    study
-#> recoded_missing     sim1
-#>   high                 4
-#>   low                 18
-#>   something_missing   10
-#>   NA                   0
+#> recoded_missing     server_1
+#>   high                     4
+#>   low                     18
+#>   something_missing       10
+#>   NA                       0
 ```
 See the help file for `dplyr::case_when` for all available arguments.
 
@@ -478,3 +645,43 @@ ds.dim("sliced_df_group")[1]
       )
 ```
 `arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
+
+### Grouping
+Many data operations are performed on groups defined by variables. `group_by` takes an existing tibble or data frame and converts it into a grouped tibble. Subsequent operations can then be performed 'by group' rather than to the whole dataframe.
+
+To group a data frame:
+
+```r
+ds.group_by(
+  df.name = "mtcars",
+  expr = list(mpg, cyl),
+  newobj = "grouped"
+)
+ds.class("grouped")[[1]]
+#> [1] "grouped_df" "tbl_df"     "tbl"        "data.frame"
+```
+
+To ungroup a data frame:
+
+```r
+ds.ungroup("grouped", "no_longer_grouped")
+ds.class("no_longer_grouped")[[1]]
+#> [1] "tbl_df"     "tbl"        "data.frame"
+```
+
+To return to clientside details of the groups, use `ds.group_keys`. Note that
+this is subject to disclosure controls and will return an error if the number
+of groups is too high.
+
+
+```r
+my_groups <- ds.group_keys("mtcars_group")
+my_groups
+#> $server_1
+#> # A tibble: 3 × 1
+#>     cyl
+#>   <dbl>
+#> 1     4
+#> 2     6
+#> 3     8
+```

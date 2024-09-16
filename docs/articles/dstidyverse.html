@@ -108,31 +108,70 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBase</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsBaseClient</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverse</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">dsTidyverseClient</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/datashield/DSI/" class="external-link">DSI</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="set-up-dslite-environment-and-log-in-">Set up DSLite environment and log in.<a class="anchor" aria-label="anchor" href="#set-up-dslite-environment-and-log-in-"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>dslite.server <span class="ot">&lt;-</span> <span class="fu">newDSLiteServer</span>(<span class="at">tables=</span><span class="fu">list</span>(<span class="at">mtcars=</span>mtcars))</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"logindata.dslite.cnsim"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>logindata.dslite.cnsim <span class="ot">&lt;-</span> logindata.dslite.cnsim <span class="sc">%&gt;%</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">table =</span> <span class="st">"mtcars"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">config</span>(<span class="fu">defaultDSConfiguration</span>(<span class="at">include=</span><span class="fu">c</span>(<span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span>)))</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"selectDS"</span>, <span class="st">"selectDS"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"renameDS"</span>, <span class="st">"renameDS"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"filterDS"</span>, <span class="st">"filterDS"</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"arrangeDS"</span>, <span class="st">"arrangeDS"</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 5ccd846 (docs<span class="sc">:</span> added vignette)</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>conns <span class="ot">&lt;-</span> <span class="fu">datashield.login</span>(logindata.dslite.cnsim[<span class="dv">1</span>, ], <span class="at">assign=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>mtcars_group <span class="ot">&lt;-</span> mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">group_by</span>(cyl) <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">drop_test =</span> <span class="fu">factor</span>(<span class="st">"a"</span>, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)))</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>dslite.server <span class="ot">&lt;-</span> <span class="fu">newDSLiteServer</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">tables =</span> <span class="fu">list</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">mtcars =</span> mtcars,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="at">mtcars_group =</span> mtcars_group</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  )</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">config</span>(<span class="fu">defaultDSConfiguration</span>(<span class="at">include=</span><span class="fu">c</span>(<span class="st">"dsBase"</span>, <span class="st">"dsTidyverse"</span>)))</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"selectDS"</span>, <span class="st">"selectDS"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"renameDS"</span>, <span class="st">"renameDS"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"mutateDS"</span>, <span class="st">"mutateDS"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"ifElseDS"</span>, <span class="st">"ifElseDS"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"caseWhenDS"</span>, <span class="st">"caseWhenDS"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindRowsDS"</span>, <span class="st">"bindRowsDS"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"bindColsDS"</span>, <span class="st">"bindColsDS"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"filterDS"</span>, <span class="st">"filterDS"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"arrangeDS"</span>, <span class="st">"arrangeDS"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 5ccd846 (docs<span class="sc">:</span> added vignette)</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>conns <span class="ot">&lt;-</span> <span class="fu">datashield.login</span>(logindata.dslite.cnsim[<span class="dv">1</span>, ], <span class="at">assign=</span><span class="cn">TRUE</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"groupByDS"</span>, <span class="st">"groupByDS"</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">assignMethod</span>(<span class="st">"ungroupDS"</span>, <span class="st">"ungroupDS"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>dslite.server<span class="sc">$</span><span class="fu">aggregateMethod</span>(<span class="st">"groupKeysDS"</span>, <span class="st">"groupKeysDS"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>builder <span class="ot">&lt;-</span> DSI<span class="sc">::</span><span class="fu">newDSLoginBuilder</span>()</span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>builder<span class="sc">$</span><span class="fu">append</span>(</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a>  <span class="at">server=</span><span class="st">"server_1"</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>  <span class="at">url=</span><span class="st">"dslite.server"</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">"mtcars"</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>  <span class="at">driver =</span> <span class="st">"DSLiteDriver"</span>)</span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>logindata <span class="ot">&lt;-</span> builder<span class="sc">$</span><span class="fu">build</span>()</span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a>conns <span class="ot">&lt;-</span> DSI<span class="sc">::</span><span class="fu">datashield.login</span>(<span class="at">logins =</span> logindata, <span class="at">assign =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a><span class="fu">datashield.assign.table</span>(</span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>  <span class="at">conns =</span> conns,</span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">"mtcars"</span>,</span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>  <span class="at">symbol =</span> <span class="st">"mtcars"</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a><span class="fu">datashield.assign.table</span>(</span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a>  <span class="at">conns =</span> conns,</span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">"mtcars_group"</span>,</span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a>  <span class="at">symbol =</span> <span class="st">"mtcars_group"</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
@@ -149,74 +188,105 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <div class="section level4">
 <h4 id="subset-columns-by-name">Subset columns by name<a class="anchor" aria-label="anchor" href="#subset-columns-by-name"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "mpg"  "disp" "wt"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(mpg, disp, wt), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; [1] "mpg"  "disp" "wt"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="specify-columns-to-exclude">Specify columns to exclude<a class="anchor" aria-label="anchor" href="#specify-columns-to-exclude"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="sc">!</span>mpg), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; [10] "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="specify-a-range-of-columns-to-keep">Specify a range of columns to keep<a class="anchor" aria-label="anchor" href="#specify-a-range-of-columns-to-keep"></a>
 </h4>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "mpg"  "cyl"  "disp" "hp"   "drat"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(mpg<span class="sc">:</span>drat), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; [1] "mpg"  "cyl"  "disp" "hp"   "drat"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="specify-column-names-using-a-regular-expression">Specify column names using a regular expression<a class="anchor" aria-label="anchor" href="#specify-column-names-using-a-regular-expression"></a>
 </h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "disp" "drat" "qsec" "am"   "gear" "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="fu">matches</span>(<span class="st">'[aeiou]'</span>)), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; [1] "disp" "drat" "qsec" "am"   "gear" "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="combine-multiple-conditions-with">Combine multiple conditions with ‘&amp;’<a class="anchor" aria-label="anchor" href="#combine-multiple-conditions-with"></a>
 </h4>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="fu">starts_with</span>(<span class="st">'c'</span>) <span class="sc">&amp;</span> <span class="fu">ends_with</span>(<span class="st">'b'</span>)), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; [1] "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="combine-multiple-conditions-with-1">Combine multiple conditions with ‘|’<a class="anchor" aria-label="anchor" href="#combine-multiple-conditions-with-1"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="fu">ds.select</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="fu">starts_with</span>(<span class="st">'c'</span>) <span class="sc">|</span> <span class="fu">ends_with</span>(<span class="st">'b'</span>)), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -226,15 +296,26 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 dataframe. Column names are passed unquoted and are evaluated as column
 names within <code>df.name</code>. Below are some examples, see
 <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">dplyr::rename</a></code> for full details.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    </span></span>
-<span><span class="co">#&gt;  [8] "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">ds.rename</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="at">effiency =</span> mpg, <span class="at">power =</span> hp), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;  [8] "vs"       "am"       "gear"     "carb"</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="fu">ds.rename</span>(<span class="at">df.name =</span> <span class="st">"mtcars"</span>, <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="at">effiency =</span> mpg, <span class="at">power =</span> hp), <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"    </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;  [6] "wt"       "qsec"     "vs"       "am"       "gear"    </span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; [11] "carb"</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -248,72 +329,116 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <div class="section level4">
 <h4 id="create-columns-which-are-transformations-of-existing-variables">Create columns which are transformations of existing variables:<a class="anchor" aria-label="anchor" href="#create-columns-which-are-transformations-of-existing-variables"></a>
 </h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
-<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       </span></span>
-<span><span class="co">#&gt;  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"</span></span>
-<span><span class="co">#&gt; [13] "new_var"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1        6.1875        0     32     32</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"new_df$mpg_trans"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1        6187.5        0     32     32</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$hp"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1      146.6875        0     32     32</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$drat"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1      3.596563        0     32     32</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$qsec"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1      17.84875        0     32     32</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"new_df$new_var"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
-<span><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
-<span><span class="co">#&gt; sim1      8.372669        0     32     32</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">ds.mutate</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"mtcars"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="at">mpg_trans =</span> cyl<span class="sc">*</span><span class="dv">1000</span>, <span class="at">new_var =</span> (hp<span class="sc">-</span>drat)<span class="sc">/</span>qsec),</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"new_df"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt;  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; [13] "new_var"</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$cyl"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; sim1        6.1875        0     32     32</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"new_df$mpg_trans"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; sim1        6187.5        0     32     32</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$hp"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt; sim1      146.6875        0     32     32</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$drat"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co">#&gt; sim1      3.596563        0     32     32</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$qsec"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt;      EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt; sim1      17.84875        0     32     32</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"     </span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt;  [6] "wt"        "qsec"      "vs"        "am"        "gear"     </span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt; [11] "carb"      "mpg_trans" "new_var"</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$cyl"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt; server_1        6.1875        0     32     32</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"new_df$mpg_trans"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt; server_1        6187.5        0     32     32</span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$hp"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a><span class="co">#&gt; server_1      146.6875        0     32     32</span></span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$drat"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co">#&gt; server_1      3.596563        0     32     32</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"mtcars$qsec"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="co">#&gt; server_1      17.84875        0     32     32</span></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="sc">&gt;</span><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="st">"new_df$new_var"</span>)<span class="sc">$</span>Mean.by.Study</span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt; server_1      8.372669        0     32     32</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="choose-where-the-new-columns-are-positioned-in-the-data-frame-with--before-and--after">Choose where the new columns are positioned in the data frame with
 <code>.before</code> and <code>.after</code>:<a class="anchor" aria-label="anchor" href="#choose-where-the-new-columns-are-positioned-in-the-data-frame-with--before-and--after"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
-<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"new_df"</span>,</span>
-<span>  .before <span class="op">=</span> <span class="st">"disp"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       </span></span>
-<span><span class="co">#&gt;  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     </span></span>
-<span><span class="co">#&gt; [13] "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="fu">ds.mutate</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"mtcars"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="at">mpg_trans =</span> cyl<span class="sc">*</span><span class="dv">1000</span>, <span class="at">new_var =</span> (hp<span class="sc">-</span>drat)<span class="sc">/</span>qsec),</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"new_df"</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="at">.before =</span> <span class="st">"disp"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       </span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt;  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     </span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; [13] "carb"</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"     </span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt;  [6] "hp"        "drat"      "wt"        "qsec"      "vs"       </span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="co">#&gt; [11] "am"        "gear"      "carb"</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="only-keep-the-newly-created-variables-with--keep">Only keep the newly created variables with <code>.keep</code>:<a class="anchor" aria-label="anchor" href="#only-keep-the-newly-created-variables-with--keep"></a>
 </h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
-<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"new_df"</span>,</span>
-<span>  .keep <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt; [1] "mpg_trans" "new_var"</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="fu">ds.mutate</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"mtcars"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="at">tidy_select =</span> <span class="fu">list</span>(<span class="at">mpg_trans =</span> cyl<span class="sc">*</span><span class="dv">1000</span>, <span class="at">new_var =</span> (hp<span class="sc">-</span>drat)<span class="sc">/</span>qsec),</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"new_df"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>  <span class="at">.keep =</span> <span class="st">"none"</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"new_df"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt; [1] "mpg_trans" "new_var"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -335,10 +460,10 @@ unquoted, this time in the <code>condition</code> argument.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;        study</span></span>
-<span><span class="co">#&gt; mpg_cat sim1</span></span>
-<span><span class="co">#&gt;    high   14</span></span>
-<span><span class="co">#&gt;    low    18</span></span>
-<span><span class="co">#&gt;    NA      0</span></span></code></pre></div>
+<span><span class="co">#&gt; mpg_cat server_1</span></span>
+<span><span class="co">#&gt;    high       14</span></span>
+<span><span class="co">#&gt;    low        18</span></span>
+<span><span class="co">#&gt;    NA          0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="bind_rows">bind_rows<a class="anchor" aria-label="anchor" href="#bind_rows"></a>
@@ -360,61 +485,90 @@ columns that appear in any of the inputs.</p>
 <span><span class="co">#&gt; [1] 64 11</span></span></code></pre></div>
 <p>The argument <code>.id</code> can be used to create an additional
 column which records which dataframe each row came from:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.bind_rows.html">ds.bind_rows</a></span><span class="op">(</span></span>
-<span>  to_combine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mtcars</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"df_bound"</span>,</span>
-<span>  datasources <span class="op">=</span> <span class="va">conns</span>,</span>
-<span>  .id <span class="op">=</span> <span class="st">"where_it_came_from"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "where_it_came_from" "mpg"                "cyl"               </span></span>
-<span><span class="co">#&gt;  [4] "disp"               "hp"                 "drat"              </span></span>
-<span><span class="co">#&gt;  [7] "wt"                 "qsec"               "vs"                </span></span>
-<span><span class="co">#&gt; [10] "am"                 "gear"               "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">ds.bind_rows</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">to_combine =</span> <span class="fu">list</span>(mtcars, mtcars),</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"df_bound"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">datasources =</span> conns,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">"where_it_came_from"</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"df_bound"</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt;  [1] "where_it_came_from" "mpg"                "cyl"               </span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;  [4] "disp"               "hp"                 "drat"              </span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;  [7] "wt"                 "qsec"               "vs"                </span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt; [10] "am"                 "gear"               "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="bind_cols">bind_cols<a class="anchor" aria-label="anchor" href="#bind_cols"></a>
 </h3>
 <p>Bind any number of data frames by column, making a wider result. This
 is similar to do.call(cbind, dfs).</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/ds.bind_cols.html">ds.bind_cols</a></span><span class="op">(</span></span>
-<span>  to_combine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mtcars</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"df_bound"</span>,</span>
-<span>  datasources <span class="op">=</span> <span class="va">conns</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   </span></span>
-<span><span class="co">#&gt;  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" </span></span>
-<span><span class="co">#&gt; [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"</span></span>
-<span><span class="co">#&gt; [19] "vs...19"   "am...20"   "gear...21" "carb...22"</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="fu">ds.bind_cols</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>  <span class="at">to_combine =</span> <span class="fu">list</span>(mtcars, mtcars),</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"df_bound"</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>  <span class="at">datasources =</span> conns</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>)</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"df_bound"</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   </span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt;  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" </span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt; [19] "vs...19"   "am...20"   "gear...21" "carb...22"</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5" </span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt;  [6] "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10"</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt; [11] "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"  </span></span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt; [16] "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"  </span></span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt; [21] "gear...21" "carb...22"</span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span></code></pre></div>
 <p>The argument <code>.name_repair</code> handles duplicate or broken
 names, e.g.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/ds.bind_cols.html">ds.bind_cols</a></span><span class="op">(</span></span>
-<span>  to_combine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mtcars</span><span class="op">)</span>,</span>
-<span>  newobj <span class="op">=</span> <span class="st">"df_bound"</span>,</span>
-<span>  .name_repair <span class="op">=</span> <span class="st">"minimal"</span>,</span>
-<span>  datasources <span class="op">=</span> <span class="va">conns</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $sim1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
-<span><span class="co">#&gt; [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"mtcars"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb"</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="fu">ds.bind_cols</span>(</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>  <span class="at">to_combine =</span> <span class="fu">list</span>(mtcars, mtcars),</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"df_bound"</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>  <span class="at">.name_repair =</span> <span class="st">"minimal"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  <span class="at">datasources =</span> conns</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>)</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"df_bound"</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co">#&gt; $sim1</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a><span class="co">#&gt; [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a><span class="sc">==</span><span class="er">=====</span></span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a><span class="co">#&gt; $server_1</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"  </span></span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a><span class="co">#&gt; [10] "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"</span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a><span class="co">#&gt; [19] "vs"   "am"   "gear" "carb"</span></span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a><span class="er">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 2999dd7 (docs<span class="sc">:</span> added group examples to vignette)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="case_when">case_when<a class="anchor" aria-label="anchor" href="#case_when"></a>
@@ -437,11 +591,11 @@ variables.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;         study</span></span>
-<span><span class="co">#&gt; recoded  sim1</span></span>
-<span><span class="co">#&gt;   high      4</span></span>
-<span><span class="co">#&gt;   low      18</span></span>
-<span><span class="co">#&gt;   medium   10</span></span>
-<span><span class="co">#&gt;   NA        0</span></span></code></pre></div>
+<span><span class="co">#&gt; recoded  server_1</span></span>
+<span><span class="co">#&gt;   high          4</span></span>
+<span><span class="co">#&gt;   low          18</span></span>
+<span><span class="co">#&gt;   medium       10</span></span>
+<span><span class="co">#&gt;   NA            0</span></span></code></pre></div>
 <p>You can also use the <code>.default</code> argument to control what
 happens if the condition is not met:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -459,11 +613,11 @@ happens if the condition is not met:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Study 1 :  No errors reported from this study</span></span>
 <span><span class="co">#&gt;                    study</span></span>
-<span><span class="co">#&gt; recoded_missing     sim1</span></span>
-<span><span class="co">#&gt;   high                 4</span></span>
-<span><span class="co">#&gt;   low                 18</span></span>
-<span><span class="co">#&gt;   something_missing   10</span></span>
-<span><span class="co">#&gt;   NA                   0</span></span></code></pre></div>
+<span><span class="co">#&gt; recoded_missing     server_1</span></span>
+<span><span class="co">#&gt;   high                     4</span></span>
+<span><span class="co">#&gt;   low                     18</span></span>
+<span><span class="co">#&gt;   something_missing       10</span></span>
+<span><span class="co">#&gt;   NA                       0</span></span></code></pre></div>
 <p>See the help file for <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when</a></code> for all available
 arguments.</p>
 </div>
@@ -564,6 +718,42 @@ values of selected columns.</p>
 <p><code>arrange</code> can be used on a sorted data frame or tibble.
 The arrange argument <code>.by_group</code> (TRUE or FALSE) determines
 whether or not data is sorted by group.</p>
+</div>
+<div class="section level3">
+<h3 id="grouping">Grouping<a class="anchor" aria-label="anchor" href="#grouping"></a>
+</h3>
+<p>Many data operations are performed on groups defined by variables.
+<code>group_by</code> takes an existing tibble or data frame and
+converts it into a grouped tibble. Subsequent operations can then be
+performed ‘by group’ rather than to the whole dataframe.</p>
+<p>To group a data frame:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.group_by.html">ds.group_by</a></span><span class="op">(</span></span>
+<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
+<span>  newobj <span class="op">=</span> <span class="st">"grouped"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.class.html" class="external-link">ds.class</a></span><span class="op">(</span><span class="st">"grouped"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "grouped_df" "tbl_df"     "tbl"        "data.frame"</span></span></code></pre></div>
+<p>To ungroup a data frame:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.ungroup.html">ds.ungroup</a></span><span class="op">(</span><span class="st">"grouped"</span>, <span class="st">"no_longer_grouped"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.class.html" class="external-link">ds.class</a></span><span class="op">(</span><span class="st">"no_longer_grouped"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "tbl_df"     "tbl"        "data.frame"</span></span></code></pre></div>
+<p>To return to clientside details of the groups, use
+<code>ds.group_keys</code>. Note that this is subject to disclosure
+controls and will return an error if the number of groups is too
+high.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ds.group_keys.html">ds.group_keys</a></span><span class="op">(</span><span class="st">"mtcars_group"</span><span class="op">)</span></span>
+<span><span class="va">my_groups</span></span>
+<span><span class="co">#&gt; $server_1</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 1</span></span>
+<span><span class="co">#&gt;     cyl</span></span>
+<span><span class="co">#&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     4</span></span>
+<span><span class="co">#&gt; 2     6</span></span>
+<span><span class="co">#&gt; 3     8</span></span></code></pre></div>
 </div>
 </div>
   </div>

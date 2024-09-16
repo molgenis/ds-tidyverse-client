@@ -12,7 +12,7 @@ data("logindata.dslite.cnsim")
 logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
   mutate(table = "mtcars")
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("case_whenDS", "dsTidyverse::caseWhenDS")
+dslite.server$assignMethod("caseWhenDS", "dsTidyverse::caseWhenDS")
 dslite.server$aggregateMethod("exists", "base::exists")
 dslite.server$aggregateMethod("classDS", "dsBase::classDS")
 dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
@@ -20,13 +20,20 @@ dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDi
 conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
-  ds.case_when(
-    dynamic_dots = list(
-      mtcars$mpg < 20 ~ "low",
-      mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
-      mtcars$mpg >= 30 ~ "high"),
-    newobj = "test",
-    datasources = conns)
+  tryCatch(
+    ds.case_when(
+      dynamic_dots = list(
+        mtcars$mpg < 20 ~ "low",
+        mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
+        mtcars$mpg >= 30 ~ "high"
+      ),
+      newobj = "test",
+      datasources = conns
+    ),
+    error = function(e) {
+      print(datashield.errors())
+    }
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -52,9 +59,11 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
     dynamic_dots = list(
       mtcars$mpg < 20 ~ 20,
       mtcars$mpg >= 20 & mtcars$mpg < 30 ~ 30,
-      mtcars$mpg >= 30 ~ 40),
+      mtcars$mpg >= 30 ~ 40
+    ),
     newobj = "test",
-    datasources = conns)
+    datasources = conns
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -73,7 +82,6 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
     as.numeric(counts),
     c(54, 30, 12, 0)
   )
-
 })
 
 
@@ -83,9 +91,11 @@ test_that("ds.case_when correctly passes argument with categorical condition and
       mtcars$gear == 2 ~ "low",
       mtcars$gear == 3 ~ "medium",
       mtcars$gear == 4 ~ "high",
-      mtcars$gear == 5 ~ "very_high"),
+      mtcars$gear == 5 ~ "very_high"
+    ),
     newobj = "test",
-    datasources = conns)
+    datasources = conns
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -104,7 +114,6 @@ test_that("ds.case_when correctly passes argument with categorical condition and
     as.numeric(counts),
     c(36, 45, 15, 0)
   )
-
 })
 
 test_that("ds.case_when correctly passes .default argument", {
@@ -112,10 +121,12 @@ test_that("ds.case_when correctly passes .default argument", {
     dynamic_dots = list(
       mtcars$gear == 2 ~ "low",
       mtcars$gear == 3 ~ "medium",
-      mtcars$gear == 5 ~ "very_high"),
+      mtcars$gear == 5 ~ "very_high"
+    ),
     .default = "something_missing",
     newobj = "test",
-    datasources = conns)
+    datasources = conns
+  )
 
   nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
 
@@ -134,5 +145,4 @@ test_that("ds.case_when correctly passes .default argument", {
     as.numeric(counts),
     c(45, 36, 15, 0)
   )
-
 })

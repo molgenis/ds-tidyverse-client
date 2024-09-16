@@ -44,12 +44,14 @@ DataSHIELD implementation of \code{dplyr::case_when}.
 ## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.case_when(
-tidy_select = list(
+  tidy_select = list(
     mtcars$mpg < 10 ~ "low",
     mtcars$mpg >= 10 & mtcars$mpg < 20 ~ "medium",
-    mtcars$mpg >= 20 ~ "high"),
+    mtcars$mpg >= 20 ~ "high"
+  ),
   newobj = "test",
-  datasources = conns)
+  datasources = conns
+)
 
 ## Refer to the package vignette for more examples.
 }

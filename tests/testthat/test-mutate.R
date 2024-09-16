@@ -21,23 +21,24 @@ conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
 test_that("ds.mutate correctly passes good argument", {
   ds.mutate(
     df.name = "mtcars",
-    tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+    tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
     newobj = "new"
   )
-   expected_cols <- c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb", "mpg_trans", "new_var")
+  expected_cols <- c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb", "mpg_trans", "new_var")
   .check_cols_as_expected(expected_cols, "new")
 
   expected_mean <- ds.mean("new$mpg_trans")
   expect_equal(
     mean(expected_mean$Mean.by.Study[1]),
-    6187.5)
+    6187.5
+  )
 })
 
 test_that("ds.mutate fails with bad argument argument", {
   expect_error(
     ds.mutate(
       df.name = "mtcars",
-      tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec, filterasd("asdasdf")),
+      tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec, filterasd("asdasdf")),
       newobj = "new"
     )
   )
@@ -45,18 +46,17 @@ test_that("ds.mutate fails with bad argument argument", {
   expect_error(
     ds.mutate(
       df.name = "mtcars",
-      tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+      tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
       newobj = "new",
       .keep = NULL
     )
   )
-
 })
 
 test_that("ds.mutate passes with different .keep argument", {
   ds.mutate(
     df.name = "mtcars",
-    tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+    tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
     newobj = "new",
     .keep = "none",
     .before = NULL,
@@ -69,7 +69,7 @@ test_that("ds.mutate passes with different .keep argument", {
 test_that("ds.mutate passes with different .before argument", {
   ds.mutate(
     df.name = "mtcars",
-    tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+    tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
     newobj = "new",
     .keep = "all",
     .before = "disp",
@@ -78,21 +78,22 @@ test_that("ds.mutate passes with different .before argument", {
 
   .check_cols_as_expected(
     c("mpg", "cyl", "mpg_trans", "new_var", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"),
-  "new")
+    "new"
+  )
 })
 
 test_that("ds.mutate passes with different .after argument", {
   ds.mutate(
     df.name = "mtcars",
-    tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+    tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
     newobj = "new",
     .keep = "all",
     .before = NULL,
     .after = "qsec"
   )
 
-    .check_cols_as_expected(
-      c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "mpg_trans", "new_var", "vs", "am", "gear", "carb"),
-       "new")
+  .check_cols_as_expected(
+    c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "mpg_trans", "new_var", "vs", "am", "gear", "carb"),
+    "new"
+  )
 })
-

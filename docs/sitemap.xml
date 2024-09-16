@@ -37,6 +37,12 @@
     <loc>/reference/ds.filter.html</loc>
   </url>
   <url>
+    <loc>/reference/ds.group_by.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.group_keys.html</loc>
+  </url>
+  <url>
     <loc>/reference/ds.if_else.html</loc>
   </url>
   <url>
@@ -50,6 +56,9 @@
   </url>
   <url>
     <loc>/reference/ds.slice.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.ungroup.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

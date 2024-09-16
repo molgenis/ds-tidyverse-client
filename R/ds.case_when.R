@@ -16,26 +16,27 @@
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
-#'ds.case_when(
-#' tidy_select = list(
+#' ds.case_when(
+#'   tidy_select = list(
 #'     mtcars$mpg < 10 ~ "low",
 #'     mtcars$mpg >= 10 & mtcars$mpg < 20 ~ "medium",
-#'     mtcars$mpg >= 20 ~ "high"),
+#'     mtcars$mpg >= 20 ~ "high"
+#'   ),
 #'   newobj = "test",
-#'   datasources = conns)
+#'   datasources = conns
+#' )
 #'
 #' ## Refer to the package vignette for more examples.
 #' }
 #' @export
 ds.case_when <- function(dynamic_dots = NULL, .default = NULL, .ptype = NULL, .size = NULL,
-                       newobj = NULL, datasources = NULL) {
+                         newobj = NULL, datasources = NULL) {
   dynamic_dots <- .format_args_as_string(rlang::enquo(dynamic_dots))
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name = NULL, newobj, dynamic_dots, datasources, check_df = FALSE)
   cally <- .make_serverside_call("caseWhenDS", dynamic_dots, list(.default, .ptype, .size))
   datashield.assign(datasources, newobj, cally)
 }
-

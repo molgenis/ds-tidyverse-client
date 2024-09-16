@@ -48,9 +48,10 @@ DataSHIELD implementation of \code{dplyr::mutate}.
 ## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.mutate(
- df.name = "mtcars",
- tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
- newobj = "df_with_new_cols")
+  df.name = "mtcars",
+  tidy_select = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
+  newobj = "df_with_new_cols"
+)
 
 ## Refer to the package vignette for more examples.
 }
