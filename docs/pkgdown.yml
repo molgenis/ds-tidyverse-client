@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   dstidyverse: dstidyverse.html
 <<<<<<< HEAD
+<<<<<<< HEAD
 last_built: 2024-09-16T08:42Z
 =======
 <<<<<<< HEAD
@@ -12,4 +13,7 @@ last_built: 2024-09-16T08:26Z
 last_built: 2024-09-09T14:01Z
 >>>>>>> 4003aa6 (docs: built site, styled code)
 >>>>>>> 7f62153 (docs: built site, styled code)
+=======
+last_built: 2024-09-16T08:50Z
+>>>>>>> 9432622 (docs: rebuilt site)
 
