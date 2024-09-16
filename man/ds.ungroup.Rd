@@ -18,6 +18,6 @@ DataSHIELD implentation of \code{dplyr::ungroup}.
 }
 \examples{
 \dontrun{
- ds.ungroup("grouped_df")
- }
+ds.ungroup("grouped_df")
+}
 }

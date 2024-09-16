@@ -46,10 +46,11 @@ Performs dplyr mutate
 ## First log in to a DataSHIELD session with mtcars dataset loaded.
 
 ds.if_else(
- condition = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
- true = "high",
- false = "low",
- newobj = "new_var")
+  condition = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
+  true = "high",
+  false = "low",
+  newobj = "new_var"
+)
 
 ## Refer to the package vignette for more examples.
 }
