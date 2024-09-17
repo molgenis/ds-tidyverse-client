@@ -1,0 +1,49 @@
+Package: dsTidyverseClient
+Type: Package
+Title: DataSHIELD Tidyverse Clientside Package
+Version: 0.8.0
+Authors@R:
+    c(
+      person(given = "Tim",
+             family = "Cadman",
+             role = c("aut", "cre"),
+             email = "t.j.cadman@umcg.nl",
+             comment = c(ORCID = "0000-0002-7682-5645")), 
+     person(given = "Mariska",
+             family = "Slofstra",
+             role = c("aut"),
+             email = "m.k.slofstra@umcg.nl",
+             comment = c(ORCID = "0000-0002-0400-0468")),
+     person(given = "Stuart",
+            family = "Wheater",
+            role = c("aut")),
+     person(given = "Demetris",
+            family = "Avraam",
+            role = c("aut"))
+       )
+Maintainer: Tim Cadman <t.j.cadman@umcg.nl>
+Description: DataSHIELD Clientside implementation of Tidyverse packages.
+License: LGPL (>= 2.1)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.1
+Imports:
+  DSI,
+  cli,
+  stringr,
+  rlang,
+  assertthat,
+  purrr,
+  methods, 
+  dplyr
+Suggests: 
+  testthat (>= 3.0.0),
+  knitr,
+  rmarkdown, 
+  DSLite, 
+  dsBase,
+  dsBaseClient, 
+  dsTidyverse
+Config/testthat/edition: 3
+Additional_repositories: https://cran.obiba.org/
+VignetteBuilder: knitr
