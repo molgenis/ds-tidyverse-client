@@ -22,20 +22,28 @@ ds.as_tibble(
 check.}
 
 \item{.name_repair}{Treatment of problematic column names:
-* "minimal": No name repair or checks, beyond basic existence,\
-* "unique": Make sure names are unique and not empty,
-* "check_unique": (default value), no name repair, but check they are unique,
-* "universal": Make the names unique and syntactic}
+\itemize{
+  \item "minimal": No name repair or checks, beyond basic existence
+  \item "unique": Make sure names are unique and not empty
+  \item "check_unique": (default value), no name repair, but check they are unique
+  \item "universal": Make the names unique and syntactic
+}}
 
 \item{rownames}{How to treat existing row names of a data frame or matrix:
-* `NULL`: remove row names. This is the default.
-* `NA`: keep row names.
-* A string: the name of a new column. Existing rownames are transferred
+\itemize{
+  \item `NULL`: remove row names. This is the default.
+  \item `NA`: keep row names.
+  \item A string: the name of a new column. Existing rownames are transferred
   into this column and the `row.names` attribute is deleted.
   No name repair is applied to the new column name, even if `x` already contains
-  a column of that name.}
+  a column of that name.
+}}
 
 \item{column_name}{Optionally, specify column names of the new object.}
+
+\item{newobj}{Character specifying name for new server-side data frame.}
+
+\item{datasources}{DataSHIELD connections object.}
 }
 \value{
 A serverside tibble with the name specified in the \code{newobj}.
@@ -45,5 +53,9 @@ DataSHIELD implementation of \code{tibble::as_tibble}.
 }
 \examples{
 \dontrun{
+ds.as_tibble(
+x = "mtcars",
+newobj = "mtcars_tib",
+datasources = conns)
 }
 }
