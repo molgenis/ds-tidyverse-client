@@ -1,8 +1,8 @@
 library(DSLite)
 library(dplyr)
-library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
+library(dsTidyverse)
 
 options(datashield.env = environment())
 data("mtcars")
@@ -13,13 +13,13 @@ test_matrix <- matrix(data = 1:20, ncol = 4)
 dslite.server <- newDSLiteServer(
   tables = list(
     mtcars = mtcars,
-    mtcars_group = mtcars_dup_names,
-    test_matrix
+    mtcars_dup_names = mtcars_dup_names,
+    test_matrix = test_matrix
   )
 )
 
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
-dslite.server$assignMethod("as_tibbleDS", "as_tibbleDS")
+dslite.server$assignMethod("asTibbleDS", "asTibbleDS")
 dslite.server$aggregateMethod("listDisclosureSettingsDS", "listDisclosureSettingsDS")
 
 builder <- DSI::newDSLoginBuilder()
@@ -75,35 +75,35 @@ test_that("ds.as_tibble correctly converts a data frame to a tibble", {
 })
 
 test_that("ds.as_tibble works with the name_repair argument", {
-  ds.as_tibble(
-    x = "mtcars_dup_names",
-    .name_repair = "minimal",
-    newobj = "mtcars_tib",
-    datasources = conns)
+    ds.as_tibble(
+      x = "mtcars_dup_names",
+      .name_repair = "minimal",
+      newobj = "mtcars_tib_nr",
+      datasources = conns)
 
   expect_equal(
-    ds.class("mtcars_tib")[[1]],
+    ds.class("mtcars_tib_nr")[[1]],
     c("tbl_df", "tbl", "data.frame")
   )
 
   expect_equal(
-    ds.colnames("mtcars_tib")[[1]],
+    ds.colnames("mtcars_tib_nr")[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb", "cyl")
   )
 
   ds.as_tibble(
     x = "mtcars_dup_names",
     .name_repair = "unique",
-    newobj = "mtcars_tib",
+    newobj = "mtcars_tib_nr",
     datasources = conns)
 
   expect_equal(
-    ds.class("mtcars_tib")[[1]],
+    ds.class("mtcars_tib_nr")[[1]],
     c("tbl_df", "tbl", "data.frame")
   )
 
   expect_equal(
-    ds.colnames("mtcars_tib")[[1]],
+    ds.colnames("mtcars_tib_nr")[[1]],
     c("mpg", "cyl...2", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb", "cyl...12")
   )
 
@@ -111,23 +111,23 @@ test_that("ds.as_tibble works with the name_repair argument", {
     ds.as_tibble(
       x = "mtcars_dup_names",
       .name_repair = "check_unique",
-      newobj = "mtcars_tib",
+      newobj = "mtcars_tib_nr",
       datasources = conns),
   )
 
   ds.as_tibble(
     x = "mtcars_dup_names",
     .name_repair = "universal",
-    newobj = "mtcars_tib",
+    newobj = "mtcars_tib_nr",
     datasources = conns)
 
   expect_equal(
-    ds.class("mtcars_tib")[[1]],
+    ds.class("mtcars_tib_nr")[[1]],
     c("tbl_df", "tbl", "data.frame")
   )
 
   expect_equal(
-    ds.colnames("mtcars_tib")[[1]],
+    ds.colnames("mtcars_tib_nr")[[1]],
     c("mpg", "cyl...2", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb", "cyl...12")
   )
 
@@ -184,6 +184,7 @@ test_that("ds.as_tibble works with matrices", {
   ds.as_tibble(
     x = "test_matrix",
     newobj = "mtcars_tib",
+    .name_repair = "minimal",
     datasources = conns)
 
   expect_equal(
@@ -193,5 +194,6 @@ test_that("ds.as_tibble works with matrices", {
 
   expect_equal(
     ds.colnames("mtcars_tib")[[1]],
-    c("col_with_row_names", "mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
+    c("", "", "", "")
   )
+})
