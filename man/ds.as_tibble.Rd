@@ -8,7 +8,7 @@ object types.}
 ds.as_tibble(
   x = NULL,
   .rows = NULL,
-  .name_repair = NULL,
+  .name_repair = "check_unique",
   rownames = NULL,
   column_name = NULL,
   newobj = NULL,
