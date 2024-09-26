@@ -20,7 +20,6 @@
 #'     No name repair is applied to the new column name, even if `x` already contains
 #'     a column of that name.
 #'   }
-#' @param column_name Optionally, specify column names of the new object.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return A serverside tibble with the name specified in the \code{newobj}.
@@ -34,9 +33,9 @@
 #' }
 #' @export
 ds.as_tibble <- function(x = NULL, .rows = NULL, .name_repair = "check_unique", rownames = NULL,
-                         column_name = NULL, newobj = NULL, datasources = NULL) {
+                         newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
   .perform_tidyverse_checks(df.name = x, newobj = newobj, tidy_select = NULL, datasources)
-  cally <- .make_serverside_call("asTibbleDS", NULL, list(x, .rows, .name_repair, rownames, column_name))
+  cally <- .make_serverside_call("asTibbleDS", NULL, list(x, .rows, .name_repair, rownames))
   datashield.assign(datasources, newobj, cally)
 }

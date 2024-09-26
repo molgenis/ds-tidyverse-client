@@ -10,7 +10,6 @@ ds.as_tibble(
   .rows = NULL,
   .name_repair = "check_unique",
   rownames = NULL,
-  column_name = NULL,
   newobj = NULL,
   datasources = NULL
 )
@@ -38,8 +37,6 @@ check.}
   No name repair is applied to the new column name, even if `x` already contains
   a column of that name.
 }}
-
-\item{column_name}{Optionally, specify column names of the new object.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
