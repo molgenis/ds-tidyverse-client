@@ -1,80 +1,49 @@
-#' @title Order the rows of a data frame by the values of selected columns
-#' @description DataSHIELD implentation of  \code{dplyr::arrange}.
-#' @param df.name Character specifying a serverside data frame or tibble.
-#' @param expr Variables, or functions of variables. Use desc() to sort a variable in descending
-#' order.
-#' @param .by_group If TRUE, will sort first by grouping variable. Applies to grouped data frames
-#' only.
-#' @param newobj Character specifying name for new server-side data frame.
-#' @param datasources DataSHIELD connections object.
-#' @return An object with the name specified by the \code{newobj} argument is written serverside.
-#' @importFrom DSI datashield.assign datashield.aggregate
-#' @examples
-#'\dontrun{
-#'ds.arrange(
-#'  "mtcars",
-#'  expr = list(drat),
-#'  newobj = "sorted_df"
-#'  )
-#' }
-#' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
+
+  assert_that(is.character("df.name"))
+  assert_that(is.character("newobj"))
   # .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
   col_names <- datashield.aggregate(datasources, call("colnamesDS", df.name))
   .stop_if_cols_identical(col_names)
 
   var_classes <- .get_var_classes(df.name, datasources)
-  different_classes <- .identify_class_conflicts(var_classes)
+  class_conflicts <- .identify_class_conflicts(var_classes)
 
-  if(length(different_classes) > 0) {
-
+  if (length(class_conflicts) > 0) {
     class_decisions <- prompt_user_class_decision_all_vars(
-      names(different_classes),
+      names(class_conflicts),
       var_classes$server,
-      dplyr::select(var_classes, all_of(names(different_classes)))
+      dplyr::select(var_classes, all_of(names(class_conflicts)))
     )
-
-    .fix_classes(df.name, different_classes, class_decisions, newobj, datasources)
+    .fix_classes(df.name, class_conflicts, class_decisions, newobj, datasources)
   }
 
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
-
-  new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
-  added_cols <- .get_added_cols(col_names, new_names)
+  added_cols <- .summarise_new_cols(newobj, datasources, col_names)
 
   new_classes <- .get_var_classes(df.name, datasources)
-
   factor_vars <- .identify_factor_vars(new_classes)
   factor_levels <- .get_factor_levels(factor_vars, newobj, datasources)
   level_conflicts <- .identify_level_conflicts(factor_levels)
 
-  if(length(level_conflicts) > 0) {
+  if (length(level_conflicts) > 0) {
     levels_decision <- ask_question_wait_response_levels(level_conflicts)
   }
 
-  if(levels_decision == "1") {
+  if (levels_decision == "1") {
     unique_levels <- .get_unique_levels(factor_levels, level_conflicts)
     .set_factor_levels(newobj, unique_levels, datasources)
   }
 
-  cli_alert_success("The following variables have been added to {newobj}:")
-  added_cols_neat <- added_cols %>% map(~ifelse(length(.) == 0, "", .))
-  var_message <- paste0(names(added_cols), " --> ", added_cols_neat)
-  for(i in 1: length(var_message)) {
-    cli_alert_info("{var_message[[i]]}")
-  }
-  cli_text("")
+  .print_out_messages(added_cols, class_decisions, class_conflicts, unique_levels,
+                      level_conflicts, levels_decision, newobj)
+}
 
-  if(length(different_classes) > 0) {
-    .print_class_recode_message(class_decisions, different_classes, newobj)
-    cli_text("")
-  }
-
-  if(length(level_conflicts) > 0 & levels_decision == "1") {
-    .print_levels_recode_message(unique_levels, newobj)
-  }
+.summarise_new_cols <- function(newobj, datasources, col_names) {
+  new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
+  return(.get_added_cols(col_names, new_names))
 }
 
 .get_added_cols <- function(old_names, new_names) {
@@ -84,9 +53,33 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     })
 }
 
+.print_out_messages <- function(added_cols, class_decisions, different_classes, unique_levels,
+                                level_conflicts, levels_decision, newobj) {
+  .print_var_recode_message(added_cols, newobj)
+
+  if (length(different_classes) > 0) {
+    .print_class_recode_message(class_decisions, different_classes, newobj)
+    cli_text("")
+  }
+
+  if (length(level_conflicts) > 0 & levels_decision == "1") {
+    .print_levels_recode_message(unique_levels, newobj)
+  }
+}
+
+.print_var_recode_message <- function(added_cols, newobj) {
+  cli_alert_success("The following variables have been added to {newobj}:")
+  added_cols_neat <- added_cols %>% map(~ ifelse(length(.) == 0, "", .))
+  var_message <- paste0(names(added_cols), " --> ", added_cols_neat)
+  for (i in 1:length(var_message)) {
+    cli_alert_info("{var_message[[i]]}")
+  }
+  cli_text("")
+}
+
 prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) {
   decisions <- c()
-  for(i in 1: length(vars)) {
+  for (i in 1:length(vars)) {
     decisions[i] <- prompt_user_class_decision(vars[i], all_servers, all_classes[[i]])
   }
   return(decisions)
@@ -104,7 +97,7 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
   choice_neat <- change_choice_to_string(class_decisions)
   class_message <- paste0(names(different_classes), " --> ", choice_neat)
   cli_alert_success("The following classes have been set in {newobj}: ")
-  for(i in 1: length(class_message)) {
+  for (i in 1:length(class_message)) {
     cli_alert_info("{class_message[[i]]}")
   }
 }
@@ -112,7 +105,7 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
 .print_levels_recode_message <- function(unique_levels, newobj) {
   levels_message <- .make_levels_recode_message(unique_levels)
   cli_alert_success("The following levels have been set in {newobj}: ")
-  for(i in 1: length(levels_message)) {
+  for (i in 1:length(levels_message)) {
     cli_alert_info("{levels_message[[i]]}")
   }
 }
@@ -126,33 +119,29 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
   )
 }
 
+.fix_classes <- function(df.name, different_classes, class_decisions, newobj, datasources) {
+  cally <- call("fixClassDS", df.name, names(different_classes), class_decisions)
+  datashield.assign(datasources, newobj, cally)
+}
 
-  .fix_classes <- function(df.name, different_classes, class_decisions, newobj, datasources) {
-    cally <- call("fixClassDS", df.name, names(different_classes), class_decisions)
-    datashield.assign(datasources, newobj, cally)
-  }
 
-
- .set_factor_levels <- function(newobj, unique_levels, datasources) {
-   cally <- call("setAllLevelsDS", newobj, names(unique_levels), unique_levels)
-   datashield.assign(datasources, newobj, cally)
- }
+.set_factor_levels <- function(newobj, unique_levels, datasources) {
+  cally <- call("setAllLevelsDS", newobj, names(unique_levels), unique_levels)
+  datashield.assign(datasources, newobj, cally)
+}
 
 .get_factor_levels <- function(factor_vars, newobj, datasources) {
   cally <- call("getAllLevelsDS", newobj, names(factor_vars))
   return(datashield.aggregate(datasources, cally))
 }
 
-
 .get_unique_levels <- function(factor_levels, level_conflicts) {
   unique_levels <- factor_levels %>%
-    map(~.[level_conflicts]) %>%
+    map(~ .[level_conflicts]) %>%
     pmap(function(...) {
-
       as.character(c(...))
-
     }) %>%
-    map(~unique(.))
+    map(~ unique(.))
   return(unique_levels)
 }
 
@@ -162,7 +151,8 @@ change_choice_to_string <- function(class_decision) {
     class_decision == "2" ~ "integer",
     class_decision == "3" ~ "numeric",
     class_decision == "4" ~ "character",
-    class_decision == "5" ~ "logical")
+    class_decision == "5" ~ "logical"
+  )
 }
 
 ask_question_wait_response_levels <- function(level_conflicts) {
@@ -172,7 +162,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 }
 
 check_response_levels <- function(answer, level_conflicts) {
-  if(!answer %in% as.character(1:2)) {
+  if (!answer %in% as.character(1:2)) {
     cli_alert_warning("Invalid input. Please try again.")
     cli_alert_info("")
     .make_levels_message(level_conflicts)
@@ -188,14 +178,13 @@ check_response_levels <- function(answer, level_conflicts) {
 }
 
 .identify_level_conflicts <- function(factor_levels) {
+  levels <- factor_levels %>%
+    pmap_lgl(function(...) {
+      args <- list(...)
+      !all(map_lgl(args[-1], ~ identical(.x, args[[1]])))
+    })
 
-    levels <- factor_levels %>%
-      pmap_lgl(function(...) {
-        args <- list(...)
-        !all(map_lgl(args[-1], ~ identical(.x, args[[1]])))
-      })
-
-    return(names(levels[levels == TRUE]))
+  return(names(levels[levels == TRUE]))
 }
 
 .identify_factor_vars <- function(var_classes) {
@@ -209,7 +198,7 @@ check_response_levels <- function(answer, level_conflicts) {
 print_all_classes <- function(all_servers, all_classes) {
   combined <- paste(all_servers, all_classes, sep = ": ")
   cli_ul()
-  for(i in 1: length(combined)) {
+  for (i in 1:length(combined)) {
     cli_li("{combined[i]}")
   }
   cli_end()
@@ -221,10 +210,10 @@ ask_question_wait_response_class <- function(question) {
   return(check_response_class(answer))
 }
 
-ask_question <- function(var){
+ask_question <- function(var) {
   cli_alert_info("Would you like to:")
   class_options <- c("a factor", "an integer", "numeric", "a character", "a logical vector")
-  class_message <- paste0("Convert `{var}` to ",  class_options, " in all studies")
+  class_message <- paste0("Convert `{var}` to ", class_options, " in all studies")
   cli_ol(
     c(class_message, "Cancel `ds.dataFrameFill` operation")
   )
@@ -235,9 +224,9 @@ give_prompt <- function() {
 }
 
 check_response_class <- function(answer, var) {
-  if(answer == "6"){
+  if (answer == "6") {
     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
-  } else if(!answer %in% as.character(1:5)) {
+  } else if (!answer %in% as.character(1:5)) {
     cli_alert_warning("Invalid input. Please try again.")
     cli_alert_info("")
     question(var)
@@ -248,15 +237,16 @@ check_response_class <- function(answer, var) {
 
 .stop_if_cols_identical <- function(col_names) {
   are_identical <- Reduce(identical, col_names)
-  if(are_identical) {
+  if (are_identical) {
     cli_abort("Columns are identical in all data frames: nothing to fill")
   }
 }
 
-.get_unique_cols <- function(col_names){
+.get_unique_cols <- function(col_names) {
   return(
     unique(
-      unlist(col_names))
+      unlist(col_names)
+    )
   )
 }
 
@@ -270,14 +260,12 @@ check_response_class <- function(answer, var) {
 .add_missing_cols_to_df <- function(df.name, unique_cols, newobj, datasources) {
   cally <- call("makeColsSameDS", df.name, unique_cols)
   datashield.assign(datasources, newobj, cally)
-
 }
 
 .identify_class_conflicts <- function(classes) {
-
   different_class <- classes |>
     dplyr::select(-server) |>
-    map(~unique(na.omit(.)))
+    map(~ unique(na.omit(.)))
 
   out <- different_class[which(different_class %>% map(length) > 1)]
   return(out)
