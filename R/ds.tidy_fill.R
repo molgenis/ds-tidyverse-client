@@ -110,11 +110,20 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
 }
 
 .print_levels_recode_message <- function(unique_levels, newobj) {
-  levels_message <- paste0(names(unique_levels), " --> ", unique_levels)
-  cli_alert_success("The following levels have been set {newobj}: ")
+  levels_message <- .make_levels_recode_message(unique_levels)
+  cli_alert_success("The following levels have been set in {newobj}: ")
   for(i in 1: length(levels_message)) {
     cli_alert_info("{levels_message[[i]]}")
   }
+}
+
+.make_levels_recode_message <- function(unique_levels) {
+  return(
+    list(names(unique_levels), unique_levels) %>%
+      pmap(function(.x, .y) {
+        paste0(.x, " --> ", paste0(.y, collapse = ", "))
+      })
+  )
 }
 
 
