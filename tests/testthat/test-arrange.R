@@ -5,10 +5,9 @@ library(dsBase)
 library(dsBaseClient)
 
 login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
-print(login_data)
 conns <- datashield.login(logins = login_data)
-print(conns)
 datashield.assign.table(conns, "mtcars", "mtcars")
+print(ds.ls(datasources = conns))
 
 test_that("ds.arrange doesn't return error with correct arguments", {
   ds.arrange(
@@ -18,7 +17,7 @@ test_that("ds.arrange doesn't return error with correct arguments", {
     datasources = conns)
 
   expect_equal(
-    ds.class("ordered_df")[[1]],
+    ds.class("ordered_df", datasources = conns)[[1]],
     "data.frame")
 
 }) ## Not possible to test that it has been ordered correctly as cannot see data. Will test serverside.
@@ -32,7 +31,7 @@ test_that("ds.arrange doesn't return error with .by_group argument", {
     datasources = conns)
 
   expect_equal(
-    ds.class("ordered_df")[[1]],
+    ds.class("ordered_df", datasources = conns)[[1]],
     "data.frame")
 
 })
@@ -57,7 +56,7 @@ test_that("ds.arrange works with desc() specification", {
     datasources = conns)
 
   expect_equal(
-    ds.class("desc_df")[[1]],
+    ds.class("desc_df", datasources = conns)[[1]],
     "data.frame"
   )
 
