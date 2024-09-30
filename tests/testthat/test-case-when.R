@@ -4,23 +4,13 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("caseWhenDS", "dsTidyverse::caseWhenDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
+login_data <- .prepare_dslite(assign_method = "caseWhenDS", tables = list(mtcars = mtcars))
+conns <- datashield.login(logins = login_data)
+datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
-  tryCatch(
+
     ds.case_when(
       dynamic_dots = list(
         mtcars$mpg < 20 ~ "low",
@@ -29,13 +19,9 @@ test_that("ds.case_when passes and numeric condition and numeric output", {
       ),
       newobj = "test",
       datasources = conns
-    ),
-    error = function(e) {
-      print(datashield.errors())
-    }
-  )
+    )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -43,13 +29,13 @@ test_that("ds.case_when passes and numeric condition and numeric output", {
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "character"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
-    as.numeric(counts),
+    as.numeric(counts, datasources = conns),
     c(12, 54, 30, 0)
   )
 })
@@ -65,7 +51,7 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
     datasources = conns
   )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -73,13 +59,13 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "numeric"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
-    as.numeric(counts),
+    as.numeric(counts, datasources = conns),
     c(54, 30, 12, 0)
   )
 })
@@ -97,7 +83,7 @@ test_that("ds.case_when correctly passes argument with categorical condition and
     datasources = conns
   )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -105,13 +91,13 @@ test_that("ds.case_when correctly passes argument with categorical condition and
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "character"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
-    as.numeric(counts),
+    as.numeric(counts, datasources = conns),
     c(36, 45, 15, 0)
   )
 })
@@ -128,7 +114,7 @@ test_that("ds.case_when correctly passes .default argument", {
     datasources = conns
   )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -136,13 +122,13 @@ test_that("ds.case_when correctly passes .default argument", {
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "character"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
-    as.numeric(counts),
+    as.numeric(counts, datasources = conns),
     c(45, 36, 15, 0)
   )
 })
