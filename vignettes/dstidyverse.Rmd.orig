@@ -68,20 +68,11 @@ dslite.server$assignMethod("ifElseDS", "ifElseDS")
 dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
 dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
 dslite.server$assignMethod("bindColsDS", "bindColsDS")
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
-=======
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
->>>>>>> 5ccd846 (docs: added vignette)
-=======
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("distinctDS", "distinctDS")
->>>>>>> a4ca412 (docs: added distinct example to vignette)
-conns <- datashield.login(logindata.dslite.cnsim[1, ], assign=TRUE)
-=======
 dslite.server$assignMethod("groupByDS", "groupByDS")
 dslite.server$assignMethod("ungroupDS", "ungroupDS")
 dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
@@ -106,7 +97,6 @@ datashield.assign.table(
   conns = conns,
   table = "mtcars_group",
   symbol = "mtcars_group")
->>>>>>> 2999dd7 (docs: added group examples to vignette)
 ```
 
 ## Functions
