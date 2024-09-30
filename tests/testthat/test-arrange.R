@@ -4,20 +4,10 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("arrangeDS", "dsTidyverse::arrangeDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-builder <- DSI::newDSLoginBuilder()
-builder$append(server="test", url="dslite.server", driver = "DSLiteDriver")
-login_data <- builder$build()
+login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
+print(login_data)
 conns <- datashield.login(logins = login_data)
-
+print(conns)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.arrange doesn't return error with correct arguments", {
