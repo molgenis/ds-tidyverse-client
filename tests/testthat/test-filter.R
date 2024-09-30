@@ -4,20 +4,8 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("filterDS", "dsTidyverse::filterDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-builder <- DSI::newDSLoginBuilder()
-builder$append(server = "test", url = "dslite.server", driver = "DSLiteDriver")
-login_data <- builder$build()
+login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.filter correctly filters", {
@@ -29,17 +17,17 @@ test_that("ds.filter correctly filters", {
   )
 
   expect_equal(
-    ds.class("filtered")[[1]],
+    ds.class("filtered", datasources = conns)[[1]],
     "data.frame"
   )
 
   expect_equal(
-    ds.dim("filtered")[[1]],
+    ds.dim("filtered", datasources = conns)[[1]],
     c(11, 11)
   )
 
   expect_equal(
-    ds.mean("filtered$mpg")$Mean.by.Study[[1]],
+    ds.mean("filtered$mpg", datasources = conns)$Mean.by.Study[[1]],
     26.66364,
     tolerance = 0.001
   )
@@ -55,12 +43,12 @@ test_that("ds.filter works with .by arg", {
   )
 
   expect_equal(
-    ds.dim("filtered_by")[[1]],
+    ds.dim("filtered_by", datasources = conns)[[1]],
     c(14, 11)
   )
 
   expect_equal(
-    ds.mean("filtered_by$mpg")$Mean.by.Study[[1]],
+    ds.mean("filtered_by$mpg", datasources = conns)$Mean.by.Study[[1]],
     22.90714,
     tolerance = 0.00001
   )
@@ -76,7 +64,7 @@ test_that("ds.filter works with .preserve arg", {
   )
 
   expect_equal(
-    ds.class("preserved_t")[[1]],
+    ds.class("preserved_t", datasources = conns)[[1]],
     "data.frame"
   )
 
@@ -89,7 +77,7 @@ test_that("ds.filter works with .preserve arg", {
   )
 
   expect_equal(
-    ds.class("preserved_f")[[1]],
+    ds.class("preserved_f", datasources = conns)[[1]],
     "data.frame"
   ) # Currently not possible to really test this from the clientside because I haven't implemented the function `group_keys` to return the groups
 })
