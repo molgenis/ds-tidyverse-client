@@ -56,6 +56,8 @@
 
   builder <- DSI::newDSLoginBuilder()
   builder$append(server = "server_1", url = "dslite.server", driver = "DSLiteDriver")
+  builder$append(server = "server_2", url = "dslite.server", driver = "DSLiteDriver")
+  builder$append(server = "server_3", url = "dslite.server", driver = "DSLiteDriver")
   login_data <- builder$build()
   return(login_data)
 }
