@@ -11,7 +11,7 @@
 #' @export
 ds.group_keys <- function(df.name = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name, newobj = NULL, tidy_select = NULL, datasources, check_obj = F)
+  .check_tidy_args(df.name, NULL, check_obj = F)
   cally <- .make_serverside_call("groupKeysDS", tidy_select = NULL, list(df.name))
   datashield.aggregate(datasources, cally)
 }

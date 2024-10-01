@@ -35,7 +35,7 @@
 ds.as_tibble <- function(x = NULL, .rows = NULL, .name_repair = "check_unique", rownames = NULL,
                          newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name = x, newobj = newobj, tidy_select = NULL, datasources)
+  .check_tidy_args(x, newobj)
   cally <- .make_serverside_call("asTibbleDS", NULL, list(x, .rows, .name_repair, rownames))
   datashield.assign(datasources, newobj, cally)
 }

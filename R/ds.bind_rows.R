@@ -27,7 +27,7 @@
 ds.bind_rows <- function(to_combine = NULL, .id = NULL, newobj = NULL, datasources = NULL) {
   to_combine <- .format_args_as_string(rlang::enquo(to_combine))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name = NULL, newobj, to_combine, datasources, check_df = FALSE)
+  .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("bindRowsDS", to_combine, list(.id))
   datashield.assign(datasources, newobj, cally)
 }

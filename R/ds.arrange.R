@@ -21,7 +21,7 @@
 ds.arrange <- function(df.name = NULL, expr = NULL, .by_group = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
+  .check_tidy_args(df.name, newobj)
   cally <- .make_serverside_call("arrangeDS", tidy_select, list(df.name, .by_group))
   datashield.assign(datasources, newobj, cally)
 }

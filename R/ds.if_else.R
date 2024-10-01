@@ -29,7 +29,7 @@ ds.if_else <- function(condition = NULL, true = NULL, false = NULL, missing = NU
                        ptype = NULL, size = NULL, newobj = NULL, datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(condition))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name = NULL, newobj, tidy_select, datasources, check_df = FALSE)
+  .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("ifElseDS", tidy_select, list(true, false, missing, ptype, size))
   datashield.assign(datasources, newobj, cally)
 }

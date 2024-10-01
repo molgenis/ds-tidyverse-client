@@ -17,6 +17,7 @@
 #' @param datasources A list of data sources.
 #' @importFrom cli cli_abort
 #' @importFrom methods is
+#' @importFrom purrr map_lgl
 #' @noRd
 .verify_datasources <- function(datasources) {
   is_connection_class <- datasources |> map_lgl(~ unlist(.x) |> is("DSConnection"))
@@ -115,7 +116,7 @@
 #' @importFrom assertthat assert_that
 #'
 #' @noRd
-.check_tidy_args <- function(df.name = NULL, newobj, check_df, check_obj) {
+.check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE, check_obj = TRUE) {
   if (check_df) {
     assert_that(is.character(df.name))
   }
@@ -162,11 +163,3 @@
   arg_list <- c(list(sym(fun_name)), other_args)
   return(as.call(arg_list))
 }
-
-
-
-# .make_tidyverse_call <- function(.data, tidy_select, extra_args){
-#   extra_args <- .paste_character_args(extra_args)
-#   tidy_string <- .make_tidyselect_arg(.data, fun, tidy_select_args, extra_args)
-#   return(rlang::parse_expr(tidy_string))
-# }
