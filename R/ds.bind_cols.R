@@ -27,7 +27,7 @@
 ds.bind_cols <- function(to_combine = NULL, .name_repair = c("unique", "universal", "check_unique", "minimal"), newobj = NULL, datasources = NULL) {
   to_combine <- .format_args_as_string(rlang::enquo(to_combine))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name = NULL, newobj, to_combine, datasources, check_df = FALSE)
+  .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("bindColsDS", to_combine, list(.name_repair))
   datashield.assign(datasources, newobj, cally)
 }

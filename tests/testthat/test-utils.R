@@ -75,16 +75,6 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
 
 disc_settings <- datashield.aggregate(conns, call("listDisclosureSettingsDS"))
 
-test_that(".check_data_name_length throws an error if length of .data exceeds nfilter.string", {
-  .data <- paste(rep("a", 101), collapse = "")
-  expect_snapshot(.check_data_name_length(.data, disc_settings), error = TRUE)
-})
-
-test_that(".check_data_name_length does not throw an error if length of .data is within nfilter.string", {
-  .data <- paste(rep("a", 79), collapse = "")
-  expect_silent(.check_data_name_length(.data, disc_settings))
-})
-
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
     input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
@@ -153,77 +143,6 @@ test_that(".encode_tidy_eval correctly encodes strings with unpermitted values",
   expect_equal(result, expected_output)
 })
 
-arg_permitted <- "asd, sdf, dfg, everything(), starts_with(\"A\"), ends_with(\"Z\")"
-arg_unpermitted <- "asd, sdf, dfg, everything(), filter(test == 2), slice(3), mutate(new_name = old_name), starts_with(\"A\"), ends_with(\"Z\")"
-small_var <- paste(rep("a", 5), collapse = "")
-large_var <- paste(rep("a", 200), collapse = "")
-
-permitted_functions <- "everything(), last_col(), group_cols(), starts_with(), ends_with(), contains(),
-matches(), num_range(), all_of(), any_of(), where(), c(), rename(), mutate(), if_else(), case_when(),
-mean(), median(), mode()"
-
-test_that(".check_function_names allows permitted names to pass", {
-  permitted_functions
-  expect_silent(.check_function_names(arg_permitted))
-})
-
-test_that(".check_function_names blocks unpermitted function names", {
-  arg_unpermitted
-  expect_snapshot(
-    .check_function_names(arg_unpermitted),
-    error = TRUE
-  )
-})
-
-test_that(".check_variable_length allows variables with value less than nfilter.string", {
-  expect_silent(
-    .check_variable_length(small_var, disc_settings, conns)
-  )
-})
-
-test_that(".check_variable_length blocks variables with value greater than than nfilter.string", {
-  expect_snapshot(
-    .check_variable_length(large_var, disc_settings, conns),
-    error = TRUE
-  )
-})
-
-test_that(".tidy_disclosure_checks allows permitted arg to pass", {
-  expect_silent(.check_tidy_disclosure("dataframe", arg_permitted, conns))
-})
-
-test_that(".tidy_disclosure_checks blocks argument with unpermitted variable length", {
-  arg_unpermitted_2 <- paste0(large_var, arg_permitted)
-  expect_snapshot(
-    .check_tidy_disclosure("dataframe", arg_unpermitted_2, conns),
-    error = TRUE
-  )
-})
-
-test_that(".tidy_disclosure_checks blocks argument with unpermitted function names", {
-  arg_unpermitted_3 <- arg_unpermitted
-  expect_snapshot(
-    .check_tidy_disclosure("dataset", arg_unpermitted_3, conns),
-    error = TRUE
-  )
-})
-
-test_that(".check_tidy_args returns correct errors", {
-  expect_error(
-    .check_tidy_args(df.name = NULL, newobj = "test", check_df = TRUE, check_obj = TRUE),
-    "df.name is not a character vector"
-  )
-
-  expect_error(
-    .check_tidy_args(df.name = "test", newobj = NULL, check_df = TRUE, check_obj = TRUE),
-    "newobj is not a character vector"
-  )
-
-  expect_silent(
-    .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
-  )
-})
-
 test_that(".build_cally build correct call object", {
   input_string <- "LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
   expected <- call("mutateDS", "LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")", "mydata")
@@ -253,32 +172,18 @@ test_that(".make_serverside_call encodes and builds call object", {
   expect_equal(expected, returned)
 })
 
-test_that(".perform_tidyverse_checks checks argument validity and disclosure", {
-  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+test_that(".check_tidy_args returns correct errors", {
   expect_error(
-    .perform_tidyverse_checks(NULL, "new_data", tidy_select, conns),
+    .check_tidy_args(df.name = NULL, newobj = "test", check_df = TRUE, check_obj = TRUE),
     "df.name is not a character vector"
   )
 
   expect_error(
-    .perform_tidyverse_checks("my_data", NULL, tidy_select, conns),
+    .check_tidy_args(df.name = "test", newobj = NULL, check_df = TRUE, check_obj = TRUE),
     "newobj is not a character vector"
   )
 
   expect_silent(
-    .perform_tidyverse_checks("my_data", "new_data", tidy_select, conns)
-  )
-
-  expect_error(
-    .perform_tidyverse_checks(paste(rep("a", 101), collapse = ""), "new_data", tidy_select, conns),
-    "Error: The length of string passed to"
-  )
-
-  arg_unpermitted <- "asd, sdf, dfg, everything(), filter(test == 2), slice(3), mutate(new_name = old_name), starts_with(\"A\"), ends_with(\"Z\")"
-  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
-  expect_error(
-    .perform_tidyverse_checks("my_data", "new_data", arg_unpermitted, conns),
-    "tidy_select` must only contain Tidyverse select functions"
+    .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
   )
 })
