@@ -61,6 +61,7 @@ dslite.server$assignMethod("bindColsDS", "bindColsDS")
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
+dslite.server$assignMethod("distinctDS", "distinctDS")
 dslite.server$assignMethod("groupByDS", "groupByDS")
 dslite.server$assignMethod("ungroupDS", "ungroupDS")
 dslite.server$assignMethod("asTibbleDS", "asTibbleDS")
@@ -195,8 +196,8 @@ ds.colnames("mtcars")
 ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
-#>  [8] "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      
+#> [10] "gear"     "carb"
 ```
 
 ### Mutate
@@ -219,8 +220,8 @@ ds.mutate(
   newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"     
-#>  [8] "vs"        "am"        "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
+#>  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -382,10 +383,9 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7" 
-#>  [8] "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14"
-#> [15] "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21"
-#> [22] "carb...22"
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   
+#>  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"
+#> [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
@@ -406,8 +406,8 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg" 
-#> [13] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"
+#> [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
@@ -618,6 +618,38 @@ my_groups
 #> 2     6
 #> 3     8
 ```
+
+### distinct
+Use `distinct` to keep only unique rows. Leave the `expr` argument empty to check uniqueness across all variables:
+
+
+``` r
+ds.distinct(
+  df.name = "mtcars",
+  newobj = "distinct_df"
+)
+ds.dim("distinct_df")[[1]]
+#> [1] 32 11
+```
+In this example the dimensions of the resulting dataset are the same because all rows are distinct. Alternatively you can specify a subset of variables in which to check for unique rows:
+
+
+``` r
+ds.distinct(
+  df.name = "mtcars",
+  expr = list(cyl, drat),
+  newobj = "distinct_subset"
+)
+ds.dim("distinct_subset")[[1]]
+#> [1] 26  2
+```
+
+``` r
+ds.colnames("distinct_subset")[[1]]
+#> [1] "cyl"  "drat"
+```
+See the help file of `dplyr::distinct` for information about other arguments.
+
 
 ### Convert objects to tibbles
 'Tibbles' are the tidyverse version of dataframes. Currently within DataSHIELD it is possible
