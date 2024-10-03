@@ -54,7 +54,11 @@ jobs:
           if [  $CIRCLE_BRANCH = "master" ]; then
             Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
           else
-            Rscript -e "remotes::install_git('git@github.com:molgenis/ds-tidyverse.git', ref = '${CIRCLE_BRANCH}')"# This means that the serverside branchname should be the same as the clientside one
+            { # try
+              Rscript -e "remotes::install_git('git@github.com:molgenis/ds-tidyverse.git', ref = '${CIRCLE_BRANCH}')"# This means that the serverside branchname should be the same as the clientside one
+            } || { # catch
+              Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
+            }
           fi
 
     - save_cache:
