@@ -22,7 +22,7 @@ ds.distinct <- function(df.name = NULL, expr = NULL, .keep_all = FALSE, newobj =
                         datasources = NULL) {
   tidy_select <- .format_args_as_string(rlang::enquo(expr))
   datasources <- .set_datasources(datasources)
-  .perform_tidyverse_checks(df.name, newobj, tidy_select, datasources)
+  .check_tidy_args(df.name, newobj)
   cally <- .make_serverside_call("distinctDS", tidy_select, list(df.name, .keep_all))
   datashield.assign(datasources, newobj, cally)
 }
