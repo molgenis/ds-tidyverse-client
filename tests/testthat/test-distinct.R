@@ -5,20 +5,8 @@ library(dsTidyverseClient)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("distinctDS", "dsTidyverse::distinctDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-builder <- DSI::newDSLoginBuilder()
-builder$append(server="test", url="dslite.server", driver = "DSLiteDriver")
-login_data <- builder$build()
+login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.distinct correctly identified distinct rows", {
@@ -29,11 +17,11 @@ test_that("ds.distinct correctly identified distinct rows", {
     datasources = conns)
 
   expect_equal(
-    ds.class("dist_df")[[1]],
+    ds.class("dist_df", datasources = conns)[[1]],
     "data.frame")
 
   expect_equal(
-    ds.dim("dist_df")[[1]],
+    ds.dim("dist_df", datasources = conns)[[1]],
     c(9, 2))
 
 })
@@ -45,12 +33,12 @@ test_that("ds.distinct works with where `expr` arg is empty", {
     datasources = conns)
 
   expect_equal(
-    ds.dim("dist_df")[[1]],
+    ds.dim("dist_df", datasources = conns)[[1]],
     c(32, 11)
   )
 
   expect_equal(
-    ds.colnames("dist_df")[[1]],
+    ds.colnames("dist_df", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 
@@ -65,12 +53,12 @@ test_that("ds.distinct works with `.keep_all` argument", {
     datasources = conns)
 
   expect_equal(
-    ds.dim("dist_df")[[1]],
+    ds.dim("dist_df", datasources = conns)[[1]],
     c(9, 11)
   )
 
   expect_equal(
-    ds.colnames("dist_df")[[1]],
+    ds.colnames("dist_df", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 
@@ -82,12 +70,12 @@ test_that("ds.distinct works with `.keep_all` argument", {
     datasources = conns)
 
   expect_equal(
-    ds.dim("dist_df")[[1]],
+    ds.dim("dist_df", datasources = conns)[[1]],
     c(9, 2)
   )
 
   expect_equal(
-    ds.colnames("dist_df")[[1]],
+    ds.colnames("dist_df", datasources = conns)[[1]],
     c("cyl", "carb")
   )
 
