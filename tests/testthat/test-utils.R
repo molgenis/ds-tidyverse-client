@@ -4,19 +4,9 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
 data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
-dslite.server$assignMethod("selectDS", "selectDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
+login_data <- .prepare_dslite()
+conns <- datashield.login(logins = login_data)
 
 test_that(".get_datasources returns datasources found by datashield.connections_find() when datasources is NULL", {
   expect_equal(

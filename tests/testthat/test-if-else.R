@@ -3,36 +3,21 @@ library(dplyr)
 library(dsTidyverse)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("ifElseDS", "dsTidyverse::ifElseDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettingsTidyVerse", "dsTidyverse::dsListDisclosureSettingsTidyVerse")
-conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
-
-.check_cols_as_expected <- function(expected, df) {
-  observed <- ds.colnames(df)[[1]]
-  expected <- expected
-  expect_equal(observed, expected)
-}
+login_data <- .prepare_dslite(assign_method = "ifElseDS", tables = list(mtcars = mtcars))
+conns <- datashield.login(logins = login_data)
+datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.if_else correctly passes argument with numeric condition and categorical outcome", {
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     "high",
     "low",
-    newobj = "test"
+    newobj = "test",
+    datasources = conns
   )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -40,11 +25,11 @@ test_that("ds.if_else correctly passes argument with numeric condition and categ
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "character"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
     as.numeric(counts),
     c(42, 54, 0)
@@ -56,10 +41,11 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
     condition = list(mtcars$mpg > 20),
     99,
     100,
-    newobj = "test"
+    newobj = "test",
+    datasources = conns
   )
 
-  nqmes <- names(ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts)
+  nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     nqmes,
@@ -67,11 +53,11 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "numeric"
   )
 
-  counts <- ds.table("test")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
     as.numeric(counts),
     c(42, 54, 0)
@@ -83,10 +69,11 @@ test_that("ds.if_else correctly passes argument with = ", {
     condition = list(mtcars$vs == "0"),
     "no",
     "yes",
-    newobj = "testcat"
+    newobj = "testcat",
+    datasources = conns
   )
 
-  names <- names(ds.table("testcat")$output.list$TABLES.COMBINED_all.sources_counts)
+  names <- names(ds.table("testcat", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 
   expect_equal(
     names,
@@ -94,11 +81,11 @@ test_that("ds.if_else correctly passes argument with = ", {
   )
 
   expect_equal(
-    ds.class("testcat")[[1]],
+    ds.class("testcat", datasources = conns)[[1]],
     "character"
   )
 
-  counts <- ds.table("testcat")$output.list$TABLES.COMBINED_all.sources_counts
+  counts <- ds.table("testcat", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts
   expect_equal(
     as.numeric(counts),
     c(54, 42, 0)
