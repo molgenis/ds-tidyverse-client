@@ -71,10 +71,11 @@ dslite.server$assignMethod("bindColsDS", "bindColsDS")
 dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("sliceDS", "sliceDS")
 dslite.server$assignMethod("arrangeDS", "arrangeDS")
-dslite.server$assignMethod("filterDS", "filterDS")
 dslite.server$assignMethod("distinctDS", "distinctDS")
 dslite.server$assignMethod("groupByDS", "groupByDS")
 dslite.server$assignMethod("ungroupDS", "ungroupDS")
+dslite.server$assignMethod("asTibbleDS", "asTibbleDS")
+
 dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
 
 builder <- DSI::newDSLoginBuilder()
@@ -429,3 +430,17 @@ ds.dim("distinct_subset")[[1]]
 ds.colnames("distinct_subset")[[1]]
 ```
 See the help file of `dplyr::distinct` for information about other arguments.
+
+
+### Convert objects to tibbles
+'Tibbles' are the tidyverse version of dataframes. Currently within DataSHIELD it is possible
+to convert dataframes and matrices to tibbles:
+
+```{r}
+ds.class("mtcars")[[1]]
+ds.as_tibble(
+  x = "mtcars",
+  newobj = "mtcars_tib",
+  datasources = conns)
+  ds.class("mtcars_tib")[[1]]
+```
