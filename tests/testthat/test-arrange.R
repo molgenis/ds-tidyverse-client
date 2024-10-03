@@ -4,20 +4,8 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("arrangeDS", "dsTidyverse::arrangeDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-builder <- DSI::newDSLoginBuilder()
-builder$append(server="test", url="dslite.server", driver = "DSLiteDriver")
-login_data <- builder$build()
+login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.arrange doesn't return error with correct arguments", {
@@ -28,7 +16,7 @@ test_that("ds.arrange doesn't return error with correct arguments", {
     datasources = conns)
 
   expect_equal(
-    ds.class("ordered_df")[[1]],
+    ds.class("ordered_df", datasources = conns)[[1]],
     "data.frame")
 
 }) ## Not possible to test that it has been ordered correctly as cannot see data. Will test serverside.
@@ -42,7 +30,7 @@ test_that("ds.arrange doesn't return error with .by_group argument", {
     datasources = conns)
 
   expect_equal(
-    ds.class("ordered_df")[[1]],
+    ds.class("ordered_df", datasources = conns)[[1]],
     "data.frame")
 
 })
@@ -67,7 +55,7 @@ test_that("ds.arrange works with desc() specification", {
     datasources = conns)
 
   expect_equal(
-    ds.class("desc_df")[[1]],
+    ds.class("desc_df", datasources = conns)[[1]],
     "data.frame"
   )
 

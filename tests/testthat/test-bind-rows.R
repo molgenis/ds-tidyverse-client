@@ -4,19 +4,9 @@ library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 
-options(datashield.env = environment())
-data("mtcars")
-dslite.server <- DSLite::newDSLiteServer(tables = list(mtcars = mtcars))
-data("logindata.dslite.cnsim")
-logindata.dslite.cnsim <- logindata.dslite.cnsim %>%
-  mutate(table = "mtcars")
-dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
-dslite.server$assignMethod("bindRowsDS", "dsTidyverse::bindRowsDS")
-dslite.server$aggregateMethod("exists", "base::exists")
-dslite.server$aggregateMethod("classDS", "dsBase::classDS")
-dslite.server$aggregateMethod("lsDS", "dsBase::lsDS")
-dslite.server$aggregateMethod("dsListDisclosureSettings", "dsTidyverse::dsListDisclosureSettings")
-conns <- datashield.login(logins = logindata.dslite.cnsim, assign = TRUE)
+login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
+conns <- datashield.login(logins = login_data)
+datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.bind_rows binds two data frames together", {
   ds.bind_rows(
@@ -27,17 +17,17 @@ test_that("ds.bind_rows binds two data frames together", {
   )
 
   expect_equal(
-    ds.class("newnew")[[1]],
+    ds.class("newnew", datasources = conns)[[1]],
     "data.frame"
   )
 
   expect_equal(
-    ds.dim("newnew")[[1]],
+    ds.dim("newnew", datasources = conns)[[1]],
     c(64, 11)
   )
 
   expect_equal(
-    ds.colnames("newnew")[[1]],
+    ds.colnames("newnew", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 })
@@ -51,17 +41,17 @@ test_that("ds.case_when works with .id arg", {
   )
 
   expect_equal(
-    ds.class("test")[[1]],
+    ds.class("test", datasources = conns)[[1]],
     "data.frame"
   )
 
   expect_equal(
-    ds.dim("test")[[1]],
+    ds.dim("test", datasources = conns)[[1]],
     c(64, 12)
   )
 
   expect_equal(
-    ds.colnames("test")[[1]],
+    ds.colnames("test", datasources = conns)[[1]],
     c("which_df", "mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 })

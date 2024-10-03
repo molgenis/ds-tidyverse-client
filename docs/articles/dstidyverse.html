@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dsTidyverseClient</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -139,6 +139,7 @@ creates a virtual DataSHIELD session.</p>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"filterDS"</span>, <span class="st">"filterDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"sliceDS"</span>, <span class="st">"sliceDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"arrangeDS"</span>, <span class="st">"arrangeDS"</span><span class="op">)</span></span>
+<span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"distinctDS"</span>, <span class="st">"distinctDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"groupByDS"</span>, <span class="st">"groupByDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"ungroupDS"</span>, <span class="st">"ungroupDS"</span><span class="op">)</span></span>
 <span><span class="va">dslite.server</span><span class="op">$</span><span class="fu">assignMethod</span><span class="op">(</span><span class="st">"asTibbleDS"</span>, <span class="st">"asTibbleDS"</span><span class="op">)</span></span>
@@ -272,8 +273,8 @@ names within <code>df.name</code>. Below are some examples, see
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    </span></span>
-<span><span class="co">#&gt;  [8] "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      </span></span>
+<span><span class="co">#&gt; [10] "gear"     "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -298,8 +299,8 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"     </span></span>
-<span><span class="co">#&gt;  [8] "vs"        "am"        "gear"      "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       </span></span>
+<span><span class="co">#&gt;  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
 <span><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -440,10 +441,9 @@ is similar to do.call(cbind, dfs).</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7" </span></span>
-<span><span class="co">#&gt;  [8] "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14"</span></span>
-<span><span class="co">#&gt; [15] "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21"</span></span>
-<span><span class="co">#&gt; [22] "carb...22"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   </span></span>
+<span><span class="co">#&gt;  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"</span></span>
+<span><span class="co">#&gt; [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"</span></span></code></pre></div>
 <p>The argument <code>.name_repair</code> handles duplicate or broken
 names, e.g.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
@@ -461,8 +461,8 @@ names, e.g.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg" </span></span>
-<span><span class="co">#&gt; [13] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"</span></span>
+<span><span class="co">#&gt; [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="case_when">case_when<a class="anchor" aria-label="anchor" href="#case_when"></a>
@@ -655,15 +655,45 @@ high.</p>
 <span><span class="co">#&gt; 3     8</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="distinct">distinct<a class="anchor" aria-label="anchor" href="#distinct"></a>
+</h3>
+<p>Use <code>distinct</code> to keep only unique rows. Leave the
+<code>expr</code> argument empty to check uniqueness across all
+variables:</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.distinct.html">ds.distinct</a></span><span class="op">(</span></span>
+<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  newobj <span class="op">=</span> <span class="st">"distinct_df"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"distinct_df"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 32 11</span></span></code></pre></div>
+<p>In this example the dimensions of the resulting dataset are the same
+because all rows are distinct. Alternatively you can specify a subset of
+variables in which to check for unique rows:</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.distinct.html">ds.distinct</a></span><span class="op">(</span></span>
+<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span>, <span class="va">drat</span><span class="op">)</span>,</span>
+<span>  newobj <span class="op">=</span> <span class="st">"distinct_subset"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"distinct_subset"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 26  2</span></span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"distinct_subset"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "cyl"  "drat"</span></span></code></pre></div>
+<p>See the help file of <code><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">dplyr::distinct</a></code> for information
+about other arguments.</p>
+</div>
+<div class="section level3">
 <h3 id="convert-objects-to-tibbles">Convert objects to tibbles<a class="anchor" aria-label="anchor" href="#convert-objects-to-tibbles"></a>
 </h3>
 <p>‘Tibbles’ are the tidyverse version of dataframes. Currently within
 DataSHIELD it is possible to convert dataframes and matrices to
 tibbles:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.class.html" class="external-link">ds.class</a></span><span class="op">(</span><span class="st">"mtcars"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "data.frame"</span></span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.as_tibble.html">ds.as_tibble</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"mtcars_tib"</span>,</span>
