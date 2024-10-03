@@ -54,8 +54,7 @@ jobs:
           if [  $CIRCLE_BRANCH = "master" ]; then
             Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
           else
-            echo "remotes::install_git("git@github.com:molgenis/ds-tidyverse.git", ref = '${CIRCLE_BRANCH}')"
-            Rscript -e "remotes::install_git("git@github.com:molgenis/ds-tidyverse.git", ref = '${CIRCLE_BRANCH}')"# This can be changed for each PR so circle CI loads correct serverside package
+            Rscript -e "remotes::install_git('git@github.com:molgenis/ds-tidyverse.git', ref = '${CIRCLE_BRANCH}')"# This means that the serverside branchname should be the same as the clientside one
           fi
 
     - save_cache:
