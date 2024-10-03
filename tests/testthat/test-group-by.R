@@ -32,7 +32,7 @@ test_that("ds.group_by correctly groups a data frame", {
     ds.class("grouped", datasources = conns)[[1]],
     c("grouped_df", "tbl_df", "tbl", "data.frame")
   )
-}) ## Not currently possible to test ,add and .drop arguments due to issues with dslite. Tested in serverside tests
+})
 
 login_data <- .prepare_dslite(
   assign_method = "ungroupDS",
