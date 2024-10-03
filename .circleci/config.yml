@@ -39,7 +39,6 @@ jobs:
           export VERSION=`svu --strip-prefix`
           install2.r --repo https://cloud.r-project.org desc
           Rscript -e "desc::desc_set_version('${VERSION}')"
-          export BRANCH=`git rev-parse --abbrev-ref HEAD`
 
     # we use version number for caching
     - restore_cache:
@@ -55,7 +54,7 @@ jobs:
           if [  $CIRCLE_BRANCH = "master" ]; then
             Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
           else
-            Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git", ref = "$BRANCH")' # This can be changed for each PR so circle CI loads correct serverside package
+            Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git", ref = "$CIRCLE_BRANCH")' # This can be changed for each PR so circle CI loads correct serverside package
           fi
 
     - save_cache:
