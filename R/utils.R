@@ -289,8 +289,10 @@
 #' @return A call object that can be evaluated to perform the specified operation.
 #' @noRd
 .make_serverside_call <- function(fun_name, tidy_select, other_args) {
+  if (!is.null(tidy_select)) {
     tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
-    cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
+  }
+  cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
   return(cally)
 }
 
