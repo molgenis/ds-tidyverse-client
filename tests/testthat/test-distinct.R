@@ -5,7 +5,7 @@ library(dsTidyverseClient)
 library(dsBase)
 library(dsBaseClient)
 
-login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_dslite(assign_method = "distinctDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
