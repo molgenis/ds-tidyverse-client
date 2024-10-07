@@ -4,3 +4,4 @@
 ^docs$
 CONTRIBUTING.md
 ^pull_request_template$
+^cran-comments\.md$
