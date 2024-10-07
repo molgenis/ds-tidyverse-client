@@ -5,7 +5,7 @@ library(dsBase)
 library(dsBaseClient)
 
 data("mtcars")
-login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_dslite(assign_method = "selectDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
@@ -80,7 +80,6 @@ test_that("ds.select correctly passes `matches`", {
 })
 
 test_that("ds.select correctly passes `everything`", {
-  print(ds.ls(datasources = conns))
   ds.select(
     df.name = "mtcars",
     tidy_select = list(everything()),
