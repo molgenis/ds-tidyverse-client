@@ -80,11 +80,14 @@ test_that("ds.select correctly passes `matches`", {
 })
 
 test_that("ds.select correctly passes `everything`", {
+  tryCatch(
   ds.select(
     df.name = "mtcars",
     tidy_select = list(everything()),
     newobj = "everything",
     datasources = conns
+  ),
+  error = function(e){print(datashield.errors)}
   )
 
   expect_equal(
