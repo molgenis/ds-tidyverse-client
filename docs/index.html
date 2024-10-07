@@ -54,6 +54,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -72,9 +75,9 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>Clientside implementation of selected Tidyverse functions</p>
+<p>This is the DataSHIELD implementation of selected <a href="https://www.tidyverse.org/" class="external-link">Tidyverse</a> functions. Currently most of these functions are from dplyr, however in the future functions from other Tidyverse packages can be included.</p>
 <div class="section level2">
-<h2 id="to-get-started">To get started<a class="anchor" aria-label="anchor" href="#to-get-started"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <ul>
 <li>Install dsTidyverse on your armadillo or opal server.</li>
@@ -83,41 +86,55 @@
 </ul>
 </div>
 <div class="section level2">
-<h2 id="currently-implemented-functions-are">Currently implemented functions are:<a class="anchor" aria-label="anchor" href="#currently-implemented-functions-are"></a>
+<h2 id="functionsfeatures">Functions/Features<a class="anchor" aria-label="anchor" href="#functionsfeatures"></a>
 </h2>
+<div class="section level3">
+<h3 id="from-the-dplyr-package">From the <code>dplyr</code> package:<a class="anchor" aria-label="anchor" href="#from-the-dplyr-package"></a>
+</h3>
 <ul>
-<li><code>select</code></li>
-<li><code>rename</code></li>
-<li><code>mutate</code></li>
-<li><code>if_else</code></li>
-<li><code>case_when</code></li>
-<li><code>bind_cols</code></li>
-<li><code>bind_rows</code></li>
-<li><code>filter</code></li>
-<li><code>slice</code></li>
-<li><code>arrange</code></li>
-<li><code>group_by</code></li>
-<li><code>ungroup</code></li>
-<li><code>group_keys</code></li>
-<li><code>distinct</code></li>
+<li>
+<strong><code>select</code></strong>: Choose columns from a data frame.</li>
+<li>
+<strong><code>rename</code></strong>: Rename columns in a data frame.</li>
+<li>
+<strong><code>mutate</code></strong>: Create or modify columns.</li>
+<li>
+<strong><code>if_else</code></strong>: A vectorized conditional function.</li>
+<li>
+<strong><code>case_when</code></strong>: A general vectorized conditional function.</li>
+<li>
+<strong><code>bind_cols</code></strong>: Combine data frames by columns.</li>
+<li>
+<strong><code>bind_rows</code></strong>: Combine data frames by rows.</li>
+<li>
+<strong><code>filter</code></strong>: Filter rows based on conditions.</li>
+<li>
+<strong><code>slice</code></strong>: Select rows by position.</li>
+<li>
+<strong><code>arrange</code></strong>: Arrange rows by values of a column or multiple columns.</li>
+<li>
+<strong><code>group_by</code></strong>: Group data by one or more columns.</li>
+<li>
+<strong><code>ungroup</code></strong>: Remove grouping from data.</li>
+<li>
+<strong><code>group_keys</code></strong>: Retrieve the group keys from a grouped data frame.</li>
+<li>
+<strong><code>distinct</code></strong>: Return unique rows based on certain columns.</li>
 </ul>
 </div>
-<div class="section level2">
-<h2 id="planned-functions-to-implement">Planned functions to implement:<a class="anchor" aria-label="anchor" href="#planned-functions-to-implement"></a>
-</h2>
+<div class="section level3">
+<h3 id="from-the-tibble-package">From the <code>tibble</code> package:<a class="anchor" aria-label="anchor" href="#from-the-tibble-package"></a>
+</h3>
 <ul>
-<li><code>inner_join</code></li>
-<li><code>left_join</code></li>
-<li><code>right_join</code></li>
-<li><code>full_join</code></li>
-<li><code>pivot_longer</code></li>
-<li><code>pivot_wider</code></li>
-<li><code>as_tibble</code></li>
-<li><code>group_split</code></li>
-<li><code>group_map</code></li>
-<li><code>summarise</code></li>
+<li>
+<strong><code>as_tibble</code></strong>: Convert data to a tibble (a modern data frame).</li>
 </ul>
-<p>If there are functions in this list you would like implemented, please either attempt to do so yourself and submit a pull request, or submit a feature request in the <code>issues</code> section.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>If there are functions in this list you would like implemented, please either attempt to do so yourself and submit a pull request, or submit a feature request in the <code>issues</code> section. See the “CONTRIBUTING” file for more information.</p>
 </div>
 </div>
   </div>
