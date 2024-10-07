@@ -107,7 +107,7 @@
       char
     }
   })
-  output_string <- paste(output_string, collapse = "")
+  return(paste(output_string, collapse = ""))
 }
 
 #' Check Select Arguments
