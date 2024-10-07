@@ -10,7 +10,7 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' @importFrom DSI datashield.assign
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.

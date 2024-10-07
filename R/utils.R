@@ -16,11 +16,9 @@
 #'
 #' @param datasources A list of data sources.
 #' @importFrom cli cli_abort
-#' @importFrom methods is
-#' @importFrom purrr map_lgl
 #' @noRd
 .verify_datasources <- function(datasources) {
-  is_connection_class <- datasources |> map_lgl(~ unlist(.x) |> is("DSConnection"))
+  is_connection_class <- sapply(datasources, function(x) inherits(unlist(x), "DSConnection"))
   if (!all(is_connection_class)) {
     cli_abort("The 'datasources' were expected to be a list of DSConnection-class objects")
   }
