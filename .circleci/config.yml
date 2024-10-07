@@ -51,14 +51,7 @@ jobs:
           Rscript -e 'install.packages(c("devtools", "pkgdown", "markdown", "rmarkdown", "rlang", "stringr", "cli", "covr", "git2r", "DSI", "assertthat", "purrr", "gridExtra", "DSLite", "RANN", "lme4", "reshape2", "polycor", "gamlss", "gamlss", "mice", "childsds", "fields", "metafor", "meta", "panelaggregation", "testthat"))'
           Rscript -e 'install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")'
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
-          if [  $CIRCLE_BRANCH = "master" ]; then
-            Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
-          else
-            { # try
-              Rscript -e "remotes::install_git('git@github.com:molgenis/ds-tidyverse.git', ref = '${CIRCLE_BRANCH}')"# This means that the serverside branchname should be the same as the clientside one
-            } || { # catch
-              Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
-            }
+          Rscript -e 'remotes::install_git("git@github.com:molgenis/ds-tidyverse.git")'
           fi
 
     - save_cache:
