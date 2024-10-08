@@ -1,5 +1,5 @@
 #' @title Bind multiple data frames by column
-#' @description DataSHIELD implementation of \code{dplyr::bind_cold}.
+#' @description DataSHIELD implementation of \code{dplyr::bind_cols}.
 #' @param to_combine 	Data frames to combine. Each argument can either be a data frame, a list that
 #' could be a data frame, or a list of data frames. Columns are matched by name, and any missing
 #' columns will be filled with NA.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/ds.as_tibble.R
 \name{ds.as_tibble}
 \alias{ds.as_tibble}
-\title{Coerce a data frame or matrix to a tibble. Currently not implemented for lists or other
-object types.}
+\title{Coerce a data frame or matrix to a tibble.}
 \usage{
 ds.as_tibble(
   x = NULL,
@@ -22,10 +21,10 @@ check.}
 
 \item{.name_repair}{Treatment of problematic column names:
 \itemize{
-  \item "minimal": No name repair or checks, beyond basic existence
-  \item "unique": Make sure names are unique and not empty
-  \item "check_unique": (default value), no name repair, but check they are unique
-  \item "universal": Make the names unique and syntactic
+  \item "minimal": No name repair or checks, beyond basic existence.
+  \item "unique": Make sure names are unique and not empty.
+  \item "check_unique": (default value), no name repair, but check they are unique.
+  \item "universal": Make the names unique and syntactic.
 }}
 
 \item{rownames}{How to treat existing row names of a data frame or matrix:
@@ -46,13 +45,15 @@ check.}
 A serverside tibble with the name specified in the \code{newobj}.
 }
 \description{
-DataSHIELD implementation of \code{tibble::as_tibble}.
+DataSHIELD implementation of \code{tibble::as_tibble}. Currently only implemented
+for data frames and tibbles.
 }
 \examples{
 \dontrun{
 ds.as_tibble(
-x = "mtcars",
-newobj = "mtcars_tib",
-datasources = conns)
+  x = "mtcars",
+  newobj = "mtcars_tib",
+  datasources = conns
+)
 }
 }

@@ -9,7 +9,7 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return A serverside data frame with name specified in \code{newobj} and the same type as the
-#' first element of \code{to_combine}`.
+#' first element of \code{to_combine}.
 #' @importFrom DSI datashield.assign datashield.aggregate
 #' @examples
 #' \dontrun{

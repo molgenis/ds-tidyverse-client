@@ -2,7 +2,7 @@
 % Please edit documentation in R/ds.if_else.R
 \name{ds.if_else}
 \alias{ds.if_else}
-\title{Clientside dplyr mutate function}
+\title{Vectorised if-else}
 \usage{
 ds.if_else(
   condition = NULL,
@@ -16,7 +16,7 @@ ds.if_else(
 )
 }
 \arguments{
-\item{condition}{A list, specifying a logical vector in tidyverse syntax, ie data and column names unquoted.}
+\item{condition}{A list specifying a logical vector in tidyverse syntax, ie data and column names unquoted.}
 
 \item{true}{Vector to use for TRUE value of condition.}
 

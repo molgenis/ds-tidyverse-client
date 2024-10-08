@@ -35,14 +35,15 @@ kept as is.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::slice}.
+DataSHIELD implentation of \code{dplyr::slice}.
 }
 \examples{
 \dontrun{
 ds.slice(
-df.name = "mtcars",
-expr = list(1:10),
-.by = "cyl",
-newobj = "sliced_df")
+  df.name = "mtcars",
+  expr = list(1:10),
+  .by = "cyl",
+  newobj = "sliced_df"
+)
 }
 }

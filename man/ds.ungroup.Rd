@@ -2,12 +2,12 @@
 % Please edit documentation in R/ds.group_by.R
 \name{ds.ungroup}
 \alias{ds.ungroup}
-\title{Remove grouping}
+\title{Remove grouping from a tibble or data frame}
 \usage{
 ds.ungroup(x = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
-\item{x}{a tibble.}
+\item{x}{a tibble or data frame.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 

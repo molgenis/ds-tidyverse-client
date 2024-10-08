@@ -1,5 +1,5 @@
 #' @title Order the rows of a data frame by the values of selected columns
-#' @description DataSHIELD implentation of  \code{dplyr::arrange}.
+#' @description DataSHIELD implentation of \code{dplyr::arrange}.
 #' @param df.name Character specifying a serverside data frame or tibble.
 #' @param tidy_expr A list containing variables, or functions of variables. Use \code{desc()} to sort a
 #' variable in descending order.

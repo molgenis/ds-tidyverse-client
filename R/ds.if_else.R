@@ -1,6 +1,6 @@
-#' @title Clientside dplyr mutate function
+#' @title Vectorised if-else
 #' @description DataSHIELD implementation of \code{dplyr::if_else}.
-#' @param condition A list, specifying a logical vector in tidyverse syntax, ie data and column names unquoted.
+#' @param condition A list specifying a logical vector in tidyverse syntax, ie data and column names unquoted.
 #' @param true Vector to use for TRUE value of condition.
 #' @param false Vector to use for FALSE value of condition.
 #' @param missing If not NULL, will be used as the value for NA values of condition. Follows the same size and type rules as true and false.

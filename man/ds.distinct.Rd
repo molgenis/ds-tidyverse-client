@@ -15,7 +15,7 @@ ds.distinct(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{Optional list of variables to use when determining uniqueness. If there are multiple rows
+\item{tidy_expr}{Optionally, list of variables to use when determining uniqueness. If there are multiple rows
 for a given combination of inputs, only the first row will be preserved. If omitted, will use all
 variables in the data frame.}
 
@@ -30,13 +30,14 @@ distinct, this keeps the first row of values.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::distinct}.
+DataSHIELD implentation of \code{dplyr::distinct}.
 }
 \examples{
 \dontrun{
 ds.distinct(
-df.name = "mtcars",
-expr = list(mpg, cyl),
-newobj = "distinct_df")
+  df.name = "mtcars",
+  expr = list(mpg, cyl),
+  newobj = "distinct_df"
+)
 }
 }

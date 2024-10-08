@@ -1,7 +1,9 @@
-#' @title Keep or drop columns using their names and types.
-#' @description DataSHIELD implentation of  \code{dplyr::select}.
+#' @title Keep or drop columns using their names and types
+#' @description DataSHIELD implentation of \code{dplyr::select}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr List of tidyverse syntax to be passed to  \code{dplyr::select}.
+#' @param tidy_expr List of one or more unquoted expressions separated by commas. Variable names can
+#' be used as if they were positions in the data frame, so expressions like x:y can be used to
+#' select a range of variables.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.

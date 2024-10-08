@@ -17,7 +17,7 @@ ds.filter(
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
 \item{tidy_expr}{List of expressions that return a logical value, and are defined in terms of the
-variables in .data}
+variables in \code{df.name}.}
 
 \item{.by}{Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}}
 
@@ -33,7 +33,7 @@ kept as is.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::filter}.
+DataSHIELD implentation of \code{dplyr::filter}.
 }
 \examples{
 \dontrun{

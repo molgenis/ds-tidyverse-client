@@ -29,14 +29,14 @@ only.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::arrange}.
+DataSHIELD implentation of \code{dplyr::arrange}.
 }
 \examples{
 \dontrun{
 ds.arrange(
- "mtcars",
- expr = list(drat),
- newobj = "sorted_df"
- )
+  "mtcars",
+  expr = list(drat),
+  newobj = "sorted_df"
+)
 }
 }

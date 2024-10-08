@@ -27,9 +27,9 @@ ds.group_by <- function(df.name = NULL, tidy_expr, .add = FALSE, .drop = TRUE, n
   datashield.assign(datasources, newobj, cally)
 }
 
-#' @title Remove grouping
+#' @title Remove grouping from a tibble or data frame
 #' @description DataSHIELD implentation of \code{dplyr::ungroup}.
-#' @param x a tibble.
+#' @param x a tibble or data frame.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @examples

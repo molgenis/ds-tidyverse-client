@@ -2,7 +2,7 @@
 % Please edit documentation in R/ds.group_keys.R
 \name{ds.group_keys}
 \alias{ds.group_keys}
-\title{Describe the groups within a grouped tibble}
+\title{Describe the groups within a grouped tibble or data frame}
 \usage{
 ds.group_keys(df.name = NULL, datasources = NULL)
 }
