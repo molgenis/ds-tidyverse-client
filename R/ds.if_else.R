@@ -1,7 +1,6 @@
 #' @title Clientside dplyr mutate function
-#' @description DataSHIELD implementation of \code{dplyr::mutate}.
-#' @details Performs dplyr mutate
-#' @param condition A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.
+#' @description DataSHIELD implementation of \code{dplyr::if_else}.
+#' @param condition A list, specifying a logical vector in tidyverse syntax, ie data and column names unquoted.
 #' @param true Vector to use for TRUE value of condition.
 #' @param false Vector to use for FALSE value of condition.
 #' @param missing If not NULL, will be used as the value for NA values of condition. Follows the same size and type rules as true and false.

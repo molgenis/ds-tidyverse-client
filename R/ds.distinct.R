@@ -1,10 +1,10 @@
 #' @title Keep distinct/unique rows
 #' @description DataSHIELD implentation of  \code{dplyr::distinct}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr Optional variables to use when determining uniqueness. If there are multiple rows
+#' @param tidy_expr Optional list of variables to use when determining uniqueness. If there are multiple rows
 #' for a given combination of inputs, only the first row will be preserved. If omitted, will use all
 #' variables in the data frame.
-#' @param .keep_all If TRUE, keep all variables in .data. If a combination of `expr` is not
+#' @param .keep_all If TRUE, keep all variables in .data. If a combination of \code{expr} is not
 #' distinct, this keeps the first row of values.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.

@@ -16,7 +16,7 @@ ds.group_by(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{Variables or computations to group by.}
+\item{tidy_expr}{List of variables or computations to group by.}
 
 \item{.add}{When FALSE, the default, \code{group_by()} will override existing groups. To add to the
 existing groups, use .add = TRUE.}

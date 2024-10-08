@@ -1,7 +1,7 @@
 #' @title Subset rows using their positions
 #' @description DataSHIELD implentation of  \code{dplyr::slice}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr Provide either positive values to keep, or negative values to drop. The values
+#' @param tidy_expr List, provide either positive values to keep, or negative values to drop. The values
 #' provided must be either all positive or all negative. Indices beyond the number of rows in the
 #' input are silently ignored.
 #' @param .by Optionally, a selection of columns to group by for just this operation, functioning as

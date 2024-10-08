@@ -16,7 +16,7 @@ ds.slice(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{Provide either positive values to keep, or negative values to drop. The values
+\item{tidy_expr}{List, provide either positive values to keep, or negative values to drop. The values
 provided must be either all positive or all negative. Indices beyond the number of rows in the
 input are silently ignored.}
 

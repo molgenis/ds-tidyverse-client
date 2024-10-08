@@ -1,7 +1,7 @@
 #' @title Group by one or more variables
 #' @description DataSHIELD implentation of \code{dplyr::group_by}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr Variables or computations to group by.
+#' @param tidy_expr List of variables or computations to group by.
 #' @param .add 	When FALSE, the default, \code{group_by()} will override existing groups. To add to the
 #' existing groups, use .add = TRUE.
 #' @param .drop Drop groups formed by factor levels that don't appear in the data? The default is

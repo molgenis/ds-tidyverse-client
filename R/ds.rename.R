@@ -1,7 +1,7 @@
 #' @title Rename columns.
 #' @description DataSHIELD implentation of \code{dplyr::rename}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr List of tidyselect syntax to be passed to \code{dplyr::rename}.
+#' @param tidy_expr List of tidyverse syntax to be passed to \code{dplyr::rename}.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.

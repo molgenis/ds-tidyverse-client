@@ -1,7 +1,7 @@
 #' @title Keep rows that match a condition
 #' @description DataSHIELD implentation of  \code{dplyr::filter}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_expr Expressions that return a logical value, and are defined in terms of the
+#' @param tidy_expr List of expressions that return a logical value, and are defined in terms of the
 #' variables in .data
 #' @param .by Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}
 #' @param .preserve Relevant when the .data input is grouped. If .preserve = FALSE (the default),

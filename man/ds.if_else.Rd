@@ -16,7 +16,7 @@ ds.if_else(
 )
 }
 \arguments{
-\item{condition}{A list, specifying a logical vector in `tidy-select` syntax, ie data and column names unquoted.}
+\item{condition}{A list, specifying a logical vector in tidyverse syntax, ie data and column names unquoted.}
 
 \item{true}{Vector to use for TRUE value of condition.}
 
@@ -36,10 +36,7 @@ ds.if_else(
 One or more new columns created on the serverside data frame specified in the \code{newobj}.
 }
 \description{
-DataSHIELD implementation of \code{dplyr::mutate}.
-}
-\details{
-Performs dplyr mutate
+DataSHIELD implementation of \code{dplyr::if_else}.
 }
 \examples{
 \dontrun{

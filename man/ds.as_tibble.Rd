@@ -33,7 +33,7 @@ check.}
   \item `NULL`: remove row names. This is the default.
   \item `NA`: keep row names.
   \item A string: the name of a new column. Existing rownames are transferred
-  into this column and the `row.names` attribute is deleted.
+  into this column and the \code{row.names} attribute is deleted.
   No name repair is applied to the new column name, even if `x` already contains
   a column of that name.
 }}

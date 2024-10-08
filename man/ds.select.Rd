@@ -9,7 +9,7 @@ ds.select(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{List of tidyselect syntax to be passed to  \code{dplyr::select}.}
+\item{tidy_expr}{List of tidyverse syntax to be passed to  \code{dplyr::select}.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 

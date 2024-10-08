@@ -16,7 +16,7 @@ ds.filter(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{Expressions that return a logical value, and are defined in terms of the
+\item{tidy_expr}{List of expressions that return a logical value, and are defined in terms of the
 variables in .data}
 
 \item{.by}{Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}}

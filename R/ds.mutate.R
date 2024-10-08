@@ -3,16 +3,16 @@
 #' @param df.name Character specifying a serverside data frame or tibble.
 #' @param tidy_expr List of tidyselect syntax to be passed to dplyr::mutate.
 #' @param .keep Control which columns from .data are retained in the output. Grouping columns and
-#' columns created by ... are always kept. "all" retains all columns from .data. This is the default.
-#' "used" retains only the columns used in `tidy_expr` to create new columns. "unused" retains
-#' only the columns not used in `tidy_expr` to create new columns. This is useful if you generate
+#' columns created by \code{tidy_expr} are always kept. "all" retains all columns from .data. This is the default.
+#' "used" retains only the columns used in \code{tidy_expr} to create new columns. "unused" retains
+#' only the columns not used in \code{tidy_expr} to create new columns. This is useful if you generate
 #' new columns, but no longer need the columns used to generate them. "none" doesn't retain any
-#' extra columns from `df.name`. Only the grouping variables and columns created by `tidy_expr`
+#' extra columns from \code{tidy_expr}. Only the grouping variables and columns created by \code{tidy_expr}
 #' are kept.
 #' @param .before <tidy-select> Optionally, control where new columns should appear (the default is
-#' to add to the right hand side). See `relocate` for more details.
+#' to add to the right hand side). See \code{tidy_expr} for more details.
 #' @param .after <tidy-select> Optionally, control where new columns should appear (the default is
-#' to add to the right hand side). See `relocate` for more details.
+#' to add to the right hand side). See \code{tidy_expr} for more details.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
