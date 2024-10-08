@@ -8,7 +8,7 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' @importFrom DSI datashield.assign
 #' @examples
 #'\dontrun{
 #'ds.arrange(

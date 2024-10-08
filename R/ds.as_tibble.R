@@ -23,7 +23,7 @@
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return A serverside tibble with the name specified in the \code{newobj}.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' @importFrom DSI datashield.assign
 #' @examples
 #'\dontrun{
 #'ds.as_tibble(
