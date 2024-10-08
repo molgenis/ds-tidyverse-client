@@ -11,11 +11,12 @@
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
 #' @examples
-#'\dontrun{
-#'ds.distinct(
-#' df.name = "mtcars",
-#' expr = list(mpg, cyl),
-#' newobj = "distinct_df")
+#' \dontrun{
+#' ds.distinct(
+#'   df.name = "mtcars",
+#'   expr = list(mpg, cyl),
+#'   newobj = "distinct_df"
+#' )
 #' }
 #' @export
 ds.distinct <- function(df.name = NULL, tidy_expr = NULL, .keep_all = FALSE, newobj = NULL,

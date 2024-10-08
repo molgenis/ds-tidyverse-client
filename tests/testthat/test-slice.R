@@ -19,16 +19,18 @@ test_that("ds.slice correctly subsets rows", {
     df.name = "mtcars",
     tidy_expr = list(1:5),
     newobj = "sliced",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("sliced", datasources = conns)[[1]],
-    "data.frame")
+    "data.frame"
+  )
 
   expect_equal(
     ds.dim("sliced", datasources = conns)[[1]],
-    c(5, 11))
-
+    c(5, 11)
+  )
 })
 
 test_that("ds.slice works with .by arg", {
@@ -37,24 +39,23 @@ test_that("ds.slice works with .by arg", {
     tidy_expr = list(1:5),
     .by = "cyl",
     newobj = "sliced_by",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("sliced_by", datasources = conns)[[1]],
     c(15, 11)
   )
-
 }) ## Currently not possible to test .preserve clientside because ds.group_keys not in this PR. Will
 ## test serverside
 
 test_that("ds.slice throws error if disclosure risk", {
-
   expect_error(
     ds.slice(
       df.name = "mtcars",
       tidy_expr = list(1),
       newobj = "sliced_by",
-      datasources = conns)
+      datasources = conns
+    )
   )
-
 })

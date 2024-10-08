@@ -13,12 +13,13 @@ test_that("ds.arrange doesn't return error with correct arguments", {
     df.name = "mtcars",
     tidy_expr = list(cyl),
     newobj = "ordered_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("ordered_df", datasources = conns)[[1]],
-    "data.frame")
-
+    "data.frame"
+  )
 }) ## Not possible to test that it has been ordered correctly as cannot see data. Will test serverside.
 
 test_that("ds.arrange doesn't return error with .by_group argument", {
@@ -27,12 +28,13 @@ test_that("ds.arrange doesn't return error with .by_group argument", {
     tidy_expr = list(cyl),
     .by_group = TRUE,
     newobj = "ordered_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("ordered_df", datasources = conns)[[1]],
-    "data.frame")
-
+    "data.frame"
+  )
 })
 
 test_that("ds.arrange returns error if data doesn't exist", {
@@ -41,22 +43,21 @@ test_that("ds.arrange returns error if data doesn't exist", {
       df.name = "doesnt_exist",
       tidy_expr = list(cyl),
       newobj = "ordered_df",
-      datasources = conns)
+      datasources = conns
     )
-
+  )
 })
 
 test_that("ds.arrange works with desc() specification", {
-
   ds.arrange(
     df.name = "mtcars",
     tidy_expr = list(desc(cyl)),
     newobj = "desc_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("desc_df", datasources = conns)[[1]],
     "data.frame"
   )
-
 })

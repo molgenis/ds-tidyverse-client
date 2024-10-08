@@ -15,8 +15,9 @@ test_that("ds.select fails with correct error message if data not present ", {
       df.name = "datanotthere",
       tidy_expr = list(mpg:drat),
       newobj = "nodata",
-      datasources = conns)
+      datasources = conns
     )
+  )
 })
 
 test_that("ds.select correctly passes : ", {
@@ -31,7 +32,6 @@ test_that("ds.select correctly passes : ", {
     ds.colnames("mpg_drat", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat")
   )
-
 })
 
 test_that("ds.select correctly passes `starts_with`", {
@@ -46,7 +46,6 @@ test_that("ds.select correctly passes `starts_with`", {
     ds.colnames("starts", datasources = conns)[[1]],
     "mpg"
   )
-
 })
 
 test_that("ds.select correctly passes `ends_with`", {
@@ -61,7 +60,6 @@ test_that("ds.select correctly passes `ends_with`", {
     ds.colnames("ends", datasources = conns)[[1]],
     "am"
   )
-
 })
 
 test_that("ds.select correctly passes `matches`", {
@@ -76,7 +74,6 @@ test_that("ds.select correctly passes `matches`", {
     ds.colnames("matches", datasources = conns)[[1]],
     c("disp", "drat", "qsec", "am", "gear", "carb")
   )
-
 })
 
 test_that("ds.select correctly passes `everything`", {
@@ -91,7 +88,6 @@ test_that("ds.select correctly passes `everything`", {
     ds.colnames("everything", datasources = conns)[[1]],
     colnames(mtcars)
   )
-
 })
 
 test_that("ds.select correctly passes `last_col`", {
@@ -106,7 +102,6 @@ test_that("ds.select correctly passes `last_col`", {
     ds.colnames("last", datasources = conns)[[1]],
     "carb"
   )
-
 })
 
 test_that("ds.select correctly passes `group_cols`", {
@@ -121,7 +116,6 @@ test_that("ds.select correctly passes `group_cols`", {
     ds.colnames("group", datasources = conns)[[1]],
     character(0)
   )
-
 })
 
 test_that("ds.select correctly passes strings with '&'", {
@@ -136,7 +130,6 @@ test_that("ds.select correctly passes strings with '&'", {
     ds.colnames("and", datasources = conns)[[1]],
     "carb"
   )
-
 })
 
 test_that("ds.select correctly passes strings with '!'", {
@@ -151,7 +144,6 @@ test_that("ds.select correctly passes strings with '!'", {
     ds.colnames("not", datasources = conns)[[1]],
     c("cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
-
 })
 
 test_that("ds.select correctly passes strings with '|'", {
@@ -166,7 +158,6 @@ test_that("ds.select correctly passes strings with '|'", {
     ds.colnames("or", datasources = conns)[[1]],
     c("cyl", "carb")
   )
-
 })
 
 test_that("ds.select correctly passes `strings with `all_of`", {
@@ -181,7 +172,6 @@ test_that("ds.select correctly passes `strings with `all_of`", {
     ds.colnames("all_of", datasources = conns)[[1]],
     c("mpg", "cyl")
   )
-
 })
 
 test_that("ds.select correctly passes strings with `any_of`", {
@@ -196,7 +186,6 @@ test_that("ds.select correctly passes strings with `any_of`", {
     ds.colnames("any_of", datasources = conns)[[1]],
     c("mpg", "cyl")
   )
-
 })
 
 test_that("ds.select correctly passes complex strings", {
@@ -211,7 +200,6 @@ test_that("ds.select correctly passes complex strings", {
     ds.colnames("complex", datasources = conns)[[1]],
     c("carb", "drat", "gear")
   )
-
 })
 
 test_that("ds.select correctly passes strings with `where`", {
@@ -226,7 +214,6 @@ test_that("ds.select correctly passes strings with `where`", {
     ds.colnames("where", datasources = conns)[[1]],
     colnames(mtcars)
   )
-
 })
 
 test_that("ds.select correctly passes strings with '='", {
@@ -241,5 +228,4 @@ test_that("ds.select correctly passes strings with '='", {
     ds.colnames("equals", datasources = conns)[[1]],
     c("test", "cyl", "gear")
   )
-
 })

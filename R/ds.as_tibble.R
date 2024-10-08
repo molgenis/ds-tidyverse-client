@@ -25,11 +25,12 @@
 #' @return A serverside tibble with the name specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign
 #' @examples
-#'\dontrun{
-#'ds.as_tibble(
-#' x = "mtcars",
-#' newobj = "mtcars_tib",
-#' datasources = conns)
+#' \dontrun{
+#' ds.as_tibble(
+#'   x = "mtcars",
+#'   newobj = "mtcars_tib",
+#'   datasources = conns
+#' )
 #' }
 #' @export
 ds.as_tibble <- function(x = NULL, .rows = NULL, .name_repair = "check_unique", rownames = NULL,

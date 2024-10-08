@@ -10,16 +10,15 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
-
-    ds.case_when(
-      tidy_expr = list(
-        mtcars$mpg < 20 ~ "low",
-        mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
-        mtcars$mpg >= 30 ~ "high"
-      ),
-      newobj = "test",
-      datasources = conns
-    )
+  ds.case_when(
+    tidy_expr = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
+      mtcars$mpg >= 30 ~ "high"
+    ),
+    newobj = "test",
+    datasources = conns
+  )
 
   nqmes <- names(ds.table("test", datasources = conns)$output.list$TABLES.COMBINED_all.sources_counts)
 

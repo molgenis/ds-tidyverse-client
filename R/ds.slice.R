@@ -14,12 +14,13 @@
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
 #' @examples
-#'\dontrun{
-#'ds.slice(
-#' df.name = "mtcars",
-#' expr = list(1:10),
-#' .by = "cyl",
-#' newobj = "sliced_df")
+#' \dontrun{
+#' ds.slice(
+#'   df.name = "mtcars",
+#'   expr = list(1:10),
+#'   .by = "cyl",
+#'   newobj = "sliced_df"
+#' )
 #' }
 #' @export
 ds.slice <- function(df.name = NULL, tidy_expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL,

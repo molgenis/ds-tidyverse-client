@@ -14,23 +14,26 @@ test_that("ds.distinct correctly identified distinct rows", {
     df.name = "mtcars",
     tidy_expr = list(cyl, carb),
     newobj = "dist_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("dist_df", datasources = conns)[[1]],
-    "data.frame")
+    "data.frame"
+  )
 
   expect_equal(
     ds.dim("dist_df", datasources = conns)[[1]],
-    c(9, 2))
-
+    c(9, 2)
+  )
 })
 
 test_that("ds.distinct works with where `tidy_expr` arg is empty", {
   ds.distinct(
     df.name = "mtcars",
     newobj = "dist_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("dist_df", datasources = conns)[[1]],
@@ -41,7 +44,6 @@ test_that("ds.distinct works with where `tidy_expr` arg is empty", {
     ds.colnames("dist_df", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
-
 })
 
 test_that("ds.distinct works with `.keep_all` argument", {
@@ -50,7 +52,8 @@ test_that("ds.distinct works with `.keep_all` argument", {
     tidy_expr = list(cyl, carb),
     .keep_all = TRUE,
     newobj = "dist_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("dist_df", datasources = conns)[[1]],
@@ -67,7 +70,8 @@ test_that("ds.distinct works with `.keep_all` argument", {
     tidy_expr = list(cyl, carb),
     .keep_all = FALSE,
     newobj = "dist_df",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("dist_df", datasources = conns)[[1]],
@@ -78,17 +82,15 @@ test_that("ds.distinct works with `.keep_all` argument", {
     ds.colnames("dist_df", datasources = conns)[[1]],
     c("cyl", "carb")
   )
-
 })
 
 test_that("ds.distinct fails if created subset is too small", {
-
   expect_error(
     ds.distinct(
       df.name = "mtcars",
       tidy_expr = list(vs),
       newobj = "dist_df",
-      datasources = conns)
+      datasources = conns
+    )
   )
-
 })

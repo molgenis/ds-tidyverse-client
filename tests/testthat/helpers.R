@@ -15,13 +15,12 @@
 #'   assign_method = "customAssign",
 #'   aggregate_method = "customAggregate",
 #'   tables = list(mtcars = mtcars, mtcars_group = mtcars_group)
-#'   )
-#'
+#' )
+#' }
 #' @importFrom DSLite newDSLiteServer
 #' @importFrom DSI newDSLoginBuilder
 #' @export
 .prepare_dslite <- function(assign_method = NULL, aggregate_method = NULL, tables = NULL) {
-
   options(datashield.env = environment())
   dslite.server <- DSLite::newDSLiteServer(tables = tables)
   dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))

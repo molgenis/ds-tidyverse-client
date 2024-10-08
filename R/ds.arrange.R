@@ -10,12 +10,12 @@
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
 #' @examples
-#'\dontrun{
-#'ds.arrange(
-#'  "mtcars",
-#'  expr = list(drat),
-#'  newobj = "sorted_df"
-#'  )
+#' \dontrun{
+#' ds.arrange(
+#'   "mtcars",
+#'   expr = list(drat),
+#'   newobj = "sorted_df"
+#' )
 #' }
 #' @export
 ds.arrange <- function(df.name = NULL, tidy_expr = NULL, .by_group = NULL, newobj = NULL, datasources = NULL) {

@@ -66,7 +66,6 @@ test_that("ds.mutate passes with different .keep argument", {
     ds.colnames("new", datasources = conns)[[1]],
     c("mpg_trans", "new_var")
   )
-
 })
 
 test_that("ds.mutate passes with different .before argument", {
@@ -84,7 +83,6 @@ test_that("ds.mutate passes with different .before argument", {
     ds.colnames("new", datasources = conns)[[1]],
     c("mpg", "cyl", "mpg_trans", "new_var", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
-
 })
 
 test_that("ds.mutate passes with different .after argument", {
@@ -102,5 +100,4 @@ test_that("ds.mutate passes with different .after argument", {
     ds.colnames("new", datasources = conns)[[1]],
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "mpg_trans", "new_var", "vs", "am", "gear", "carb")
   )
-
 })

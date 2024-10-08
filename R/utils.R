@@ -73,9 +73,9 @@
 #' @return The string with 'list(' removed.
 #' @noRd
 .remove_list <- function(string) {
-  if(string != "NULL") {
-  string <- gsub("list\\(", "", string, fixed = FALSE)
-  string <- substr(string, 1, nchar(string) - 1)
+  if (string != "NULL") {
+    string <- gsub("list\\(", "", string, fixed = FALSE)
+    string <- substr(string, 1, nchar(string) - 1)
   }
 }
 

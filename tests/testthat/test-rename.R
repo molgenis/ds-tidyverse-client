@@ -32,7 +32,6 @@ test_that("ds.rename correctly passes =", {
     ds.colnames("mpg_drat", datasources = conns)[[1]],
     c("test_1", "cyl", "disp", "hp", "test_2", "wt", "qsec", "vs", "am", "gear", "carb")
   )
-
 })
 
 test_that("ds.rename throws an error if column name doesn't exist", {
