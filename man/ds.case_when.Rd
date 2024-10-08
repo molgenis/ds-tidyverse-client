@@ -5,7 +5,7 @@
 \title{A general vectorised if-else}
 \usage{
 ds.case_when(
-  dynamic_dots = NULL,
+  tidy_expr = NULL,
   .default = NULL,
   .ptype = NULL,
   .size = NULL,
@@ -14,7 +14,7 @@ ds.case_when(
 )
 }
 \arguments{
-\item{dynamic_dots}{A sequence of two-sided formulas. The left hand side (LHS) determines which
+\item{tidy_expr}{A list containing a sequence of two-sided formulas. The left hand side (LHS) determines which
 values match this case. The right hand side (RHS) provides the replacement value.
 The LHS inputs must evaluate to logical vectors.
 The RHS inputs will be coerced to their common type.

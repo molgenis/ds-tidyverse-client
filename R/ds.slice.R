@@ -1,7 +1,7 @@
 #' @title Subset rows using their positions
 #' @description DataSHIELD implentation of  \code{dplyr::slice}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param expr Provide either positive values to keep, or negative values to drop. The values
+#' @param tidy_expr Provide either positive values to keep, or negative values to drop. The values
 #' provided must be either all positive or all negative. Indices beyond the number of rows in the
 #' input are silently ignored.
 #' @param .by Optionally, a selection of columns to group by for just this operation, functioning as
@@ -22,11 +22,11 @@
 #' newobj = "sliced_df")
 #' }
 #' @export
-ds.slice <- function(df.name = NULL, expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL,
+ds.slice <- function(df.name = NULL, tidy_expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL,
                      datasources = NULL) {
-  tidy_select <- .format_args_as_string(rlang::enquo(expr))
+  tidy_expr <- .format_args_as_string(rlang::enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
-  cally <- .make_serverside_call("sliceDS", tidy_select, list(df.name, .by, .preserve))
+  cally <- .make_serverside_call("sliceDS", tidy_expr, list(df.name, .by, .preserve))
   datashield.assign(datasources, newobj, cally)
 }

@@ -11,7 +11,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 test_that("ds.arrange doesn't return error with correct arguments", {
   ds.arrange(
     df.name = "mtcars",
-    expr = list(cyl),
+    tidy_expr = list(cyl),
     newobj = "ordered_df",
     datasources = conns)
 
@@ -24,7 +24,7 @@ test_that("ds.arrange doesn't return error with correct arguments", {
 test_that("ds.arrange doesn't return error with .by_group argument", {
   ds.arrange(
     df.name = "mtcars",
-    expr = list(cyl),
+    tidy_expr = list(cyl),
     .by_group = TRUE,
     newobj = "ordered_df",
     datasources = conns)
@@ -39,7 +39,7 @@ test_that("ds.arrange returns error if data doesn't exist", {
   expect_error(
     ds.arrange(
       df.name = "doesnt_exist",
-      expr = list(cyl),
+      tidy_expr = list(cyl),
       newobj = "ordered_df",
       datasources = conns)
     )
@@ -50,7 +50,7 @@ test_that("ds.arrange works with desc() specification", {
 
   ds.arrange(
     df.name = "mtcars",
-    expr = list(desc(cyl)),
+    tidy_expr = list(desc(cyl)),
     newobj = "desc_df",
     datasources = conns)
 

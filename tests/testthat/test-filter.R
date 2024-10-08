@@ -11,7 +11,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 test_that("ds.filter correctly filters", {
   ds.filter(
     df.name = "mtcars",
-    expr = list(cyl == 4 & mpg > 20),
+    tidy_expr = list(cyl == 4 & mpg > 20),
     newobj = "filtered",
     datasources = conns
   )
@@ -36,7 +36,7 @@ test_that("ds.filter correctly filters", {
 test_that("ds.filter works with .by arg", {
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .by = "cyl",
     newobj = "filtered_by",
     datasources = conns
@@ -57,7 +57,7 @@ test_that("ds.filter works with .by arg", {
 test_that("ds.filter works with .preserve arg", {
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .preserve = T,
     newobj = "preserved_t",
     datasources = conns
@@ -70,7 +70,7 @@ test_that("ds.filter works with .preserve arg", {
 
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .preserve = F,
     newobj = "preserved_f",
     datasources = conns

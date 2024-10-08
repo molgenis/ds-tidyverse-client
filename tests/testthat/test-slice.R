@@ -17,7 +17,7 @@ datashield.assign.table(conns, "mtcars_group", "mtcars_group")
 test_that("ds.slice correctly subsets rows", {
   ds.slice(
     df.name = "mtcars",
-    expr = list(1:5),
+    tidy_expr = list(1:5),
     newobj = "sliced",
     datasources = conns)
 
@@ -34,7 +34,7 @@ test_that("ds.slice correctly subsets rows", {
 test_that("ds.slice works with .by arg", {
   ds.slice(
     df.name = "mtcars",
-    expr = list(1:5),
+    tidy_expr = list(1:5),
     .by = "cyl",
     newobj = "sliced_by",
     datasources = conns)
@@ -52,7 +52,7 @@ test_that("ds.slice throws error if disclosure risk", {
   expect_error(
     ds.slice(
       df.name = "mtcars",
-      expr = list(1),
+      tidy_expr = list(1),
       newobj = "sliced_by",
       datasources = conns)
   )

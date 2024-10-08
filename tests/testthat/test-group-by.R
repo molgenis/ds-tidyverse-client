@@ -23,7 +23,7 @@ datashield.assign.table(conns, "mtcars_group", "mtcars_group")
 test_that("ds.group_by correctly groups a data frame", {
   ds.group_by(
     df.name = "mtcars",
-    expr = list(mpg, cyl),
+    tidy_expr = list(mpg, cyl),
     newobj = "grouped",
     datasources = conns
   )

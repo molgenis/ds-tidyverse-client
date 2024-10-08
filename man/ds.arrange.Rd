@@ -6,7 +6,7 @@
 \usage{
 ds.arrange(
   df.name = NULL,
-  expr = NULL,
+  tidy_expr = NULL,
   .by_group = NULL,
   newobj = NULL,
   datasources = NULL
@@ -15,8 +15,8 @@ ds.arrange(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{expr}{Variables, or functions of variables. Use desc() to sort a variable in descending
-order.}
+\item{tidy_expr}{A list containing variables, or functions of variables. Use desc() to sort a
+variable in descending order.}
 
 \item{.by_group}{If TRUE, will sort first by grouping variable. Applies to grouped data frames
 only.}

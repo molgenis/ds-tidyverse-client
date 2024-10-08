@@ -12,7 +12,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 test_that("ds.case_when passes and numeric condition and numeric output", {
 
     ds.case_when(
-      dynamic_dots = list(
+      tidy_expr = list(
         mtcars$mpg < 20 ~ "low",
         mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
         mtcars$mpg >= 30 ~ "high"
@@ -42,7 +42,7 @@ test_that("ds.case_when passes and numeric condition and numeric output", {
 
 test_that("ds.case_when correctly passes argument with numeric condition and numeric outcome", {
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$mpg < 20 ~ 20,
       mtcars$mpg >= 20 & mtcars$mpg < 30 ~ 30,
       mtcars$mpg >= 30 ~ 40
@@ -73,7 +73,7 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
 
 test_that("ds.case_when correctly passes argument with categorical condition and categorical outcome", {
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$gear == 2 ~ "low",
       mtcars$gear == 3 ~ "medium",
       mtcars$gear == 4 ~ "high",
@@ -104,7 +104,7 @@ test_that("ds.case_when correctly passes argument with categorical condition and
 
 test_that("ds.case_when correctly passes .default argument", {
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$gear == 2 ~ "low",
       mtcars$gear == 3 ~ "medium",
       mtcars$gear == 5 ~ "very_high"

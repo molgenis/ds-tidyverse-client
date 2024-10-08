@@ -6,7 +6,7 @@
 \usage{
 ds.distinct(
   df.name = NULL,
-  expr = NULL,
+  tidy_expr = NULL,
   .keep_all = FALSE,
   newobj = NULL,
   datasources = NULL
@@ -15,7 +15,7 @@ ds.distinct(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{expr}{Optional variables to use when determining uniqueness. If there are multiple rows
+\item{tidy_expr}{Optional variables to use when determining uniqueness. If there are multiple rows
 for a given combination of inputs, only the first row will be preserved. If omitted, will use all
 variables in the data frame.}
 

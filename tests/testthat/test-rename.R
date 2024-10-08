@@ -13,7 +13,7 @@ test_that("ds.rename fails with correct error message if data not present ", {
   expect_error(
     ds.rename(
       df.name = "datanotthere",
-      tidy_select = list(test_1 = mpg, test_2 = drat),
+      tidy_expr = list(test_1 = mpg, test_2 = drat),
       newobj = "nodata",
       datasources = conns
     )
@@ -23,7 +23,7 @@ test_that("ds.rename fails with correct error message if data not present ", {
 test_that("ds.rename correctly passes =", {
   ds.rename(
     df.name = "mtcars",
-    tidy_select = list(test_1 = mpg, test_2 = drat),
+    tidy_expr = list(test_1 = mpg, test_2 = drat),
     newobj = "mpg_drat",
     datasources = conns
   )
@@ -39,7 +39,7 @@ test_that("ds.rename throws an error if column name doesn't exist", {
   expect_error(
     ds.rename(
       df.name = "mtcars",
-      tidy_select = list(test_1 = doesntexist, test_2 = drat),
+      tidy_expr = list(test_1 = doesntexist, test_2 = drat),
       newobj = "mpg_drat",
       datasources = conns
     )

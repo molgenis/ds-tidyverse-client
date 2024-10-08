@@ -6,7 +6,7 @@
 \usage{
 ds.filter(
   df.name = NULL,
-  expr = NULL,
+  tidy_expr = NULL,
   .by = NULL,
   .preserve = FALSE,
   newobj = NULL,
@@ -16,7 +16,7 @@ ds.filter(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{expr}{Expressions that return a logical value, and are defined in terms of the
+\item{tidy_expr}{Expressions that return a logical value, and are defined in terms of the
 variables in .data}
 
 \item{.by}{Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}}

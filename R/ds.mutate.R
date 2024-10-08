@@ -1,13 +1,13 @@
 #' @title Create, modify, and delete columns
 #' @description DataSHIELD implementation of \code{dplyr::mutate}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_select List of tidyselect syntax to be passed to dplyr::mutate.
+#' @param tidy_expr List of tidyselect syntax to be passed to dplyr::mutate.
 #' @param .keep Control which columns from .data are retained in the output. Grouping columns and
 #' columns created by ... are always kept. "all" retains all columns from .data. This is the default.
-#' "used" retains only the columns used in `tidy_select` to create new columns. "unused" retains
-#' only the columns not used in `tidy_select` to create new columns. This is useful if you generate
+#' "used" retains only the columns used in `tidy_expr` to create new columns. "unused" retains
+#' only the columns not used in `tidy_expr` to create new columns. This is useful if you generate
 #' new columns, but no longer need the columns used to generate them. "none" doesn't retain any
-#' extra columns from `df.name`. Only the grouping variables and columns created by `tidy_select`
+#' extra columns from `df.name`. Only the grouping variables and columns created by `tidy_expr`
 #' are kept.
 #' @param .before <tidy-select> Optionally, control where new columns should appear (the default is
 #' to add to the right hand side). See `relocate` for more details.
@@ -30,11 +30,11 @@
 #' ## Refer to the package vignette for more examples.
 #' }
 #' @export
-ds.mutate <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, .keep = "all", .before = NULL,
+ds.mutate <- function(df.name = NULL, tidy_expr = NULL, newobj = NULL, .keep = "all", .before = NULL,
                       .after = NULL, datasources = NULL) {
-  tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
+  tidy_expr <- .format_args_as_string(rlang::enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
-  cally <- .make_serverside_call("mutateDS", tidy_select, list(df.name, .keep, .before, .after))
+  cally <- .make_serverside_call("mutateDS", tidy_expr, list(df.name, .keep, .before, .after))
   datashield.assign(datasources, newobj, cally)
 }

@@ -1,6 +1,6 @@
 #' @title A general vectorised if-else
 #' @description DataSHIELD implementation of \code{dplyr::case_when}.
-#' @param dynamic_dots A sequence of two-sided formulas. The left hand side (LHS) determines which
+#' @param tidy_expr A list containing a sequence of two-sided formulas. The left hand side (LHS) determines which
 #' values match this case. The right hand side (RHS) provides the replacement value.
 #' The LHS inputs must evaluate to logical vectors.
 #' The RHS inputs will be coerced to their common type.
@@ -32,11 +32,11 @@
 #' ## Refer to the package vignette for more examples.
 #' }
 #' @export
-ds.case_when <- function(dynamic_dots = NULL, .default = NULL, .ptype = NULL, .size = NULL,
+ds.case_when <- function(tidy_expr = NULL, .default = NULL, .ptype = NULL, .size = NULL,
                          newobj = NULL, datasources = NULL) {
-  dynamic_dots <- .format_args_as_string(rlang::enquo(dynamic_dots))
+  tidy_expr <- .format_args_as_string(rlang::enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(NULL, newobj, check_df = FALSE)
-  cally <- .make_serverside_call("caseWhenDS", dynamic_dots, list(.default, .ptype, .size))
+  cally <- .make_serverside_call("caseWhenDS", tidy_expr, list(.default, .ptype, .size))
   datashield.assign(datasources, newobj, cally)
 }

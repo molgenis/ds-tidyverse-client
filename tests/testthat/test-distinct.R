@@ -12,7 +12,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 test_that("ds.distinct correctly identified distinct rows", {
   ds.distinct(
     df.name = "mtcars",
-    expr = list(cyl, carb),
+    tidy_expr = list(cyl, carb),
     newobj = "dist_df",
     datasources = conns)
 
@@ -26,7 +26,7 @@ test_that("ds.distinct correctly identified distinct rows", {
 
 })
 
-test_that("ds.distinct works with where `expr` arg is empty", {
+test_that("ds.distinct works with where `tidy_expr` arg is empty", {
   ds.distinct(
     df.name = "mtcars",
     newobj = "dist_df",
@@ -47,7 +47,7 @@ test_that("ds.distinct works with where `expr` arg is empty", {
 test_that("ds.distinct works with `.keep_all` argument", {
   ds.distinct(
     df.name = "mtcars",
-    expr = list(cyl, carb),
+    tidy_expr = list(cyl, carb),
     .keep_all = TRUE,
     newobj = "dist_df",
     datasources = conns)
@@ -64,7 +64,7 @@ test_that("ds.distinct works with `.keep_all` argument", {
 
   ds.distinct(
     df.name = "mtcars",
-    expr = list(cyl, carb),
+    tidy_expr = list(cyl, carb),
     .keep_all = FALSE,
     newobj = "dist_df",
     datasources = conns)
@@ -86,7 +86,7 @@ test_that("ds.distinct fails if created subset is too small", {
   expect_error(
     ds.distinct(
       df.name = "mtcars",
-      expr = list(vs),
+      tidy_expr = list(vs),
       newobj = "dist_df",
       datasources = conns)
   )
