@@ -9,7 +9,7 @@
 #' @param datasources datashield connections object.
 #' @return A serverside data frame with name specified in \code{newobj} and the same type as the
 #' first element of `to_combine`.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' @importFrom DSI datashield.assign
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
