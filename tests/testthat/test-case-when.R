@@ -1,8 +1,8 @@
-library(DSLite)
-library(DSI)
-library(dplyr)
-library(dsTidyverse)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
 login_data <- .prepare_dslite(assign_method = "caseWhenDS", tables = list(mtcars = mtcars))

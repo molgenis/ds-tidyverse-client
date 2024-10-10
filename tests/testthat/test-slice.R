@@ -1,8 +1,8 @@
-library(DSLite)
-library(DSI)
-library(dplyr)
-library(dsTidyverse)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 data("mtcars")
 mtcars_group <- mtcars %>%

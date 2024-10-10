@@ -1,8 +1,8 @@
-library(DSLite)
-library(DSI)
-library(dplyr)
-library(dsTidyverse)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 data("mtcars")
 login_data <- .prepare_dslite(assign_method = "selectDS", tables = list(mtcars = mtcars))
