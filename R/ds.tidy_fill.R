@@ -165,6 +165,26 @@ ask_question_wait_response_class <- function(question) {
   return(check_response_class(answer))
 }
 
+#' Prompt User for Class Conversion Options
+#'
+#' This function prompts the user with options to convert a variable to a specific class (e.g., factor, integer, numeric, character, or logical).
+#' The function provides a list of class conversion options for the specified variable and includes an option to cancel the operation.
+#'
+#' @param var The name of the variable for which the user is prompted to select a class conversion option.
+#'
+#' @importFrom cli cli_alert_info cli_ol
+#' @return None. This function is used for prompting the user and does not return a value.
+#' @examples
+#' ask_question("variable_name")
+ask_question <- function(var) {
+  cli_alert_info("Would you like to:")
+  class_options <- c("a factor", "an integer", "numeric", "a character", "a logical vector")
+  class_message <- paste0("Convert `{var}` to ", class_options, " in all studies")
+  cli_ol(
+    c(class_message, "Cancel `ds.dataFrameFill` operation")
+  )
+}
+
 #' Fix Variable Classes
 #'
 #' Applies the user's class decisions to fix the classes of variables across different data sources.
@@ -462,12 +482,5 @@ check_response_levels <- function(answer, level_conflicts) {
 #   cli_end()
 # }
 
-# ask_question <- function(var) {
-#   cli_alert_info("Would you like to:")
-#   class_options <- c("a factor", "an integer", "numeric", "a character", "a logical vector")
-#   class_message <- paste0("Convert `{var}` to ", class_options, " in all studies")
-#   cli_ol(
-#     c(class_message, "Cancel `ds.dataFrameFill` operation")
-#   )
-# }
+
 
