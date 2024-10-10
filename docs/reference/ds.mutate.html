@@ -59,7 +59,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds.mutate</span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .keep <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  .before <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -74,7 +74,7 @@
 <dd><p>Character specifying a serverside data frame or tibble.</p></dd>
 
 
-<dt>tidy_select</dt>
+<dt>tidy_expr</dt>
 <dd><p>List of tidyselect syntax to be passed to dplyr::mutate.</p></dd>
 
 
@@ -83,23 +83,21 @@
 
 
 <dt>.keep</dt>
-<dd><p>Control which columns from .data are retained in the output. Grouping columns and
-columns created by ... are always kept. "all" retains all columns from .data. This is the default.
-"used" retains only the columns used in `tidy_select` to create new columns. "unused" retains
-only the columns not used in `tidy_select` to create new columns. This is useful if you generate
-new columns, but no longer need the columns used to generate them. "none" doesn't retain any
-extra columns from `df.name`. Only the grouping variables and columns created by `tidy_select`
-are kept.</p></dd>
+<dd><p>Control which columns from <code>df.name</code> are retained in the output. Options include:</p><ul><li><p><code>"all"</code>: Retains all columns from <code>df.name</code>. This is the default.</p></li>
+<li><p><code>"used"</code>: Retains only the columns used in <code>tidy_expr</code> to create new columns.</p></li>
+<li><p><code>"unused"</code>: Retains only the columns not used in <code>tidy_expr</code> to create new columns. This is useful if you generate new columns but no longer need the columns used to generate them.</p></li>
+<li><p><code>"none"</code>: Doesn't retain any extra columns from <code>df.name</code>. Only the grouping variables and columns created by <code>tidy_expr</code> are kept.</p></li>
+</ul><p>Grouping columns and columns created by <code>tidy_expr</code> are always kept.</p></dd>
 
 
 <dt>.before</dt>
 <dd><p>&lt;tidy-select&gt; Optionally, control where new columns should appear (the default is
-to add to the right hand side). See `relocate` for more details.</p></dd>
+to add to the right hand side). See <code>tidy_expr</code> for more details.</p></dd>
 
 
 <dt>.after</dt>
 <dd><p>&lt;tidy-select&gt; Optionally, control where new columns should appear (the default is
-to add to the right hand side). See `relocate` for more details.</p></dd>
+to add to the right hand side). See <code>tidy_expr</code> for more details.</p></dd>
 
 
 <dt>datasources</dt>

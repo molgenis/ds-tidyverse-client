@@ -106,7 +106,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #> [1] "mpg"  "disp" "wt"
@@ -120,7 +120,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
@@ -134,7 +134,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
@@ -148,7 +148,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
@@ -162,7 +162,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #> [1] "carb"
@@ -176,7 +176,7 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
 #> [1] "cyl"  "carb"
@@ -193,11 +193,10 @@ ds.colnames("mtcars")
 ```
 
 ``` r
-ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
+ds.rename(df.name = "mtcars", tidy_expr = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      
-#> [10] "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
 ```
 
 ### Mutate
@@ -216,12 +215,12 @@ ds.colnames("mtcars")
 ``` r
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       
-#>  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     
+#> [12] "mpg_trans" "new_var"
 ```
 
 ``` r
@@ -271,13 +270,13 @@ ds.colnames("mtcars")
 ``` r
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .before = "disp")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"     
-#>  [8] "wt"        "qsec"      "vs"        "am"        "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [12] "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
@@ -291,7 +290,7 @@ ds.colnames("mtcars")
 ``` r
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .keep = "none")
 ds.colnames("new_df")
@@ -358,9 +357,8 @@ ds.bind_rows(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"              
-#>  [5] "hp"                 "drat"               "wt"                 "qsec"              
-#>  [9] "vs"                 "am"                 "gear"               "carb"
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                 "am"                 "gear"               "carb"
 ```
 
 ### bind_cols
@@ -383,9 +381,8 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   
-#>  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"
-#> [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11"
+#> [12] "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
@@ -406,8 +403,8 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"
-#> [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"
+#> [19] "vs"   "am"   "gear" "carb"
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
@@ -416,7 +413,7 @@ useful for recoding variables.
 
 ``` r
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
       mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
       mtcars$mpg >= 30 ~ "high"),
@@ -441,7 +438,7 @@ You can also use the `.default` argument to control what happens if the conditio
 
 ``` r
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
       mtcars$mpg >= 30 ~ "high"),
     newobj = "recoded_missing",
@@ -475,7 +472,7 @@ ds.dim("mtcars")[[1]]
 ``` r
   ds.filter(
     df.name = "mtcars",
-    expr = list(cyl == 4 & mpg > 20),
+    tidy_expr = list(cyl == 4 & mpg > 20),
     newobj = "filtered",
     datasources = conns)
 ds.dim("filtered")[[1]]
@@ -492,7 +489,7 @@ ds.dim("mtcars")[[1]]
 ``` r
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .by = "cyl",
     newobj = "filtered_by",
     datasources = conns)
@@ -513,7 +510,7 @@ ds.dim("mtcars")[[1]]
 ``` r
     ds.filter(
       df.name = "mtcars",
-      expr = list(mpg > median(mpg)),
+      tidy_expr = list(mpg > median(mpg)),
       .preserve = T,
       newobj = "preserved_t",
       datasources = conns
@@ -538,7 +535,7 @@ ds.dim("mtcars")[1]
 ``` r
 ds.slice(
   df.name = "mtcars",
-  expr = list(1:10),
+  tidy_expr = list(1:10),
   newobj = "sliced_df"
 )
 ds.dim("sliced_df")[1]
@@ -556,7 +553,7 @@ ds.dim("mtcars")[1]
 ``` r
 ds.slice(
   df.name = "mtcars",
-  expr = list(1),
+  tidy_expr = list(1),
   .by = "cyl",
   newobj = "sliced_df_group"
 )
@@ -570,12 +567,12 @@ ds.dim("sliced_df_group")[1]
 
 
 ``` r
-    ds.arrange(
-      df.name = "mtcars",
-      expr = list(mpg, cyl),
-      newobj = "arranged_df",
-      datasources = conns
-      )
+ds.arrange(
+  df.name = "mtcars",
+  tidy_expr = list(mpg, cyl),
+  newobj = "arranged_df",
+  datasources = conns
+  )
 ```
 `arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
 
@@ -587,7 +584,7 @@ To group a data frame:
 ``` r
 ds.group_by(
   df.name = "mtcars",
-  expr = list(mpg, cyl),
+  tidy_expr = list(mpg, cyl),
   newobj = "grouped"
 )
 ds.class("grouped")[[1]]
@@ -637,7 +634,7 @@ In this example the dimensions of the resulting dataset are the same because all
 ``` r
 ds.distinct(
   df.name = "mtcars",
-  expr = list(cyl, drat),
+  tidy_expr = list(cyl, drat),
   newobj = "distinct_subset"
 )
 ds.dim("distinct_subset")[[1]]

@@ -110,37 +110,37 @@ for full details see the documentation for `dplyr::select`.
 #### Subset columns by name
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(mpg, disp, wt), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 ```
 #### Specify columns to exclude
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(!mpg), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 ```
 #### Specify a range of columns to keep
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(mpg:drat), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 ```
 #### Specify column names using a regular expression
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(matches('[aeiou]')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '&'
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') & ends_with('b')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '|'
 ```{r}
 ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_select = list(starts_with('c') | ends_with('b')), newobj = "new_df")
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 ```
 ### Rename
@@ -149,7 +149,7 @@ evaluated as column names within `df.name`. Below are some examples, see `dplyr:
 
 ```{r}
 ds.colnames("mtcars")
-ds.rename(df.name = "mtcars", tidy_select = list(effiency = mpg, power = hp), newobj = "new_df")
+ds.rename(df.name = "mtcars", tidy_expr = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 ```
 
@@ -163,7 +163,7 @@ Below are some examples, see `dplyr::mutate` for full details.
 ds.colnames("mtcars")
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
 ds.mean("mtcars$cyl")$Mean.by.Study
@@ -179,7 +179,7 @@ ds.mean("new_df$new_var")$Mean.by.Study
 ds.colnames("mtcars")
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .before = "disp")
 ds.colnames("new_df")
@@ -190,7 +190,7 @@ ds.colnames("new_df")
 ds.colnames("mtcars")
 ds.mutate(
   df.name = "mtcars",
-  tidy_select = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df",
   .keep = "none")
 ds.colnames("new_df")
@@ -273,7 +273,7 @@ useful for recoding variables.
 
 ```{r}
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
       mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
       mtcars$mpg >= 30 ~ "high"),
@@ -287,7 +287,7 @@ You can also use the `.default` argument to control what happens if the conditio
 
 ```{r}
   ds.case_when(
-    dynamic_dots = list(
+    tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
       mtcars$mpg >= 30 ~ "high"),
     newobj = "recoded_missing",
@@ -306,7 +306,7 @@ Subset set a data frame flexibly, retaining all rows that satisfy the condition 
 ds.dim("mtcars")[[1]]
   ds.filter(
     df.name = "mtcars",
-    expr = list(cyl == 4 & mpg > 20),
+    tidy_expr = list(cyl == 4 & mpg > 20),
     newobj = "filtered",
     datasources = conns)
 ds.dim("filtered")[[1]]
@@ -317,7 +317,7 @@ Use the .by argument to perform the filtering by a specified group.
 ds.dim("mtcars")[[1]]
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .by = "cyl",
     newobj = "filtered_by",
     datasources = conns)
@@ -332,7 +332,7 @@ the original groups or recalculate groups based on the resulting data. See the h
 ds.dim("mtcars")[[1]]
     ds.filter(
       df.name = "mtcars",
-      expr = list(mpg > median(mpg)),
+      tidy_expr = list(mpg > median(mpg)),
       .preserve = T,
       newobj = "preserved_t",
       datasources = conns
@@ -350,7 +350,7 @@ this should be replaced by `group_by` and `slice` as it will be vastly quicker.
 ds.dim("mtcars")[1]
 ds.slice(
   df.name = "mtcars",
-  expr = list(1:10),
+  tidy_expr = list(1:10),
   newobj = "sliced_df"
 )
 ds.dim("sliced_df")[1]
@@ -360,7 +360,7 @@ ds.dim("sliced_df")[1]
 ds.dim("mtcars")[1]
 ds.slice(
   df.name = "mtcars",
-  expr = list(1),
+  tidy_expr = list(1),
   .by = "cyl",
   newobj = "sliced_df_group"
 )
@@ -371,12 +371,12 @@ ds.dim("sliced_df_group")[1]
 `arrange` is a more flexible version of `base::sort`, which orders the rows of a data frame by the values of selected columns.
 
 ```{r}
-    ds.arrange(
-      df.name = "mtcars",
-      expr = list(mpg, cyl),
-      newobj = "arranged_df",
-      datasources = conns
-      )
+ds.arrange(
+  df.name = "mtcars",
+  tidy_expr = list(mpg, cyl),
+  newobj = "arranged_df",
+  datasources = conns
+  )
 ```
 `arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
 
@@ -387,7 +387,7 @@ To group a data frame:
 ```{r}
 ds.group_by(
   df.name = "mtcars",
-  expr = list(mpg, cyl),
+  tidy_expr = list(mpg, cyl),
   newobj = "grouped"
 )
 ds.class("grouped")[[1]]
@@ -423,7 +423,7 @@ In this example the dimensions of the resulting dataset are the same because all
 ```{r}
 ds.distinct(
   df.name = "mtcars",
-  expr = list(cyl, drat),
+  tidy_expr = list(cyl, drat),
   newobj = "distinct_subset"
 )
 ds.dim("distinct_subset")[[1]]

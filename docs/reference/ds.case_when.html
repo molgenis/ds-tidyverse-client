@@ -58,7 +58,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds.case_when</span><span class="op">(</span></span>
-<span>  dynamic_dots <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .default <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .ptype <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -69,15 +69,14 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>dynamic_dots</dt>
-<dd><p>A sequence of two-sided formulas. The left hand side (LHS) determines which
-values match this case. The right hand side (RHS) provides the replacement value.
-The LHS inputs must evaluate to logical vectors.
-The RHS inputs will be coerced to their common type.
-All inputs will be recycled to their common size. That said, we encourage all LHS inputs to be
-the same size. Recycling is mainly useful for RHS inputs, where you might supply a size 1 input
-that will be recycled to the size of the LHS inputs.
-NULL inputs are ignored.</p></dd>
+    <dl><dt>tidy_expr</dt>
+<dd><p>A list containing a sequence of two-sided formulas:</p><ul><li><p>The left hand side (LHS) determines which values match this case.</p></li>
+<li><p>The right hand side (RHS) provides the replacement value.</p></li>
+<li><p>The LHS inputs must evaluate to logical vectors.</p></li>
+<li><p>The RHS inputs will be coerced to their common type.</p></li>
+</ul><p>All inputs will be recycled to their common size. We encourage all LHS inputs to be the same size.
+  Recycling is mainly useful for RHS inputs, where you might supply a size 1 input that will be
+  recycled to the size of the LHS inputs. NULL inputs are ignored.</p></dd>
 
 
 <dt>.default</dt>

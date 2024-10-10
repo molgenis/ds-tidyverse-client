@@ -190,7 +190,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">disp</span>, <span class="va">wt</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "disp" "wt"</span></span></code></pre></div>
@@ -203,7 +203,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">!</span><span class="va">mpg</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
@@ -216,7 +216,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">drat</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "cyl"  "disp" "hp"   "drat"</span></span></code></pre></div>
@@ -229,7 +229,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">'[aeiou]'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "disp" "drat" "qsec" "am"   "gear" "carb"</span></span></code></pre></div>
@@ -242,7 +242,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "carb"</span></span></code></pre></div>
@@ -255,7 +255,7 @@ full details see the documentation for <code><a href="https://dplyr.tidyverse.or
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.select.html">ds.select</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">'c'</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">'b'</span><span class="op">)</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt; [1] "cyl"  "carb"</span></span></code></pre></div>
@@ -273,11 +273,10 @@ names within <code>df.name</code>. Below are some examples, see
 <span><span class="co">#&gt; $server_1</span></span>
 <span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.rename.html">ds.rename</a></span><span class="op">(</span>df.name <span class="op">=</span> <span class="st">"mtcars"</span>, tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>effiency <span class="op">=</span> <span class="va">mpg</span>, power <span class="op">=</span> <span class="va">hp</span><span class="op">)</span>, newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"      </span></span>
-<span><span class="co">#&gt; [10] "gear"     "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mutate">Mutate<a class="anchor" aria-label="anchor" href="#mutate"></a>
@@ -298,12 +297,12 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"       </span></span>
-<span><span class="co">#&gt;  [9] "am"        "gear"      "carb"      "mpg_trans" "new_var"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     </span></span>
+<span><span class="co">#&gt; [12] "mpg_trans" "new_var"</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.mean.html" class="external-link">ds.mean</a></span><span class="op">(</span><span class="st">"mtcars$cyl"</span><span class="op">)</span><span class="op">$</span><span class="va">Mean.by.Study</span></span>
 <span><span class="co">#&gt;          EstimatedMean Nmissing Nvalid Ntotal</span></span>
@@ -340,13 +339,13 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span>,</span>
 <span>  .before <span class="op">=</span> <span class="st">"disp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"     </span></span>
-<span><span class="co">#&gt;  [8] "wt"        "qsec"      "vs"        "am"        "gear"      "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       </span></span>
+<span><span class="co">#&gt; [12] "gear"      "carb"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="only-keep-the-newly-created-variables-with--keep">Only keep the newly created variables with <code>.keep</code>:<a class="anchor" aria-label="anchor" href="#only-keep-the-newly-created-variables-with--keep"></a>
@@ -358,7 +357,7 @@ some examples, see <code><a href="https://dplyr.tidyverse.org/reference/mutate.h
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.mutate.html">ds.mutate</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  tidy_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mpg_trans <span class="op">=</span> <span class="va">cyl</span><span class="op">*</span><span class="fl">1000</span>, new_var <span class="op">=</span> <span class="op">(</span><span class="va">hp</span><span class="op">-</span><span class="va">drat</span><span class="op">)</span><span class="op">/</span><span class="va">qsec</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"new_df"</span>,</span>
 <span>  .keep <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"new_df"</span><span class="op">)</span></span>
@@ -421,9 +420,8 @@ column which records which dataframe each row came from:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "where_it_came_from" "mpg"                "cyl"                "disp"              </span></span>
-<span><span class="co">#&gt;  [5] "hp"                 "drat"               "wt"                 "qsec"              </span></span>
-<span><span class="co">#&gt;  [9] "vs"                 "am"                 "gear"               "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                 "drat"              </span></span>
+<span><span class="co">#&gt;  [7] "wt"                 "qsec"               "vs"                 "am"                 "gear"               "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="bind_cols">bind_cols<a class="anchor" aria-label="anchor" href="#bind_cols"></a>
@@ -444,9 +442,8 @@ is similar to do.call(cbind, dfs).</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"   </span></span>
-<span><span class="co">#&gt;  [9] "am...9"    "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16"</span></span>
-<span><span class="co">#&gt; [17] "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11"</span></span>
+<span><span class="co">#&gt; [12] "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"</span></span></code></pre></div>
 <p>The argument <code>.name_repair</code> handles duplicate or broken
 names, e.g.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
@@ -464,8 +461,8 @@ names, e.g.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.colnames.html" class="external-link">ds.colnames</a></span><span class="op">(</span><span class="st">"df_bound"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $server_1</span></span>
-<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp"</span></span>
-<span><span class="co">#&gt; [15] "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"</span></span>
+<span><span class="co">#&gt; [19] "vs"   "am"   "gear" "carb"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="case_when">case_when<a class="anchor" aria-label="anchor" href="#case_when"></a>
@@ -475,7 +472,7 @@ specification of multiple conditions. Extremely useful for recoding
 variables.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.case_when.html">ds.case_when</a></span><span class="op">(</span></span>
-<span>    dynamic_dots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">20</span> <span class="op">~</span> <span class="st">"low"</span>,</span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">20</span> <span class="op">&amp;</span> <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"medium"</span>,</span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"high"</span><span class="op">)</span>,</span>
@@ -497,7 +494,7 @@ variables.</p>
 happens if the condition is not met:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.case_when.html">ds.case_when</a></span><span class="op">(</span></span>
-<span>    dynamic_dots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">20</span> <span class="op">~</span> <span class="st">"low"</span>,</span>
 <span>      <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span> <span class="op">&gt;=</span> <span class="fl">30</span> <span class="op">~</span> <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>    newobj <span class="op">=</span> <span class="st">"recoded_missing"</span>,</span>
@@ -529,7 +526,7 @@ condition supplied to <code>expression</code></p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
 <span>    df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>    expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">&amp;</span> <span class="va">mpg</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>    tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">&amp;</span> <span class="va">mpg</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span>,</span>
 <span>    newobj <span class="op">=</span> <span class="st">"filtered"</span>,</span>
 <span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"filtered"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -542,7 +539,7 @@ group.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
 <span>    df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>    expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    .by <span class="op">=</span> <span class="st">"cyl"</span>,</span>
 <span>    newobj <span class="op">=</span> <span class="st">"filtered_by"</span>,</span>
 <span>    datasources <span class="op">=</span> <span class="va">conns</span><span class="op">)</span></span>
@@ -558,7 +555,7 @@ file for <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>    <span class="fu"><a href="../reference/ds.filter.html">ds.filter</a></span><span class="op">(</span></span>
 <span>      df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>      expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      .preserve <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>      newobj <span class="op">=</span> <span class="st">"preserved_t"</span>,</span>
 <span>      datasources <span class="op">=</span> <span class="va">conns</span></span>
@@ -583,7 +580,7 @@ quicker.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.slice.html">ds.slice</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"sliced_df"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"sliced_df"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
@@ -596,7 +593,7 @@ quicker.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.slice.html">ds.slice</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>  .by <span class="op">=</span> <span class="st">"cyl"</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"sliced_df_group"</span></span>
 <span><span class="op">)</span></span>
@@ -611,12 +608,12 @@ quicker.</p>
 <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">base::sort</a></code>, which orders the rows of a data frame by the
 values of selected columns.</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>    <span class="fu"><a href="../reference/ds.arrange.html">ds.arrange</a></span><span class="op">(</span></span>
-<span>      df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>      expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
-<span>      newobj <span class="op">=</span> <span class="st">"arranged_df"</span>,</span>
-<span>      datasources <span class="op">=</span> <span class="va">conns</span></span>
-<span>      <span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.arrange.html">ds.arrange</a></span><span class="op">(</span></span>
+<span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
+<span>  newobj <span class="op">=</span> <span class="st">"arranged_df"</span>,</span>
+<span>  datasources <span class="op">=</span> <span class="va">conns</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><code>arrange</code> can be used on a sorted data frame or tibble.
 The arrange argument <code>.by_group</code> (TRUE or FALSE) determines
 whether or not data is sorted by group.</p>
@@ -632,7 +629,7 @@ performed ‘by group’ rather than to the whole dataframe.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.group_by.html">ds.group_by</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">cyl</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"grouped"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.class.html" class="external-link">ds.class</a></span><span class="op">(</span><span class="st">"grouped"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -676,7 +673,7 @@ variables in which to check for unique rows:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ds.distinct.html">ds.distinct</a></span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
-<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span>, <span class="va">drat</span><span class="op">)</span>,</span>
+<span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cyl</span>, <span class="va">drat</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"distinct_subset"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dsBaseClient/man/ds.dim.html" class="external-link">ds.dim</a></span><span class="op">(</span><span class="st">"distinct_subset"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>

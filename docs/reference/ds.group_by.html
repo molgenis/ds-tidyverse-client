@@ -59,7 +59,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds.group_by</span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">expr</span>,</span>
+<span>  <span class="va">tidy_expr</span>,</span>
 <span>  .add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .drop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -73,8 +73,8 @@
 <dd><p>Character specifying a serverside data frame or tibble.</p></dd>
 
 
-<dt>expr</dt>
-<dd><p>Variables or computations to group by.</p></dd>
+<dt>tidy_expr</dt>
+<dd><p>List of variables or computations to group by.</p></dd>
 
 
 <dt>.add</dt>
