@@ -73,8 +73,6 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
   expect_equal(result, "my_data")
 })
 
-disc_settings <- datashield.aggregate(conns, call("listDisclosureSettingsDS"))
-
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
     input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
