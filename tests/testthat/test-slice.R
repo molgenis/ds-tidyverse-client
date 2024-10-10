@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 data("mtcars")
@@ -15,6 +15,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 datashield.assign.table(conns, "mtcars_group", "mtcars_group")
 
 test_that("ds.slice correctly subsets rows", {
+  skip_if_not_installed("dsBaseClient")
   ds.slice(
     df.name = "mtcars",
     tidy_expr = list(1:5),
@@ -34,6 +35,7 @@ test_that("ds.slice correctly subsets rows", {
 })
 
 test_that("ds.slice works with .by arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.slice(
     df.name = "mtcars",
     tidy_expr = list(1:5),
@@ -50,6 +52,7 @@ test_that("ds.slice works with .by arg", {
 ## test serverside
 
 test_that("ds.slice throws error if disclosure risk", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.slice(
       df.name = "mtcars",

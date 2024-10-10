@@ -1,8 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsTidyverseClient)
-library(dsBase)
 library(dsBaseClient)
 
 login_data <- .prepare_dslite(assign_method = "distinctDS", tables = list(mtcars = mtcars))
@@ -10,6 +9,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.distinct correctly identified distinct rows", {
+  skip_if_not_installed("dsBaseClient")
   ds.distinct(
     df.name = "mtcars",
     tidy_expr = list(cyl, carb),
@@ -29,6 +29,7 @@ test_that("ds.distinct correctly identified distinct rows", {
 })
 
 test_that("ds.distinct works with where `tidy_expr` arg is empty", {
+  skip_if_not_installed("dsBaseClient")
   ds.distinct(
     df.name = "mtcars",
     newobj = "dist_df",
@@ -47,6 +48,7 @@ test_that("ds.distinct works with where `tidy_expr` arg is empty", {
 })
 
 test_that("ds.distinct works with `.keep_all` argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.distinct(
     df.name = "mtcars",
     tidy_expr = list(cyl, carb),
@@ -85,6 +87,7 @@ test_that("ds.distinct works with `.keep_all` argument", {
 })
 
 test_that("ds.distinct fails if created subset is too small", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.distinct(
       df.name = "mtcars",

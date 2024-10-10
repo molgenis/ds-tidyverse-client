@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
@@ -10,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
+  skip_if_not_installed("dsBaseClient")
   ds.case_when(
     tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
@@ -40,6 +41,7 @@ test_that("ds.case_when passes and numeric condition and numeric output", {
 })
 
 test_that("ds.case_when correctly passes argument with numeric condition and numeric outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.case_when(
     tidy_expr = list(
       mtcars$mpg < 20 ~ 20,
@@ -71,6 +73,7 @@ test_that("ds.case_when correctly passes argument with numeric condition and num
 
 
 test_that("ds.case_when correctly passes argument with categorical condition and categorical outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.case_when(
     tidy_expr = list(
       mtcars$gear == 2 ~ "low",
@@ -102,6 +105,7 @@ test_that("ds.case_when correctly passes argument with categorical condition and
 })
 
 test_that("ds.case_when correctly passes .default argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.case_when(
     tidy_expr = list(
       mtcars$gear == 2 ~ "low",

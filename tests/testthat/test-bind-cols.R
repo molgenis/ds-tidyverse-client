@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 login_data <- .prepare_dslite(assign_method = "bindColsDS", tables = list(mtcars = mtcars))
@@ -9,6 +9,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.bind_cols binds two data frames together", {
+  skip_if_not_installed("dsBaseClient")
   ds.bind_cols(
     to_combine = list(mtcars, mtcars),
     newobj = "cols_bound",
@@ -36,6 +37,7 @@ test_that("ds.bind_cols binds two data frames together", {
 })
 
 test_that("ds.bind_cols works with .namerepair arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.bind_cols(
     to_combine = list(mtcars, mtcars),
     .name_repair = "universal",

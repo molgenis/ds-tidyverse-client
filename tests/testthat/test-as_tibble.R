@@ -1,9 +1,8 @@
 library(DSLite)
 library(DSI)
 library(dplyr)
-library(dsBase)
-library(dsBaseClient)
 library(dsTidyverse)
+library(dsBaseClient)
 
 data("mtcars")
 mtcars_dup_names <- cbind(mtcars, tibble(cyl = 2))
@@ -25,6 +24,7 @@ datashield.assign.table(conns, "mtcars_dup_names", "mtcars_dup_names")
 datashield.assign.table(conns, "test_matrix", "test_matrix")
 
 test_that("ds.as_tibble correctly converts a data frame to a tibble", {
+  skip_if_not_installed("dsBaseClient")
   ds.as_tibble(
     x = "mtcars",
     newobj = "mtcars_tib",
@@ -48,6 +48,7 @@ test_that("ds.as_tibble correctly converts a data frame to a tibble", {
 })
 
 test_that("ds.as_tibble works with the name_repair argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.as_tibble(
     x = "mtcars_dup_names",
     .name_repair = "minimal",
@@ -111,6 +112,7 @@ test_that("ds.as_tibble works with the name_repair argument", {
 
 
 test_that("ds.as_tibble works with the rownames argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.as_tibble(
     x = "mtcars",
     rownames = NULL,
@@ -159,6 +161,7 @@ test_that("ds.as_tibble works with the rownames argument", {
 })
 
 test_that("ds.as_tibble works with matrices", {
+  skip_if_not_installed("dsBaseClient")
   ds.as_tibble(
     x = "test_matrix",
     newobj = "mtcars_tib",

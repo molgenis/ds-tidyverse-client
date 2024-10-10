@@ -1,4 +1,5 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
 library(dsBaseClient)
@@ -9,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.if_else correctly passes argument with numeric condition and categorical outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     "high",
@@ -37,6 +39,7 @@ test_that("ds.if_else correctly passes argument with numeric condition and categ
 })
 
 test_that("ds.if_else correctly passes argument with numeric condition and numerical outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     99,
@@ -65,6 +68,7 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
 })
 
 test_that("ds.if_else correctly passes argument with = ", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$vs == "0"),
     "no",

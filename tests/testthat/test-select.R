@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 data("mtcars")
@@ -10,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.select fails with correct error message if data not present ", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.select(
       df.name = "datanotthere",
@@ -21,6 +22,7 @@ test_that("ds.select fails with correct error message if data not present ", {
 })
 
 test_that("ds.select correctly passes : ", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(mpg:drat),
@@ -35,6 +37,7 @@ test_that("ds.select correctly passes : ", {
 })
 
 test_that("ds.select correctly passes `starts_with`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(starts_with("m")),
@@ -49,6 +52,7 @@ test_that("ds.select correctly passes `starts_with`", {
 })
 
 test_that("ds.select correctly passes `ends_with`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(ends_with("m")),
@@ -63,6 +67,7 @@ test_that("ds.select correctly passes `ends_with`", {
 })
 
 test_that("ds.select correctly passes `matches`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(matches("[aeiou]")),
@@ -77,6 +82,7 @@ test_that("ds.select correctly passes `matches`", {
 })
 
 test_that("ds.select correctly passes `everything`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(everything()),
@@ -91,6 +97,7 @@ test_that("ds.select correctly passes `everything`", {
 })
 
 test_that("ds.select correctly passes `last_col`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(last_col()),
@@ -105,6 +112,7 @@ test_that("ds.select correctly passes `last_col`", {
 })
 
 test_that("ds.select correctly passes `group_cols`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(group_cols()),
@@ -119,6 +127,7 @@ test_that("ds.select correctly passes `group_cols`", {
 })
 
 test_that("ds.select correctly passes strings with '&'", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(starts_with("c") & ends_with("b")),
@@ -133,6 +142,7 @@ test_that("ds.select correctly passes strings with '&'", {
 })
 
 test_that("ds.select correctly passes strings with '!'", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(!mpg),
@@ -147,6 +157,7 @@ test_that("ds.select correctly passes strings with '!'", {
 })
 
 test_that("ds.select correctly passes strings with '|'", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(starts_with("c") | ends_with("b")),
@@ -161,6 +172,7 @@ test_that("ds.select correctly passes strings with '|'", {
 })
 
 test_that("ds.select correctly passes `strings with `all_of`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(all_of(c("mpg", "cyl"))),
@@ -175,6 +187,7 @@ test_that("ds.select correctly passes `strings with `all_of`", {
 })
 
 test_that("ds.select correctly passes strings with `any_of`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(any_of(c("mpg", "cyl"))),
@@ -189,6 +202,7 @@ test_that("ds.select correctly passes strings with `any_of`", {
 })
 
 test_that("ds.select correctly passes complex strings", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list((starts_with("c") & ends_with("b")) | contains("ra") | gear:carb),
@@ -203,6 +217,7 @@ test_that("ds.select correctly passes complex strings", {
 })
 
 test_that("ds.select correctly passes strings with `where`", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(where(is.numeric)),
@@ -217,6 +232,7 @@ test_that("ds.select correctly passes strings with `where`", {
 })
 
 test_that("ds.select correctly passes strings with '='", {
+  skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
     tidy_expr = list(test = mpg, cyl, gear),

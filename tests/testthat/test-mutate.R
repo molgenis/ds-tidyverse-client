@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 data(mtcars)
@@ -10,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.mutate correctly passes good argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.mutate(
     df.name = "mtcars",
     tidy_expr = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
@@ -31,6 +32,7 @@ test_that("ds.mutate correctly passes good argument", {
 })
 
 test_that("ds.mutate fails with bad argument argument", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.mutate(
       df.name = "mtcars",
@@ -52,6 +54,7 @@ test_that("ds.mutate fails with bad argument argument", {
 })
 
 test_that("ds.mutate passes with different .keep argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.mutate(
     df.name = "mtcars",
     tidy_expr = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
@@ -69,6 +72,7 @@ test_that("ds.mutate passes with different .keep argument", {
 })
 
 test_that("ds.mutate passes with different .before argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.mutate(
     df.name = "mtcars",
     tidy_expr = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),
@@ -86,6 +90,7 @@ test_that("ds.mutate passes with different .before argument", {
 })
 
 test_that("ds.mutate passes with different .after argument", {
+  skip_if_not_installed("dsBaseClient")
   ds.mutate(
     df.name = "mtcars",
     tidy_expr = list(mpg_trans = cyl * 1000, new_var = (hp - drat) / qsec),

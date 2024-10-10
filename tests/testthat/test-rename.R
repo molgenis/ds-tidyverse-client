@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 data("mtcars")
@@ -10,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.rename fails with correct error message if data not present ", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.rename(
       df.name = "datanotthere",
@@ -21,6 +22,7 @@ test_that("ds.rename fails with correct error message if data not present ", {
 })
 
 test_that("ds.rename correctly passes =", {
+  skip_if_not_installed("dsBaseClient")
   ds.rename(
     df.name = "mtcars",
     tidy_expr = list(test_1 = mpg, test_2 = drat),
@@ -35,6 +37,7 @@ test_that("ds.rename correctly passes =", {
 })
 
 test_that("ds.rename throws an error if column name doesn't exist", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.rename(
       df.name = "mtcars",

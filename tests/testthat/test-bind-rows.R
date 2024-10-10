@@ -1,7 +1,7 @@
 library(DSLite)
+library(DSI)
 library(dplyr)
 library(dsTidyverse)
-library(dsBase)
 library(dsBaseClient)
 
 login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
@@ -9,6 +9,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.bind_rows binds two data frames together", {
+  skip_if_not_installed("dsBaseClient")
   ds.bind_rows(
     to_combine = list(mtcars, mtcars),
     newobj = "newnew",
@@ -33,6 +34,7 @@ test_that("ds.bind_rows binds two data frames together", {
 })
 
 test_that("ds.case_when works with .id arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.bind_rows(
     to_combine = list(mtcars, mtcars),
     .id = "which_df",
