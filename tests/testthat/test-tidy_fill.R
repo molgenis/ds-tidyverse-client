@@ -136,3 +136,8 @@ test_that(".identify_class_conflicts returns correct output", {
   expect_equal(class_conflicts, expected)
 
 })
+
+test_that("ask_question displays the correct prompt", {
+  expect_snapshot(ask_question("my_var"))
+})
+
