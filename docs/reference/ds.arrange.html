@@ -25,6 +25,16 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/dstidyverse.html">Using tidyverse within DataSHIELD</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -89,14 +99,14 @@ only.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
 <span><span class="fu">ds.arrange</span><span class="op">(</span></span>
 <span>  df.name <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>  tidy_expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">drat</span><span class="op">)</span>,</span>
 <span>  newobj <span class="op">=</span> <span class="st">"sorted_df"</span>,</span>
 <span>  datasources <span class="op">=</span> <span class="va">conns</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co"># }</span></span></code></pre></div>
+<span><span class="op">}</span> <span class="co"># }</span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
