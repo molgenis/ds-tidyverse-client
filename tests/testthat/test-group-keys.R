@@ -1,8 +1,8 @@
-library(DSLite)
-library(dplyr)
-library(dsTidyverse)
-library(dsBase)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 mtcars_group <- mtcars %>%
   group_by(cyl) %>%
@@ -21,6 +21,7 @@ datashield.assign.table(conns, "mtcars_group", "mtcars_group")
 datashield.assign.table(conns, "mtcars_bad_group", "mtcars_bad_group")
 
 test_that("ds.group_keys correctly returns groups", {
+  skip_if_not_installed("dsBaseClient")
   groups <- ds.group_keys("mtcars_group", datasources = conns)
 
   expect_equal(
@@ -30,6 +31,7 @@ test_that("ds.group_keys correctly returns groups", {
 })
 
 test_that("ds.group_keys returns error if too many groups", {
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.group_keys("mtcars_bad_group", datasources = conns)
   )

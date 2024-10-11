@@ -1,17 +1,18 @@
-library(DSLite)
-library(dplyr)
-library(dsTidyverse)
-library(dsBase)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 login_data <- .prepare_dslite(assign_method = "filterDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.filter correctly filters", {
+  skip_if_not_installed("dsBaseClient")
   ds.filter(
     df.name = "mtcars",
-    expr = list(cyl == 4 & mpg > 20),
+    tidy_expr = list(cyl == 4 & mpg > 20),
     newobj = "filtered",
     datasources = conns
   )
@@ -34,9 +35,10 @@ test_that("ds.filter correctly filters", {
 })
 
 test_that("ds.filter works with .by arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .by = "cyl",
     newobj = "filtered_by",
     datasources = conns
@@ -55,9 +57,10 @@ test_that("ds.filter works with .by arg", {
 })
 
 test_that("ds.filter works with .preserve arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .preserve = T,
     newobj = "preserved_t",
     datasources = conns
@@ -70,7 +73,7 @@ test_that("ds.filter works with .preserve arg", {
 
   ds.filter(
     df.name = "mtcars",
-    expr = list(mpg > median(mpg)),
+    tidy_expr = list(mpg > median(mpg)),
     .preserve = F,
     newobj = "preserved_f",
     datasources = conns
@@ -79,5 +82,5 @@ test_that("ds.filter works with .preserve arg", {
   expect_equal(
     ds.class("preserved_f", datasources = conns)[[1]],
     "data.frame"
-  ) # Currently not possible to really test this from the clientside because I haven't implemented the function `group_keys` to return the groups
+  )
 })

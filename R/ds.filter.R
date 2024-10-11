@@ -1,8 +1,8 @@
 #' @title Keep rows that match a condition
-#' @description DataSHIELD implentation of  \code{dplyr::filter}.
+#' @description DataSHIELD implentation of \code{dplyr::filter}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param expr Expressions that return a logical value, and are defined in terms of the
-#' variables in .data
+#' @param tidy_expr List of expressions that return a logical value, and are defined in terms of the
+#' variables in \code{df.name}.
 #' @param .by Optionally, a selection of columns to group by for just this operation, functioning as an alternative to \code{dplyr::group_by}
 #' @param .preserve Relevant when the .data input is grouped. If .preserve = FALSE (the default),
 #' the grouping structure is recalculated based on the resulting data, otherwise the grouping is
@@ -11,6 +11,7 @@
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
+#' @importFrom rlang enquo
 #' @examples
 #' \dontrun{
 #' ds.filter(
@@ -21,10 +22,10 @@
 #' )
 #' }
 #' @export
-ds.filter <- function(df.name = NULL, expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL, datasources = NULL) {
-  tidy_select <- .format_args_as_string(rlang::enquo(expr))
+ds.filter <- function(df.name = NULL, tidy_expr = NULL, .by = NULL, .preserve = FALSE, newobj = NULL, datasources = NULL) {
+  tidy_expr <- .format_args_as_string(enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
-  cally <- .make_serverside_call("filterDS", tidy_select, list(df.name, .by, .preserve))
+  cally <- .make_serverside_call("filterDS", tidy_expr, list(df.name, .by, .preserve))
   datashield.assign(datasources, newobj, cally)
 }

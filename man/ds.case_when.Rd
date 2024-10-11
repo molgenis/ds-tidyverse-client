@@ -5,7 +5,7 @@
 \title{A general vectorised if-else}
 \usage{
 ds.case_when(
-  dynamic_dots = NULL,
+  tidy_expr = NULL,
   .default = NULL,
   .ptype = NULL,
   .size = NULL,
@@ -14,14 +14,16 @@ ds.case_when(
 )
 }
 \arguments{
-\item{dynamic_dots}{A sequence of two-sided formulas. The left hand side (LHS) determines which
-values match this case. The right hand side (RHS) provides the replacement value.
-The LHS inputs must evaluate to logical vectors.
-The RHS inputs will be coerced to their common type.
-All inputs will be recycled to their common size. That said, we encourage all LHS inputs to be
-the same size. Recycling is mainly useful for RHS inputs, where you might supply a size 1 input
-that will be recycled to the size of the LHS inputs.
-NULL inputs are ignored.}
+\item{tidy_expr}{A list containing a sequence of two-sided formulas:
+\itemize{
+  \item The left hand side (LHS) determines which values match this case.
+  \item The right hand side (RHS) provides the replacement value.
+  \item The LHS inputs must evaluate to logical vectors.
+  \item The RHS inputs will be coerced to their common type.
+  }
+  All inputs will be recycled to their common size. We encourage all LHS inputs to be the same size.
+  Recycling is mainly useful for RHS inputs, where you might supply a size 1 input that will be
+  recycled to the size of the LHS inputs. NULL inputs are ignored.}
 
 \item{.default}{The value used when all of the LHS inputs return either FALSE or NA.}
 

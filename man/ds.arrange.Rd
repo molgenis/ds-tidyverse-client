@@ -6,7 +6,7 @@
 \usage{
 ds.arrange(
   df.name = NULL,
-  expr = NULL,
+  tidy_expr = NULL,
   .by_group = NULL,
   newobj = NULL,
   datasources = NULL
@@ -15,8 +15,8 @@ ds.arrange(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{expr}{Variables, or functions of variables. Use desc() to sort a variable in descending
-order.}
+\item{tidy_expr}{A list containing variables, or functions of variables. Use \code{dplyr::desc()} to sort a
+variable in descending order.}
 
 \item{.by_group}{If TRUE, will sort first by grouping variable. Applies to grouped data frames
 only.}
@@ -29,14 +29,15 @@ only.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::arrange}.
+DataSHIELD implentation of \code{dplyr::arrange}.
 }
 \examples{
 \dontrun{
 ds.arrange(
- "mtcars",
- expr = list(drat),
- newobj = "sorted_df"
- )
+  df.name = "mtcars",
+  tidy_expr = list(drat),
+  newobj = "sorted_df",
+  datasources = conns
+)
 }
 }

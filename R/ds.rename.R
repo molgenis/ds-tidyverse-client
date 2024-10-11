@@ -1,11 +1,12 @@
-#' @title Rename columns.
+#' @title Rename columns
 #' @description DataSHIELD implentation of \code{dplyr::rename}.
 #' @param df.name Character specifying a serverside data frame or tibble.
-#' @param tidy_select List of tidyselect syntax to be passed to \code{dplyr::rename}.
+#' @param tidy_expr List with format new_name = old_name to rename selected variables.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
+#' @importFrom rlang enquo
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
@@ -20,10 +21,10 @@
 #' ## Refer to the package vignette for more examples.
 #' }
 #' @export
-ds.rename <- function(df.name = NULL, tidy_select = NULL, newobj = NULL, datasources = NULL) {
-  tidy_select <- .format_args_as_string(rlang::enquo(tidy_select))
+ds.rename <- function(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL) {
+  tidy_expr <- .format_args_as_string(enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
-  cally <- .make_serverside_call("renameDS", tidy_select, list(df.name))
+  cally <- .make_serverside_call("renameDS", tidy_expr, list(df.name))
   datashield.assign(datasources, newobj, cally)
 }

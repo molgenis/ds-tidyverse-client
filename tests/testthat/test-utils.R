@@ -1,8 +1,8 @@
-library(DSLite)
-library(dplyr)
-library(dsTidyverse)
-library(dsBase)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 data("mtcars")
 login_data <- .prepare_dslite()
@@ -72,8 +72,6 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
   result <- .set_new_obj(.data = "my_data", newobj = NULL)
   expect_equal(result, "my_data")
 })
-
-disc_settings <- datashield.aggregate(conns, call("listDisclosureSettingsDS"))
 
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(

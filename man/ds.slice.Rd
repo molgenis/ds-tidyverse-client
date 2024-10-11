@@ -6,7 +6,7 @@
 \usage{
 ds.slice(
   df.name = NULL,
-  expr = NULL,
+  tidy_expr = NULL,
   .by = NULL,
   .preserve = FALSE,
   newobj = NULL,
@@ -16,7 +16,7 @@ ds.slice(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{expr}{Provide either positive values to keep, or negative values to drop. The values
+\item{tidy_expr}{List, provide either positive values to keep, or negative values to drop. The values
 provided must be either all positive or all negative. Indices beyond the number of rows in the
 input are silently ignored.}
 
@@ -35,14 +35,15 @@ kept as is.}
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::slice}.
+DataSHIELD implentation of \code{dplyr::slice}.
 }
 \examples{
 \dontrun{
 ds.slice(
-df.name = "mtcars",
-expr = list(1:10),
-.by = "cyl",
-newobj = "sliced_df")
+  df.name = "mtcars",
+  expr = list(1:10),
+  .by = "cyl",
+  newobj = "sliced_df"
+)
 }
 }

@@ -25,10 +25,10 @@ columns will be filled with NA.}
 }
 \value{
 A serverside data frame with name specified in \code{newobj} and the same type as the
-first element of `to_combine`.
+first element of \code{to_combine}.
 }
 \description{
-DataSHIELD implementation of \code{dplyr::bind_cold}.
+DataSHIELD implementation of \code{dplyr::bind_cols}.
 }
 \examples{
 \dontrun{

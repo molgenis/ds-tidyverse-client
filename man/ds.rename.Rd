@@ -2,19 +2,14 @@
 % Please edit documentation in R/ds.rename.R
 \name{ds.rename}
 \alias{ds.rename}
-\title{Rename columns.}
+\title{Rename columns}
 \usage{
-ds.rename(
-  df.name = NULL,
-  tidy_select = NULL,
-  newobj = NULL,
-  datasources = NULL
-)
+ds.rename(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_select}{List of tidyselect syntax to be passed to \code{dplyr::rename}.}
+\item{tidy_expr}{List with format new_name = old_name to rename selected variables.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 

@@ -1,7 +1,8 @@
-library(DSLite)
-library(dplyr)
-library(dsTidyverse)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
 login_data <- .prepare_dslite(assign_method = "ifElseDS", tables = list(mtcars = mtcars))
@@ -9,6 +10,7 @@ conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.if_else correctly passes argument with numeric condition and categorical outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     "high",
@@ -37,6 +39,7 @@ test_that("ds.if_else correctly passes argument with numeric condition and categ
 })
 
 test_that("ds.if_else correctly passes argument with numeric condition and numerical outcome", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$mpg > 20),
     99,
@@ -65,6 +68,7 @@ test_that("ds.if_else correctly passes argument with numeric condition and numer
 })
 
 test_that("ds.if_else correctly passes argument with = ", {
+  skip_if_not_installed("dsBaseClient")
   ds.if_else(
     condition = list(mtcars$vs == "0"),
     "no",

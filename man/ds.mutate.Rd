@@ -6,7 +6,7 @@
 \usage{
 ds.mutate(
   df.name = NULL,
-  tidy_select = NULL,
+  tidy_expr = NULL,
   newobj = NULL,
   .keep = "all",
   .before = NULL,
@@ -17,23 +17,24 @@ ds.mutate(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_select}{List of tidyselect syntax to be passed to dplyr::mutate.}
+\item{tidy_expr}{List of tidyselect syntax to be passed to dplyr::mutate.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
-\item{.keep}{Control which columns from .data are retained in the output. Grouping columns and
-columns created by ... are always kept. "all" retains all columns from .data. This is the default.
-"used" retains only the columns used in `tidy_select` to create new columns. "unused" retains
-only the columns not used in `tidy_select` to create new columns. This is useful if you generate
-new columns, but no longer need the columns used to generate them. "none" doesn't retain any
-extra columns from `df.name`. Only the grouping variables and columns created by `tidy_select`
-are kept.}
+\item{.keep}{Control which columns from \code{df.name} are retained in the output. Options include:
+\itemize{
+  \item \code{"all"}: Retains all columns from \code{df.name}. This is the default.
+  \item \code{"used"}: Retains only the columns used in \code{tidy_expr} to create new columns.
+  \item \code{"unused"}: Retains only the columns not used in \code{tidy_expr} to create new columns. This is useful if you generate new columns but no longer need the columns used to generate them.
+  \item \code{"none"}: Doesn't retain any extra columns from \code{df.name}. Only the grouping variables and columns created by \code{tidy_expr} are kept.
+}
+Grouping columns and columns created by \code{tidy_expr} are always kept.}
 
 \item{.before}{<tidy-select> Optionally, control where new columns should appear (the default is
-to add to the right hand side). See `relocate` for more details.}
+to add to the right hand side). See \code{tidy_expr} for more details.}
 
 \item{.after}{<tidy-select> Optionally, control where new columns should appear (the default is
-to add to the right hand side). See `relocate` for more details.}
+to add to the right hand side). See \code{tidy_expr} for more details.}
 
 \item{datasources}{datashield connections object.}
 }

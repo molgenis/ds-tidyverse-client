@@ -1,4 +1,4 @@
-#' @title Describe the groups within a grouped tibble
+#' @title Describe the groups within a grouped tibble or data frame
 #' @description DataSHIELD implentation of \code{dplyr::group_keys}.
 #' @param df.name Character specifying a serverside tibble.
 #' @param datasources DataSHIELD connections object.

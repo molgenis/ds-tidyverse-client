@@ -2,19 +2,16 @@
 % Please edit documentation in R/ds.select.R
 \name{ds.select}
 \alias{ds.select}
-\title{Keep or drop columns using their names and types.}
+\title{Keep or drop columns using their names and types}
 \usage{
-ds.select(
-  df.name = NULL,
-  tidy_select = NULL,
-  newobj = NULL,
-  datasources = NULL
-)
+ds.select(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_select}{List of tidyselect syntax to be passed to  \code{dplyr::select}.}
+\item{tidy_expr}{List of one or more unquoted expressions separated by commas. Variable names can
+be used as if they were positions in the data frame, so expressions like x:y can be used to
+select a range of variables.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
@@ -24,18 +21,15 @@ ds.select(
 An object with the name specified by the \code{newobj} argument is written serverside.
 }
 \description{
-DataSHIELD implentation of  \code{dplyr::select}.
+DataSHIELD implentation of \code{dplyr::select}.
 }
 \examples{
 \dontrun{
-## First log in to a DataSHIELD session with mtcars dataset loaded.
-
 ds.select(
- df.name = "mtcars",
- tidy_select = list(mpg, starts_with("t"),
- newobj = "df_subset",
- dataources = conns)
-
-## Refer to the package vignette for more examples.
+  df.name = "mtcars",
+  tidy_expr = list(mpg, starts_with("t")),
+  newobj = "df_subset",
+  dataources = conns
+)
 }
 }

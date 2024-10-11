@@ -1,8 +1,8 @@
-library(DSLite)
-library(dplyr)
-library(dsTidyverse)
-library(dsBase)
-library(dsBaseClient)
+require(DSLite)
+require(DSI)
+require(dplyr)
+require(dsTidyverse)
+require(dsBaseClient)
 
 data("mtcars")
 mtcars_group <- mtcars %>%
@@ -15,46 +15,50 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 datashield.assign.table(conns, "mtcars_group", "mtcars_group")
 
 test_that("ds.slice correctly subsets rows", {
+  skip_if_not_installed("dsBaseClient")
   ds.slice(
     df.name = "mtcars",
-    expr = list(1:5),
+    tidy_expr = list(1:5),
     newobj = "sliced",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.class("sliced", datasources = conns)[[1]],
-    "data.frame")
+    "data.frame"
+  )
 
   expect_equal(
     ds.dim("sliced", datasources = conns)[[1]],
-    c(5, 11))
-
+    c(5, 11)
+  )
 })
 
 test_that("ds.slice works with .by arg", {
+  skip_if_not_installed("dsBaseClient")
   ds.slice(
     df.name = "mtcars",
-    expr = list(1:5),
+    tidy_expr = list(1:5),
     .by = "cyl",
     newobj = "sliced_by",
-    datasources = conns)
+    datasources = conns
+  )
 
   expect_equal(
     ds.dim("sliced_by", datasources = conns)[[1]],
     c(15, 11)
   )
-
 }) ## Currently not possible to test .preserve clientside because ds.group_keys not in this PR. Will
 ## test serverside
 
 test_that("ds.slice throws error if disclosure risk", {
-
+  skip_if_not_installed("dsBaseClient")
   expect_error(
     ds.slice(
       df.name = "mtcars",
-      expr = list(1),
+      tidy_expr = list(1),
       newobj = "sliced_by",
-      datasources = conns)
+      datasources = conns
+    )
   )
-
 })
