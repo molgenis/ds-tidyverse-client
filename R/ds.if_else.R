@@ -14,11 +14,11 @@
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
 #'
-#` ds.if_else(
-#`  condition = list(mtcars$mpg > 20),
-#`. true = "high",
-#`. false = "low",
-#`. newobj = "new_var")
+# ` ds.if_else(
+# `  condition = list(mtcars$mpg > 20),
+# `. true = "high",
+# `. false = "low",
+# `. newobj = "new_var")
 #'
 #' ## Refer to the package vignette for more examples.
 #' }

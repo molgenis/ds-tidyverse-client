@@ -10,7 +10,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.arrange doesn't return error with correct arguments", {
   skip_if_not_installed("dsBaseClient")
-    ds.arrange(
+  ds.arrange(
     df.name = "mtcars",
     tidy_expr = list(cyl),
     newobj = "ordered_df",

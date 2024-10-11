@@ -9,12 +9,13 @@
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #' ds.select(
-#'  df.name = "mtcars",
-#'  tidy_expr = list(mpg, starts_with("t")),
-#'  newobj = "df_subset",
-#'  dataources = conns)
+#'   df.name = "mtcars",
+#'   tidy_expr = list(mpg, starts_with("t")),
+#'   newobj = "df_subset",
+#'   dataources = conns
+#' )
 #' }
 #' @export
 ds.select <- function(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL) {
