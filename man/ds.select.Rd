@@ -26,9 +26,10 @@ DataSHIELD implentation of \code{dplyr::select}.
 \examples{
 \dontrun{
 ds.select(
- df.name = "mtcars",
- tidy_expr = list(mpg, starts_with("t")),
- newobj = "df_subset",
- dataources = conns)
+  df.name = "mtcars",
+  tidy_expr = list(mpg, starts_with("t")),
+  newobj = "df_subset",
+  dataources = conns
+)
 }
 }
