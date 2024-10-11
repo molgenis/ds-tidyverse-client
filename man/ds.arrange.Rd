@@ -32,7 +32,7 @@ An object with the name specified by the \code{newobj} argument is written serve
 DataSHIELD implentation of \code{dplyr::arrange}.
 }
 \examples{
-\donttest{
+\dontrun{
 ds.arrange(
   df.name = "mtcars",
   tidy_expr = list(drat),

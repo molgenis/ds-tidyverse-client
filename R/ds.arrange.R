@@ -11,7 +11,7 @@
 #' @importFrom DSI datashield.assign
 #' @importFrom rlang enquo
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' ds.arrange(
 #'   df.name = "mtcars",
 #'   tidy_expr = list(drat),
