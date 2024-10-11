@@ -74,7 +74,7 @@ jobs:
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           echo "Testing ${PACKAGE}:${TAG}"
-          Rscript -e 'devtools::check(remote=TRUE, force_suggests = FALSE, error_on="error")'
+          Rscript -e 'devtools::check(remote=TRUE, force_suggests = FALSE, error_on="error", env_vars = c(R_CRAN_WEB = "https://cloud.r-project.org"))'
           Rscript -e 'library(covr);codecov()'
           R CMD build .
           Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = FALSE)"
