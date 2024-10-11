@@ -25,14 +25,10 @@ DataSHIELD implentation of \code{dplyr::select}.
 }
 \examples{
 \dontrun{
-## First log in to a DataSHIELD session with mtcars dataset loaded.
-
 ds.select(
  df.name = "mtcars",
- tidy_select = list(mpg, starts_with("t"),
+ tidy_expr = list(mpg, starts_with("t")),
  newobj = "df_subset",
  dataources = conns)
-
-## Refer to the package vignette for more examples.
 }
 }

@@ -10,15 +10,11 @@
 #' @importFrom DSI datashield.assign
 #' @examples
 #'\dontrun{
-#' ## First log in to a DataSHIELD session with mtcars dataset loaded.
-#'
 #' ds.select(
 #'  df.name = "mtcars",
-#'  tidy_select = list(mpg, starts_with("t"),
+#'  tidy_expr = list(mpg, starts_with("t")),
 #'  newobj = "df_subset",
 #'  dataources = conns)
-#'
-#' ## Refer to the package vignette for more examples.
 #' }
 #' @export
 ds.select <- function(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL) {
