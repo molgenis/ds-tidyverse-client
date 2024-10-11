@@ -2,7 +2,7 @@
 title: "Using tidyverse within DataSHIELD"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Create resources}
+  %\VignetteIndexEntry{Using tidyverse within DataSHIELD}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

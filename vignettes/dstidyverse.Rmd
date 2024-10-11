@@ -2,7 +2,7 @@
 title: "Using tidyverse within DataSHIELD"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Create resources}
+  %\VignetteIndexEntry{Using tidyverse within DataSHIELD}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,7 +19,7 @@ To illustrate the usage of these functions, we use DSLite which creates a virtua
 
 ## Install and load packages
 
-``` r
+```r
 ## install.packages("dplyr")
 ## install.packages("DSLite")
 ## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
@@ -36,7 +36,7 @@ require(DSI)
 
 ## Set up DSLite environment and log in.
 
-``` r
+```r
 
 data("mtcars")
 mtcars_group <- mtcars %>%
@@ -99,13 +99,10 @@ for full details see the documentation for `dplyr::select`.
 
 #### Subset columns by name
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(mpg, disp, wt), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -113,13 +110,10 @@ ds.colnames("new_df")
 ```
 #### Specify columns to exclude
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(!mpg), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -127,13 +121,10 @@ ds.colnames("new_df")
 ```
 #### Specify a range of columns to keep
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -141,13 +132,10 @@ ds.colnames("new_df")
 ```
 #### Specify column names using a regular expression
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(matches('[aeiou]')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -155,13 +143,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '&'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') & ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -169,13 +154,10 @@ ds.colnames("new_df")
 ```
 #### Combine multiple conditions with '|'
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') | ends_with('b')), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
@@ -186,17 +168,15 @@ ds.colnames("new_df")
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
 
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.rename(df.name = "mtcars", tidy_expr = list(effiency = mpg, power = hp), newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"     "carb"
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"     "vs"       "am"       "gear"    
+#> [11] "carb"
 ```
 
 ### Mutate
@@ -206,54 +186,33 @@ Below are some examples, see `dplyr::mutate` for full details.
 
 #### Create columns which are transformations of existing variables:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
   newobj = "new_df")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"        "gear"      "carb"     
-#> [12] "mpg_trans" "new_var"
-```
-
-``` r
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
+#> [10] "gear"      "carb"      "mpg_trans" "new_var"
 ds.mean("mtcars$cyl")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1        6.1875        0     32     32
-```
-
-``` r
 ds.mean("new_df$mpg_trans")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1        6187.5        0     32     32
-```
-
-``` r
 ds.mean("mtcars$hp")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      146.6875        0     32     32
-```
-
-``` r
 ds.mean("mtcars$drat")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      3.596563        0     32     32
-```
-
-``` r
 ds.mean("mtcars$qsec")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      17.84875        0     32     32
-```
-
-``` r
 ds.mean("new_df$new_var")$Mean.by.Study
 #>          EstimatedMean Nmissing Nvalid Ntotal
 #> server_1      8.372669        0     32     32
@@ -261,13 +220,10 @@ ds.mean("new_df$new_var")$Mean.by.Study
 
 #### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -275,19 +231,16 @@ ds.mutate(
   .before = "disp")
 ds.colnames("new_df")
 #> $server_1
-#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"      "vs"        "am"       
-#> [12] "gear"      "carb"
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"        "drat"      "wt"        "qsec"     
+#> [10] "vs"        "am"        "gear"      "carb"
 ```
 
 #### Only keep the newly created variables with `.keep`:
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 ds.mutate(
   df.name = "mtcars",
   tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
@@ -303,7 +256,7 @@ A shinier version of `base::ifelse`. As with the other implementations of tidyve
 names can be passed unquoted, this time in the `condition` argument.
 
 
-``` r
+```r
 ds.if_else(
   condition = list(mtcars$mpg > 20),
   "high",
@@ -327,12 +280,9 @@ Bind any number of data frames by row, making a longer result. This is similar t
 do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
 
 ds.bind_rows(
   to_combine = list(mtcars, mtcars),
@@ -347,7 +297,7 @@ The argument `.id` can be used to create an additional column which records whic
 row came from:
 
 
-``` r
+```r
 ds.bind_rows(
   to_combine = list(mtcars, mtcars),
   newobj = "df_bound",
@@ -357,21 +307,19 @@ ds.bind_rows(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                 "drat"              
-#>  [7] "wt"                 "qsec"               "vs"                 "am"                 "gear"               "carb"
+#>  [1] "where_it_came_from" "mpg"                "cyl"                "disp"               "hp"                
+#>  [6] "drat"               "wt"                 "qsec"               "vs"                 "am"                
+#> [11] "gear"               "carb"
 ```
 
 ### bind_cols
 Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
 
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -381,18 +329,16 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11"
-#> [12] "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18" "vs...19"   "am...20"   "gear...21" "carb...22"
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"    "qsec...7"  "vs...8"    "am...9"   
+#> [10] "gear...10" "carb...11" "mpg...12"  "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
+#> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
 ```
 The argument `.name_repair` handles duplicate or broken names, e.g.
 
-``` r
+```r
 ds.colnames("mtcars")
 #> $server_1
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
-```
-
-``` r
 
 ds.bind_cols(
   to_combine = list(mtcars, mtcars),
@@ -403,15 +349,15 @@ ds.bind_cols(
 
 ds.colnames("df_bound")
 #> $server_1
-#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec"
-#> [19] "vs"   "am"   "gear" "carb"
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb" "mpg"  "cyl"  "disp" "hp"  
+#> [16] "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 ```
 ### case_when
 An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
 useful for recoding variables.
 
 
-``` r
+```r
   ds.case_when(
     tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
@@ -436,7 +382,7 @@ ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
 You can also use the `.default` argument to control what happens if the condition is not met:
 
 
-``` r
+```r
   ds.case_when(
     tidy_expr = list(
       mtcars$mpg < 20 ~ "low",
@@ -464,12 +410,9 @@ Subset set a data frame flexibly, retaining all rows that satisfy the condition 
 `expression`
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
   ds.filter(
     df.name = "mtcars",
     tidy_expr = list(cyl == 4 & mpg > 20),
@@ -481,12 +424,9 @@ ds.dim("filtered")[[1]]
 
 Use the .by argument to perform the filtering by a specified group.
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
   ds.filter(
     df.name = "mtcars",
     tidy_expr = list(mpg > median(mpg)),
@@ -502,12 +442,9 @@ the original groups or recalculate groups based on the resulting data. See the h
 `dplyr::filter` for more information.
 
 
-``` r
+```r
 ds.dim("mtcars")[[1]]
 #> [1] 32 11
-```
-
-``` r
     ds.filter(
       df.name = "mtcars",
       tidy_expr = list(mpg > median(mpg)),
@@ -526,13 +463,10 @@ per individual within an age group). Currently this can be done using `dh.create
 this should be replaced by `group_by` and `slice` as it will be vastly quicker.
 
 
-``` r
+```r
 ds.dim("mtcars")[1]
 #> $`dimensions of mtcars in server_1`
 #> [1] 32 11
-```
-
-``` r
 ds.slice(
   df.name = "mtcars",
   tidy_expr = list(1:10),
@@ -544,13 +478,10 @@ ds.dim("sliced_df")[1]
 ```
 
 
-``` r
+```r
 ds.dim("mtcars")[1]
 #> $`dimensions of mtcars in server_1`
 #> [1] 32 11
-```
-
-``` r
 ds.slice(
   df.name = "mtcars",
   tidy_expr = list(1),
@@ -566,7 +497,7 @@ ds.dim("sliced_df_group")[1]
 `arrange` is a more flexible version of `base::sort`, which orders the rows of a data frame by the values of selected columns.
 
 
-``` r
+```r
 ds.arrange(
   df.name = "mtcars",
   tidy_expr = list(mpg, cyl),
@@ -581,7 +512,7 @@ Many data operations are performed on groups defined by variables. `group_by` ta
 
 To group a data frame:
 
-``` r
+```r
 ds.group_by(
   df.name = "mtcars",
   tidy_expr = list(mpg, cyl),
@@ -593,7 +524,7 @@ ds.class("grouped")[[1]]
 
 To ungroup a data frame:
 
-``` r
+```r
 ds.ungroup("grouped", "no_longer_grouped")
 ds.class("no_longer_grouped")[[1]]
 #> [1] "tbl_df"     "tbl"        "data.frame"
@@ -604,7 +535,7 @@ this is subject to disclosure controls and will return an error if the number
 of groups is too high.
 
 
-``` r
+```r
 my_groups <- ds.group_keys("mtcars_group")
 my_groups
 #> $server_1
@@ -620,7 +551,7 @@ my_groups
 Use `distinct` to keep only unique rows. Leave the `expr` argument empty to check uniqueness across all variables:
 
 
-``` r
+```r
 ds.distinct(
   df.name = "mtcars",
   newobj = "distinct_df"
@@ -631,7 +562,7 @@ ds.dim("distinct_df")[[1]]
 In this example the dimensions of the resulting dataset are the same because all rows are distinct. Alternatively you can specify a subset of variables in which to check for unique rows:
 
 
-``` r
+```r
 ds.distinct(
   df.name = "mtcars",
   tidy_expr = list(cyl, drat),
@@ -639,9 +570,6 @@ ds.distinct(
 )
 ds.dim("distinct_subset")[[1]]
 #> [1] 26  2
-```
-
-``` r
 ds.colnames("distinct_subset")[[1]]
 #> [1] "cyl"  "drat"
 ```
@@ -653,12 +581,9 @@ See the help file of `dplyr::distinct` for information about other arguments.
 to convert dataframes and matrices to tibbles:
 
 
-``` r
+```r
 ds.class("mtcars")[[1]]
 #> [1] "data.frame"
-```
-
-``` r
 ds.as_tibble(
   x = "mtcars",
   newobj = "mtcars_tib",
