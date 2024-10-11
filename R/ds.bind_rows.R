@@ -10,7 +10,8 @@
 #' @param datasources datashield connections object.
 #' @return A serverside data frame with name specified in \code{newobj} and the same type as the
 #' first element of \code{to_combine}.
-#' @importFrom DSI datashield.assign datashield.aggregate
+#' @importFrom DSI datashield.assign
+#' @importFrom rlang enquo
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
@@ -25,7 +26,7 @@
 #' }
 #' @export
 ds.bind_rows <- function(to_combine = NULL, .id = NULL, newobj = NULL, datasources = NULL) {
-  to_combine <- .format_args_as_string(rlang::enquo(to_combine))
+  to_combine <- .format_args_as_string(enquo(to_combine))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("bindRowsDS", to_combine, list(.id))

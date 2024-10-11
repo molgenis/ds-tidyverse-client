@@ -17,6 +17,7 @@
 #' @param datasources datashield connections object.
 #' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
 #' @importFrom DSI datashield.assign
+#' @importFrom rlang enquo
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
@@ -36,7 +37,7 @@
 #' @export
 ds.case_when <- function(tidy_expr = NULL, .default = NULL, .ptype = NULL, .size = NULL,
                          newobj = NULL, datasources = NULL) {
-  tidy_expr <- .format_args_as_string(rlang::enquo(tidy_expr))
+  tidy_expr <- .format_args_as_string(enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("caseWhenDS", tidy_expr, list(.default, .ptype, .size))

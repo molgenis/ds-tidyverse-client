@@ -6,6 +6,7 @@
 #' @param datasources DataSHIELD connections object.
 #' @return An object with the name specified by the \code{newobj} argument is written serverside.
 #' @importFrom DSI datashield.assign
+#' @importFrom rlang enquo
 #' @examples
 #' \dontrun{
 #' ## First log in to a DataSHIELD session with mtcars dataset loaded.
@@ -21,7 +22,7 @@
 #' }
 #' @export
 ds.rename <- function(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL) {
-  tidy_expr <- .format_args_as_string(rlang::enquo(tidy_expr))
+  tidy_expr <- .format_args_as_string(enquo(tidy_expr))
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
   cally <- .make_serverside_call("renameDS", tidy_expr, list(df.name))
