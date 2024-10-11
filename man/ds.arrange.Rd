@@ -15,7 +15,7 @@ ds.arrange(
 \arguments{
 \item{df.name}{Character specifying a serverside data frame or tibble.}
 
-\item{tidy_expr}{A list containing variables, or functions of variables. Use \code{desc()} to sort a
+\item{tidy_expr}{A list containing variables, or functions of variables. Use \code{dplyr::desc()} to sort a
 variable in descending order.}
 
 \item{.by_group}{If TRUE, will sort first by grouping variable. Applies to grouped data frames
@@ -32,7 +32,7 @@ An object with the name specified by the \code{newobj} argument is written serve
 DataSHIELD implentation of \code{dplyr::arrange}.
 }
 \examples{
-\dontrun{
+\donttest{
 ds.arrange(
   df.name = "mtcars",
   tidy_expr = list(drat),
