@@ -20,6 +20,3 @@ The filled DataFrame with added columns and adjusted classes or factor levels.
 This function fills a given DataFrame by adding missing columns, ensuring consistent column classes, and adjusting factor levels where necessary.
 It performs checks to detect class and factor level conflicts and prompts the user for decisions to resolve these conflicts.
 }
-\examples{
-ds.tidy_fill(df.name = "df1", newobj = "filled_df", datasources = conns)
-}

@@ -125,7 +125,7 @@ test_that(".get_var_classes returns correct output", {
 
 })
 
-class_conflicts <- .identify_class_conflicts(var_classes)
+class_conflicts <- .identify_class_conflicts(var_class)
 
 test_that(".identify_class_conflicts returns correct output", {
   expected <- list(
@@ -140,14 +140,6 @@ test_that(".identify_class_conflicts returns correct output", {
 test_that("ask_question displays the correct prompt", {
   expect_snapshot(ask_question("my_var"))
 })
-
-# Load the testthat package
-library(testthat)
-
-# Define a mock version of the question function
-mock_question <- function(var) {
-  return(paste("Prompting again for:", var))
-}
 
 test_that("check_response_class aborts on input '6'", {
   expect_error(check_response_class("6", "variable_name"), "Aborted `ds.dataFrameFill`")

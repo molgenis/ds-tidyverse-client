@@ -10,8 +10,7 @@
 #' @import dplyr
 #' @import purrr
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
-#' @examples
-#' ds.tidy_fill(df.name = "df1", newobj = "filled_df", datasources = conns)
+#' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
   datasources <- .set_datasources(datasources)
 
@@ -62,6 +61,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 #' @param col_names A list of column names from different data sources.
 #' @return None. Throws an error if columns are identical.
 #' @importFrom cli cli_abort
+#' @noRd
 .stop_if_cols_identical <- function(col_names) {
   are_identical <- all(sapply(col_names, identical, col_names[[1]]))
   if (are_identical) {
@@ -77,6 +77,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 #' @param datasources Data sources from which to aggregate data.
 #' @return A DataFrame containing the variable classes from each data source.
 #' @import dplyr
+#' @noRd
 .get_var_classes <- function(df.name, datasources) {
   cally <- call("classAllColsDS", df.name)
   classes <- datashield.aggregate(datasources, cally) %>%
@@ -92,7 +93,9 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 #' @return A list of variables that have class conflicts.
 #' @import dplyr
 #' @importFrom purrr map
+#' @noRd
 .identify_class_conflicts <- function(classes) {
+  server <- NULL
   different_class <- classes |>
     dplyr::select(-server) |>
     map(~ unique(na.omit(.)))
@@ -109,6 +112,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 #' @param all_servers The names of all servers.
 #' @param all_classes The classes of the variables across servers.
 #' @return A vector of decisions for each variable's class.
+#' @noRd
 prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) {
   decisions <- c()
   for (i in 1:length(vars)) {
@@ -124,7 +128,9 @@ prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) 
 #' @param var The variable name with a class conflict.
 #' @param all_servers The names of all servers.
 #' @param all_classes The classes of the variable across servers.
+#' @importFrom cli cli_alert_warning cli_alert_danger
 #' @return A decision for the variable's class.
+#' @noRd
 prompt_user_class_decision <- function(var, all_servers, all_classes) {
   cli_alert_warning("`ds.dataFrameFill` requires that all columns have the same class.")
   cli_alert_danger("Column {.strong {var}} has following classes:")
@@ -139,7 +145,9 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
 #'
 #' @param answer The user's input.
 #' @param var The variable name.
+#' @importFrom cli cli_abort cli_alert_warning cli_alert_info
 #' @return The user's decision or a recursive prompt for input.
+#' @noRd
 check_response_class <- function(answer, var) {
   if (answer == "6") {
     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
@@ -158,9 +166,10 @@ check_response_class <- function(answer, var) {
 #'
 #' @param question The question to ask the user.
 #' @return The user's decision.
+#' @noRd
 ask_question_wait_response_class <- function(var) {
   ask_question(var)
-  answer <- readLine()
+  answer <- readline()
   return(check_response_class(answer, var))
 }
 
@@ -175,6 +184,7 @@ ask_question_wait_response_class <- function(var) {
 #' @return None. This function is used for prompting the user and does not return a value.
 #' @examples
 #' ask_question("variable_name")
+#' @noRd
 ask_question <- function(var) {
   cli_alert_info("Would you like to:")
   class_options <- c("a factor", "an integer", "numeric", "a character", "a logical vector")
@@ -194,6 +204,7 @@ ask_question <- function(var) {
 #' @param newobj The name of the new DataFrame.
 #' @param datasources Data sources from which to aggregate data.
 #' @return None. Updates the DataFrame with consistent variable classes.
+#' @noRd
 .fix_classes <- function(df.name, different_classes, class_decisions, newobj, datasources) {
   cally <- call("fixClassDS", df.name, names(different_classes), class_decisions)
   datashield.assign(datasources, newobj, cally)
@@ -205,6 +216,7 @@ ask_question <- function(var) {
 #'
 #' @param col_names A list of column names.
 #' @return A vector of unique column names.
+#' @noRd
 .get_unique_cols <- function(col_names) {
   return(
     unique(
@@ -222,6 +234,7 @@ ask_question <- function(var) {
 #' @param newobj The name of the new DataFrame.
 #' @param datasources Data sources from which to aggregate data.
 #' @return None. Updates the DataFrame with added columns.
+#' @noRd
 .add_missing_cols_to_df <- function(df.name, unique_cols, newobj, datasources) {
   cally <- call("makeColsSameDS", df.name, unique_cols)
   datashield.assign(datasources, newobj, cally)
@@ -235,6 +248,7 @@ ask_question <- function(var) {
 #' @param datasources Data sources from which to aggregate data.
 #' @param col_names A list of column names.
 #' @return A list of added columns.
+#' @noRd
 .summarise_new_cols <- function(newobj, datasources, col_names) {
   new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
   return(.get_added_cols(col_names, new_names))
@@ -247,6 +261,7 @@ ask_question <- function(var) {
 #' @param old_names A list of old column names.
 #' @param new_names A list of new column names.
 #' @return A list of added column names.
+#' @noRd
 .get_added_cols <- function(old_names, new_names) {
   list(old_names, new_names) %>%
     pmap(function(.x, .y) {
@@ -260,6 +275,7 @@ ask_question <- function(var) {
 #'
 #' @param var_classes A DataFrame containing variable classes.
 #' @return A vector of factor variables.
+#' @noRd
 .identify_factor_vars <- function(var_classes) {
   return(
     var_classes %>%
@@ -276,6 +292,7 @@ ask_question <- function(var) {
 #' @param newobj The name of the new DataFrame.
 #' @param datasources Data sources from which to aggregate data.
 #' @return A list of factor levels.
+#' @noRd
 .get_factor_levels <- function(factor_vars, newobj, datasources) {
   cally <- call("getAllLevelsDS", newobj, names(factor_vars))
   return(datashield.aggregate(datasources, cally))
@@ -287,6 +304,7 @@ ask_question <- function(var) {
 #'
 #' @param factor_levels A list of factor levels.
 #' @return A list of variables with level conflicts.
+#' @noRd
 .identify_level_conflicts <- function(factor_levels) {
   levels <- factor_levels %>%
     pmap_lgl(function(...) {
@@ -303,6 +321,7 @@ ask_question <- function(var) {
 #'
 #' @param level_conflicts A list of variables with factor level conflicts.
 #' @return The user's decision.
+#' @noRd
 ask_question_wait_response_levels <- function(level_conflicts) {
   .make_levels_message(level_conflicts)
   answer <- readline()
@@ -314,7 +333,9 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' Creates a message to alert the user about factor level conflicts and prompt for action.
 #'
 #' @param level_conflicts A list of variables with factor level conflicts.
+#' @importFrom cli cli_alert_warning cli_alert_info cli_ol
 #' @return None. Prints the message to the console.
+#' @noRd
 .make_levels_message <- function(level_conflicts) {
   cli_alert_warning("Warning: factor variables {level_conflicts} do not have the same levels in all studies")
   cli_alert_info("Would you like to:")
@@ -328,6 +349,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @param answer The user's input.
 #' @param level_conflicts A list of variables with factor level conflicts.
 #' @return The user's decision.
+#' @noRd
 check_response_levels <- function(answer, level_conflicts) {
   if (!answer %in% as.character(1:2)) {
     cli_alert_warning("Invalid input. Please try again.")
@@ -345,6 +367,7 @@ check_response_levels <- function(answer, level_conflicts) {
 #' @param factor_levels A list of factor levels.
 #' @param level_conflicts A list of variables with level conflicts.
 #' @return A list of unique factor levels.
+#' @noRd
 .get_unique_levels <- function(factor_levels, level_conflicts) {
   unique_levels <- factor_levels %>%
     map(~ .[level_conflicts]) %>%
@@ -363,6 +386,7 @@ check_response_levels <- function(answer, level_conflicts) {
 #' @param unique_levels A list of unique factor levels.
 #' @param datasources Data sources from which to aggregate data.
 #' @return None. Updates the DataFrame with the new factor levels.
+#' @noRd
 .set_factor_levels <- function(newobj, unique_levels, datasources) {
   cally <- call("setAllLevelsDS", newobj, names(unique_levels), unique_levels)
   datashield.assign(datasources, newobj, cally)
@@ -379,7 +403,9 @@ check_response_levels <- function(answer, level_conflicts) {
 #' @param level_conflicts A list of variables with level conflicts.
 #' @param levels_decision The decision made regarding factor levels.
 #' @param newobj The name of the new DataFrame.
+#' @importFrom cli cli_text
 #' @return None. Prints messages to the console.
+#' @noRd
 .print_out_messages <- function(added_cols, class_decisions, different_classes, unique_levels,
                                 level_conflicts, levels_decision, newobj) {
   .print_var_recode_message(added_cols, newobj)
@@ -400,7 +426,9 @@ check_response_levels <- function(answer, level_conflicts) {
 #'
 #' @param added_cols A list of added columns.
 #' @param newobj The name of the new DataFrame.
+#' @importFrom cli cli_text
 #' @return None. Prints the message to the console.
+#' @noRd
 .print_var_recode_message <- function(added_cols, newobj) {
   cli_alert_success("The following variables have been added to {newobj}:")
   added_cols_neat <- added_cols %>% map(~ ifelse(length(.) == 0, "", .))
@@ -418,7 +446,9 @@ check_response_levels <- function(answer, level_conflicts) {
 #' @param class_decisions A vector of class decisions.
 #' @param different_classes A list of variables with class conflicts.
 #' @param newobj The name of the new DataFrame.
+#' @importFrom cli cli_alert_info cli_alert_success
 #' @return None. Prints the message to the console.
+#' @noRd
 .print_class_recode_message <- function(class_decisions, different_classes, newobj) {
   choice_neat <- change_choice_to_string(class_decisions)
   class_message <- paste0(names(different_classes), " --> ", choice_neat)
@@ -434,7 +464,9 @@ check_response_levels <- function(answer, level_conflicts) {
 #'
 #' @param unique_levels A list of unique factor levels.
 #' @param newobj The name of the new DataFrame.
+#' @importFrom cli cli_alert_success cli_alert_info
 #' @return None. Prints the message to the console.
+#' @noRd
 .print_levels_recode_message <- function(unique_levels, newobj) {
   levels_message <- .make_levels_recode_message(unique_levels)
   cli_alert_success("The following levels have been set in {newobj}: ")
@@ -449,6 +481,7 @@ check_response_levels <- function(answer, level_conflicts) {
 #'
 #' @param unique_levels A list of unique factor levels.
 #' @return A formatted string summarizing the level recoding.
+#' @noRd
 .make_levels_recode_message <- function(unique_levels) {
   return(
     list(names(unique_levels), unique_levels) %>%
@@ -458,28 +491,42 @@ check_response_levels <- function(answer, level_conflicts) {
   )
 }
 
+#' Convert Class Decision Code to String
+#'
+#' This function converts a numeric class decision input (represented as a string)
+#' into the corresponding class type string (e.g., "factor", "integer", "numeric", etc.).
+#' @param class_decision A string representing the class decision. It should be
+#' one of the following values: "1", "2", "3", "4", or "5".
+#' @return A string representing the class type corresponding to the input:
+#' "factor", "integer", "numeric", "character", or "logical".
+#' @noRd
+change_choice_to_string <- function(class_decision) {
+  case_when(
+    class_decision == "1" ~ "factor",
+    class_decision == "2" ~ "integer",
+    class_decision == "3" ~ "numeric",
+    class_decision == "4" ~ "character",
+    class_decision == "5" ~ "logical"
+  )
+}
 
-
-
-
-# change_choice_to_string <- function(class_decision) {
-#   case_when(
-#     class_decision == "1" ~ "factor",
-#     class_decision == "2" ~ "integer",
-#     class_decision == "3" ~ "numeric",
-#     class_decision == "4" ~ "character",
-#     class_decision == "5" ~ "logical"
-#   )
-# }
-
-# print_all_classes <- function(all_servers, all_classes) {
-#   combined <- paste(all_servers, all_classes, sep = ": ")
-#   cli_ul()
-#   for (i in 1:length(combined)) {
-#     cli_li("{combined[i]}")
-#   }
-#   cli_end()
-# }
-
-
-
+#' Print All Server-Class Pairs
+#'
+#' This function prints out a list of server names along with their corresponding
+#' class types. It formats the output with a bullet-point list using the `cli` package.
+#'
+#' @param all_servers A character vector containing the names of servers.
+#' @param all_classes A character vector containing the class types corresponding
+#' to each server.
+#' @return This function does not return a value. It prints the server-class pairs
+#' to the console as a bulleted list.
+#' @importFrom cli cli_ul cli_li cli_end
+#' @noRd
+print_all_classes <- function(all_servers, all_classes) {
+  combined <- paste(all_servers, all_classes, sep = ": ")
+  cli_ul()
+  for (i in 1:length(combined)) {
+    cli_li("{combined[i]}")
+  }
+  cli_end()
+}

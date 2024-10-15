@@ -31,7 +31,9 @@ Imports:
   DSI (>= 1.7.0),
   cli,
   rlang,
-  assertthat
+  assertthat, 
+  dplyr,
+  purrr
 Suggests: 
   testthat (>= 3.0.0),
   knitr,
@@ -39,8 +41,7 @@ Suggests:
   DSLite, 
   dsBase,
   dsBaseClient, 
-  dsTidyverse, 
-  dplyr
+  dsTidyverse
 Config/testthat/edition: 3
 Additional_repositories: https://cran.obiba.org/
 VignetteBuilder: knitr
