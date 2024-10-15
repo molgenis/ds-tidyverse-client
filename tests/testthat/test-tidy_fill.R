@@ -141,3 +141,39 @@ test_that("ask_question displays the correct prompt", {
   expect_snapshot(ask_question("my_var"))
 })
 
+# Load the testthat package
+library(testthat)
+
+# Define a mock version of the question function
+mock_question <- function(var) {
+  return(paste("Prompting again for:", var))
+}
+
+test_that("check_response_class aborts on input '6'", {
+  expect_error(check_response_class("6", "variable_name"), "Aborted `ds.dataFrameFill`")
+})
+
+test_that("check_response_class returns valid input", {
+  expect_equal(check_response_class("1", "variable_name"), "1")
+  expect_equal(check_response_class("2", "variable_name"), "2")
+  expect_equal(check_response_class("3", "variable_name"), "3")
+  expect_equal(check_response_class("4", "variable_name"), "4")
+  expect_equal(check_response_class("5", "variable_name"), "5")
+})
+
+test_that("check_response_class warns on invalid input", {
+  expect_message(
+    check_response_class("invalid", "variable_name"),
+    "Invalid input. Please try again."
+  )
+})
+
+test_that("check_response_class calls question() on invalid input", {
+  expect_equal(
+    with_mocked_bindings(
+      check_response_class("invalid", "variable_name"),
+      ask_question = function(var) "prompt"
+    ),
+    "prompt"
+  )
+})

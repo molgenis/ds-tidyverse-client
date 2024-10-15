@@ -9,7 +9,6 @@
 #'
 #' @import dplyr
 #' @import purrr
-#' @import datashield
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @examples
 #' ds.tidy_fill(df.name = "df1", newobj = "filled_df", datasources = conns)
@@ -147,7 +146,7 @@ check_response_class <- function(answer, var) {
   } else if (!answer %in% as.character(1:5)) {
     cli_alert_warning("Invalid input. Please try again.")
     cli_alert_info("")
-    question(var)
+    ask_question(var)
   } else {
     return(answer)
   }
@@ -159,10 +158,10 @@ check_response_class <- function(answer, var) {
 #'
 #' @param question The question to ask the user.
 #' @return The user's decision.
-ask_question_wait_response_class <- function(question) {
-  ask_question(question)
-  answer <- give_prompt()
-  return(check_response_class(answer))
+ask_question_wait_response_class <- function(var) {
+  ask_question(var)
+  answer <- readLine()
+  return(check_response_class(answer, var))
 }
 
 #' Prompt User for Class Conversion Options
@@ -306,7 +305,7 @@ ask_question <- function(var) {
 #' @return The user's decision.
 ask_question_wait_response_levels <- function(level_conflicts) {
   .make_levels_message(level_conflicts)
-  answer <- give_prompt()
+  answer <- readline()
   return(check_response_levels(answer, level_conflicts))
 }
 
