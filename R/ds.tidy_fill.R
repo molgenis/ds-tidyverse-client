@@ -29,7 +29,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
       var_classes$server,
       dplyr::select(var_classes, all_of(names(class_conflicts)))
     )
-    .fix_classes(df.name, class_conflicts, class_decisions, newobj, datasources)
+    .fix_classes(df.name, names(different_classes), class_decisions, newobj, datasources)
   }
 
   unique_cols <- .get_unique_cols(col_names)
@@ -215,7 +215,7 @@ ask_question <- function(var) {
 #' @return None. Updates the DataFrame with consistent variable classes.
 #' @noRd
 .fix_classes <- function(df.name, different_classes, class_decisions, newobj, datasources) {
-  cally <- call("fixClassDS", df.name, names(different_classes), class_decisions)
+  cally <- call("fixClassDS", df.name, different_classes, class_decisions)
   datashield.assign(datasources, newobj, cally)
 }
 
@@ -244,8 +244,8 @@ ask_question <- function(var) {
 #' @param datasources Data sources from which to aggregate data.
 #' @return None. Updates the DataFrame with added columns.
 #' @noRd
-.add_missing_cols_to_df <- function(df.name, unique_cols, newobj, datasources) {
-  cally <- call("makeColsSameDS", df.name, unique_cols)
+.add_missing_cols_to_df <- function(df.name, cols_to_add_if_missing, newobj, datasources) {
+  cally <- call("makeColsSameDS", df.name, cols_to_add_if_missing)
   datashield.assign(datasources, newobj, cally)
 }
 

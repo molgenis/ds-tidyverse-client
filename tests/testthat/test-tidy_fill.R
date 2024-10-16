@@ -1,9 +1,9 @@
 library(DSLite)
 library(dplyr)
-library(dsTidyverse)
 library(dsBase)
 library(dsBaseClient)
 library(purrr)
+# devtools::load_all("~/Library/Mobile Documents/com~apple~CloudDocs/work/repos/dsTidyverse")
 
 df <- create_mixed_dataframe(n_rows = 100, n_factor_cols = 10, n_other_cols = 10)
 
@@ -37,6 +37,8 @@ dslite.server <- newDSLiteServer(
 
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
+dslite.server$assignMethod("fixClassDS", "fixClassDS")
+dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
 
 builder <- DSI::newDSLoginBuilder()
 
@@ -169,3 +171,100 @@ test_that("check_response_class calls question() on invalid input", {
     "prompt"
   )
 })
+
+test_that("ask_question_wait_response_class continues with valid response", {
+  expect_equal(
+    with_mocked_bindings(
+      ask_question_wait_response_class("a variable"),
+      ask_question = function() "A question",
+      readline = function() "1"
+    ), "1"
+  )
+})
+
+test_that("ask_question_wait_response_class stinues with valid response", {
+  expect_equal(
+    with_mocked_bindings(
+      ask_question_wait_response_class("a variable"),
+      ask_question = function() "A question",
+      readline = function() "1"
+    ), "1"
+  )
+})
+#
+# prompt_user_class_decision
+# prompt_user_class_decision_all_vars
+
+test_that(".fix_classes sets the correct classes in serverside data frame", {
+.fix_classes(
+  df.name = "df",
+  different_classes = c("fac_col4", "fac_col5"),
+  class_decisions = c("1", "5"),
+  newobj = "new_classes",
+  datasources = conns)
+
+expect_equal(
+  unname(unlist(ds.class("df$fac_col4"))),
+  c("numeric", "character", "factor")
+)
+
+expect_equal(
+  unname(unlist(ds.class("df$fac_col5"))),
+  c("logical", "integer", "factor")
+)
+
+expect_equal(
+  unname(unlist(ds.class("new_classes$fac_col4"))),
+  rep("factor", 3)
+)
+
+expect_equal(
+  unname(unlist(ds.class("new_classes$fac_col5"))),
+  rep("logical", 3)
+)
+
+})
+
+test_that(".get_unique_cols extracts unique names from a list", {
+  expect_equal(
+    .get_unique_cols(
+      list(
+        server_1 = c("col_1", "col_2", "col_3"),
+        server_1 = c("col_1", "col_2", "col_4"),
+        server_1 = c("col_2", "col_3", "col_3", "col_5")
+        )
+      ),
+    c("col_1", "col_2", "col_3", "col_4", "col_5")
+  )
+})
+
+.get_unique_cols(ds.colnames("df", datasources = conns))
+
+test_that(".add_missing_cols_to_df correctly creates missing columns", {
+  cols_to_set <- c(
+    "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
+    "col15", "col18", "fac_col7", "fac_col10", "col13", "col16", "col19", "col11", "col14", "col17",
+    "col20")
+
+  .add_missing_cols_to_df(
+    df.name = "df",
+    cols_to_add_if_missing = cols_to_set,
+    newobj = "with_new_cols",
+    datasources = conns)
+
+  observed <- ds.colnames("with_new_cols")
+
+  new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
+                "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
+                "fac_col6", "fac_col7", "fac_col9")
+
+  expected <- list(
+    server_1 = new_cols,
+    server_2 = new_cols,
+    server_3 = new_cols
+  )
+
+  expect_equal(observed, expected)
+})
+
+
