@@ -141,24 +141,24 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
 
 #' Check User Response for Class Decision
 #'
-#' Checks the user's input to ensure it is valid for class decisions.
-#'
-#' @param answer The user's input.
-#' @param var The variable name.
-#' @importFrom cli cli_abort cli_alert_warning cli_alert_info
-#' @return The user's decision or a recursive prompt for input.
-#' @noRd
-check_response_class <- function(answer, var) {
-  if (answer == "6") {
-    cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
-  } else if (!answer %in% as.character(1:5)) {
-    cli_alert_warning("Invalid input. Please try again.")
-    cli_alert_info("")
-    ask_question(var)
-  } else {
-    return(answer)
-  }
-}
+#' #' Checks the user's input to ensure it is valid for class decisions.
+#' #'
+#' #' @param answer The user's input.
+#' #' @param var The variable name.
+#' #' @importFrom cli cli_abort cli_alert_warning cli_alert_info
+#' #' @return The user's decision or a recursive prompt for input.
+#' #' @noRd
+#' check_response_class <- function(answer, var) {
+#'   if (answer == "6") {
+#'     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
+#'   } else if (!answer %in% as.character(1:5)) {
+#'     cli_alert_warning("Invalid input. Please try again.")
+#'     cli_alert_info("")
+#'     ask_question_wait_response_class(var)
+#'   } else {
+#'     return(answer)
+#'   }
+#' }
 
 #' Ask Question and Wait for Class Response
 #'
@@ -170,7 +170,16 @@ check_response_class <- function(answer, var) {
 ask_question_wait_response_class <- function(var) {
   ask_question(var)
   answer <- readline()
-  return(check_response_class(answer, var))
+  if (answer == "6") {
+    cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
+  } else if (!answer %in% as.character(1:5)) {
+    cli_text("")
+    cli_alert_warning("Invalid input. Please try again.")
+    cli_text("")
+    ask_question_wait_response_class(var)
+  } else {
+    return(answer)
+  }
 }
 
 #' Prompt User for Class Conversion Options
