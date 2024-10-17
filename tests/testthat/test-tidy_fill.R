@@ -238,8 +238,6 @@ test_that(".get_unique_cols extracts unique names from a list", {
   )
 })
 
-.get_unique_cols(ds.colnames("df", datasources = conns))
-
 test_that(".add_missing_cols_to_df correctly creates missing columns", {
   cols_to_set <- c(
     "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
@@ -252,11 +250,11 @@ test_that(".add_missing_cols_to_df correctly creates missing columns", {
     newobj = "with_new_cols",
     datasources = conns)
 
-  observed <- ds.colnames("with_new_cols")
-
   new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
                 "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
                 "fac_col6", "fac_col7", "fac_col9")
+
+  observed <- ds.colnames("with_new_cols")
 
   expected <- list(
     server_1 = new_cols,
@@ -267,4 +265,34 @@ test_that(".add_missing_cols_to_df correctly creates missing columns", {
   expect_equal(observed, expected)
 })
 
+test_that(".get_added_cols correctly identifies newly added columns", {
 
+  old_cols <- ds.colnames("df")
+  new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
+                "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
+                "fac_col6", "fac_col7", "fac_col9")
+
+  new_cols_servers <- list(
+    server_1 = new_cols,
+    server_2 = new_cols,
+    server_3 = new_cols
+  )
+
+  .get_added_cols(old_cols, new_cols_servers)
+
+
+# .identify_factor_vars
+# .get_factor_levels
+# .identify_level_conflicts
+# ask_question_wait_response_levels
+# .make_levels_message
+# check_response_levels
+# .get_unique_levels
+# .set_factor_levels
+# .print_out_messages
+# .print_var_recode_message
+# .print_class_recode_message
+# .print_levels_recode_message
+# .make_levels_recode_message
+# change_choice_to_string
+# print_all_classes

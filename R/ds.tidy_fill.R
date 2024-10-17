@@ -34,7 +34,8 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
-  added_cols <- .summarise_new_cols(newobj, datasources, col_names)
+  new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
+  added_cols <- .get_added_cols(col_names, new_names)
 
   new_classes <- .get_var_classes(df.name, datasources)
   factor_vars <- .identify_factor_vars(new_classes)
@@ -247,20 +248,6 @@ ask_question <- function(var) {
 .add_missing_cols_to_df <- function(df.name, cols_to_add_if_missing, newobj, datasources) {
   cally <- call("makeColsSameDS", df.name, cols_to_add_if_missing)
   datashield.assign(datasources, newobj, cally)
-}
-
-#' Summarize Newly Added Columns
-#'
-#' Summarizes the columns that were added to the DataFrame.
-#'
-#' @param newobj The name of the new DataFrame.
-#' @param datasources Data sources from which to aggregate data.
-#' @param col_names A list of column names.
-#' @return A list of added columns.
-#' @noRd
-.summarise_new_cols <- function(newobj, datasources, col_names) {
-  new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
-  return(.get_added_cols(col_names, new_names))
 }
 
 #' Get Added Columns
