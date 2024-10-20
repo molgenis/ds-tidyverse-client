@@ -39,6 +39,7 @@ dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse",
 dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
 dslite.server$assignMethod("fixClassDS", "fixClassDS")
 dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
+dslite.server$aggregateMethod("getAllLevelsDS", "getAllLevelsDS")
 
 builder <- DSI::newDSLoginBuilder()
 
@@ -182,26 +183,27 @@ test_that("ask_question_wait_response_class continues with valid response", {
   )
 })
 
-test_that("ask_question_wait_response_class stinues with valid response", {
+test_that("ask_question_wait_response_class repeats with invalid response", {
   expect_equal(
     with_mocked_bindings(
       ask_question_wait_response_class("a variable"),
       ask_question = function() "A question",
-      readline = function() "1"
-    ), "1"
+      readline = function() "9"
+    ), "Invalid input. Please try again"
   )
 })
 #
 # prompt_user_class_decision
 # prompt_user_class_decision_all_vars
 
-test_that(".fix_classes sets the correct classes in serverside data frame", {
 .fix_classes(
   df.name = "df",
   different_classes = c("fac_col4", "fac_col5"),
   class_decisions = c("1", "5"),
   newobj = "new_classes",
   datasources = conns)
+
+test_that(".fix_classes sets the correct classes in serverside data frame", {
 
 expect_equal(
   unname(unlist(ds.class("df$fac_col4"))),
@@ -238,17 +240,18 @@ test_that(".get_unique_cols extracts unique names from a list", {
   )
 })
 
-test_that(".add_missing_cols_to_df correctly creates missing columns", {
-  cols_to_set <- c(
-    "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
-    "col15", "col18", "fac_col7", "fac_col10", "col13", "col16", "col19", "col11", "col14", "col17",
-    "col20")
+cols_to_set <- c(
+  "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
+  "col15", "col18", "fac_col7", "fac_col10", "col13", "col16", "col19", "col11", "col14", "col17",
+  "col20")
 
-  .add_missing_cols_to_df(
-    df.name = "df",
-    cols_to_add_if_missing = cols_to_set,
-    newobj = "with_new_cols",
-    datasources = conns)
+.add_missing_cols_to_df(
+  df.name = "df",
+  cols_to_add_if_missing = cols_to_set,
+  newobj = "with_new_cols",
+  datasources = conns)
+
+test_that(".add_missing_cols_to_df correctly creates missing columns", {
 
   new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
                 "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
@@ -278,15 +281,92 @@ test_that(".get_added_cols correctly identifies newly added columns", {
     server_3 = new_cols
   )
 
-  .get_added_cols(old_cols, new_cols_servers)
+  expect_equal(
+    .get_added_cols(old_cols, new_cols_servers),
+    list(
+      server_1 = c("col11", "col13", "col14", "col16", "col17", "col19", "col20", "fac_col10", "fac_col7"),
+      server_2 = c("col11", "col12", "col14", "col15", "col17", "col18", "col20", "fac_col6", "fac_col9"),
+      server_3 = c("col12", "col13", "col15", "col16", "col18", "col19", "fac_col10", "fac_col6", "fac_col7", "fac_col9")
+    )
+  )
+})
+
+var_class_fact <- .get_var_classes("with_new_cols", datasources = conns)
+fac_vars <- .identify_factor_vars(var_class_fact)
+
+test_that(".identify_factor_vars correctly identifies factor variables", {
+  var_class_fact <- var_class |> dplyr::select(server: col18)
+  expect_equal(
+    names(fac_vars),
+    c("fac_col1", "fac_col2", "fac_col3", "fac_col6", "fac_col9")
+    )
+})
+
+fac_levels <- .get_factor_levels(fac_vars, "with_new_cols", conns)
+
+test_that(".get_factor_levels correctly identifies factor levels", {
+  expected <- list(
+    server_1 = list(
+      fac_col1 = c("High", "Low", "Medium"),
+      fac_col2 = c("Blue", "Green"),
+      fac_col3 = c("No", "Yes"),
+      fac_col6 = c("Bird", "Cat", "Dog"),
+      fac_col9 = c("False", "True")
+    ),
+    server_2 = list(
+      fac_col1 = c("High", "Low", "Medium"),
+      fac_col2 = c("Green", "Red"),
+      fac_col3 = c("No"),
+      fac_col6 = NULL,
+      fac_col9 = NULL
+    ),
+    server_3 = list(
+      fac_col1 = c("High", "Low", "Medium"),
+      fac_col2 = c("Blue"),
+      fac_col3 = c("Yes"),
+      fac_col6 = NULL,
+      fac_col9 = NULL
+    )
+  )
+
+  expect_equal(fac_levels, expected)
+})
+
+level_conflicts <- .identify_level_conflicts(fac_levels)
+
+test_that(".identify_level_conflicts correctly factor columns with different levels", {
+  expect_equal(
+    .identify_level_conflicts(fac_levels),
+    c("fac_col2", "fac_col3", "fac_col6", "fac_col9")
+  )
+
+})
+
+test_that("ask_question_wait_response_levels continues with valid response", {
+  expect_equal(
+    with_mocked_bindings(
+      ask_question_wait_response_levels("a variable"),
+      ask_question = function() "A question",
+      readline = function() "1"
+    ), "1"
+  )
+})
+
+test_that("ask_question_wait_response_levels repeats with invalid response", {
+  expect_equal(
+    with_mocked_bindings(
+      ask_question_wait_response_levels("a variable"),
+      ask_question = function() "A question",
+      readline = function() "9"
+    ), "Invalid input. Please try again"
+  )
+})
+
+test_that(".make_levels_message makes correct message", {
+  expect_snapshot(.make_levels_message(level_conflicts))
+})
 
 
-# .identify_factor_vars
-# .get_factor_levels
-# .identify_level_conflicts
-# ask_question_wait_response_levels
-# .make_levels_message
-# check_response_levels
 # .get_unique_levels
 # .set_factor_levels
 # .print_out_messages

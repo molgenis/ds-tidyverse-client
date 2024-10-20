@@ -12,6 +12,7 @@
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
+  browser()
   datasources <- .set_datasources(datasources)
 
   assert_that(is.character("df.name"))
@@ -29,7 +30,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
       var_classes$server,
       dplyr::select(var_classes, all_of(names(class_conflicts)))
     )
-    .fix_classes(df.name, names(different_classes), class_decisions, newobj, datasources)
+    .fix_classes(df.name, names(class_conflicts), class_decisions, newobj, datasources)
   }
 
   unique_cols <- .get_unique_cols(col_names)
@@ -275,8 +276,8 @@ ask_question <- function(var) {
 .identify_factor_vars <- function(var_classes) {
   return(
     var_classes %>%
-      filter(row_number() == 1) %>%
-      select(where(~ . == "factor"))
+      dplyr::filter(row_number() == 1) %>%
+      dplyr::select(where(~ . == "factor"))
   )
 }
 
@@ -289,8 +290,8 @@ ask_question <- function(var) {
 #' @param datasources Data sources from which to aggregate data.
 #' @return A list of factor levels.
 #' @noRd
-.get_factor_levels <- function(factor_vars, newobj, datasources) {
-  cally <- call("getAllLevelsDS", newobj, names(factor_vars))
+.get_factor_levels <- function(factor_vars, df, datasources) {
+  cally <- call("getAllLevelsDS", df, names(factor_vars))
   return(datashield.aggregate(datasources, cally))
 }
 
@@ -321,7 +322,14 @@ ask_question <- function(var) {
 ask_question_wait_response_levels <- function(level_conflicts) {
   .make_levels_message(level_conflicts)
   answer <- readline()
-  return(check_response_levels(answer, level_conflicts))
+  if (!answer %in% as.character(1:2)) {
+    cli_alert_warning("Invalid input. Please try again.")
+    cli_alert_info("")
+    .make_levels_message(level_conflicts)
+    return(ask_question_wait_response_levels)
+  } else {
+    return(answer)
+  }
 }
 
 #' Make Factor Level Conflict Message
@@ -336,24 +344,6 @@ ask_question_wait_response_levels <- function(level_conflicts) {
   cli_alert_warning("Warning: factor variables {level_conflicts} do not have the same levels in all studies")
   cli_alert_info("Would you like to:")
   cli_ol(c("Create the missing levels where they are not present", "Do nothing"))
-}
-
-#' Check User Response for Factor Levels
-#'
-#' Checks the user's input to ensure it is valid for resolving factor level conflicts.
-#'
-#' @param answer The user's input.
-#' @param level_conflicts A list of variables with factor level conflicts.
-#' @return The user's decision.
-#' @noRd
-check_response_levels <- function(answer, level_conflicts) {
-  if (!answer %in% as.character(1:2)) {
-    cli_alert_warning("Invalid input. Please try again.")
-    cli_alert_info("")
-    .make_levels_message(level_conflicts)
-  } else {
-    return(answer)
-  }
 }
 
 #' Get Unique Factor Levels
