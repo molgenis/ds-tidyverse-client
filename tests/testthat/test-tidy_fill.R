@@ -3,8 +3,10 @@ library(dplyr)
 library(dsBase)
 library(dsBaseClient)
 library(purrr)
+library(dsTidyverse)
 # devtools::load_all("~/Library/Mobile Documents/com~apple~CloudDocs/work/repos/dsTidyverse")
 
+readline <- NULL
 df <- create_mixed_dataframe(n_rows = 100, n_factor_cols = 10, n_other_cols = 10)
 
 df_1 <- df %>% select(1:5, 6, 9, 12, 15, 18) %>%
@@ -99,9 +101,16 @@ cols_to_set <- c(
   datasources = conns)
 
 old_cols <- ds.colnames("df")
+
 new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
               "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
               "fac_col6", "fac_col7", "fac_col9")
+
+new_cols_servers <- list(
+  server_1 = new_cols,
+  server_2 = new_cols,
+  server_3 = new_cols
+)
 
 added_cols <- .get_added_cols(old_cols, new_cols_servers)
 
@@ -110,6 +119,8 @@ var_class_fact <- .get_var_classes("with_new_cols", datasources = conns)
 fac_vars <- .identify_factor_vars(var_class_fact)
 
 fac_levels <- .get_factor_levels(fac_vars, "with_new_cols", conns)
+
+level_conflicts <- .identify_level_conflicts(fac_levels)
 
 unique_levs <- .get_unique_levels(fac_levels, level_conflicts)
 
@@ -187,35 +198,35 @@ test_that(".identify_class_conflicts returns correct output", {
 test_that("ask_question displays the correct prompt", {
   expect_snapshot(ask_question("my_var"))
 })
-
-test_that("check_response_class aborts on input '6'", {
-  expect_error(check_response_class("6", "variable_name"), "Aborted `ds.dataFrameFill`")
-})
-
-test_that("check_response_class returns valid input", {
-  expect_equal(check_response_class("1", "variable_name"), "1")
-  expect_equal(check_response_class("2", "variable_name"), "2")
-  expect_equal(check_response_class("3", "variable_name"), "3")
-  expect_equal(check_response_class("4", "variable_name"), "4")
-  expect_equal(check_response_class("5", "variable_name"), "5")
-})
-
-test_that("check_response_class warns on invalid input", {
-  expect_message(
-    check_response_class("invalid", "variable_name"),
-    "Invalid input. Please try again."
-  )
-})
-
-test_that("check_response_class calls question() on invalid input", {
-  expect_equal(
-    with_mocked_bindings(
-      check_response_class("invalid", "variable_name"),
-      ask_question = function(var) "prompt"
-    ),
-    "prompt"
-  )
-})
+#
+# test_that("check_response_class aborts on input '6'", {
+#   expect_error(check_response_class("6", "variable_name"), "Aborted `ds.dataFrameFill`")
+# })
+#
+# test_that("check_response_class returns valid input", {
+#   expect_equal(check_response_class("1", "variable_name"), "1")
+#   expect_equal(check_response_class("2", "variable_name"), "2")
+#   expect_equal(check_response_class("3", "variable_name"), "3")
+#   expect_equal(check_response_class("4", "variable_name"), "4")
+#   expect_equal(check_response_class("5", "variable_name"), "5")
+# })
+#
+# test_that("check_response_class warns on invalid input", {
+#   expect_message(
+#     check_response_class("invalid", "variable_name"),
+#     "Invalid input. Please try again."
+#   )
+# })
+#
+# test_that("check_response_class calls question() on invalid input", {
+#   expect_equal(
+#     with_mocked_bindings(
+#       check_response_class("invalid", "variable_name"),
+#       ask_question = function(var) "prompt"
+#     ),
+#     "prompt"
+#   )
+# })
 
 test_that("ask_question_wait_response_class continues with valid response", {
   expect_equal(
@@ -297,12 +308,6 @@ test_that(".add_missing_cols_to_df correctly creates missing columns", {
 
 test_that(".get_added_cols correctly identifies newly added columns", {
 
-  new_cols_servers <- list(
-    server_1 = new_cols,
-    server_2 = new_cols,
-    server_3 = new_cols
-  )
-
   expect_equal(
     added_cols,
     list(
@@ -348,8 +353,6 @@ test_that(".get_factor_levels correctly identifies factor levels", {
 
   expect_equal(fac_levels, expected)
 })
-
-level_conflicts <- .identify_level_conflicts(fac_levels)
 
 test_that(".identify_level_conflicts correctly factor columns with different levels", {
   expect_equal(
@@ -483,5 +486,3 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
 
 # Diferentiate new and old objects so these can plausibly be removed
 # Improve error messages for levels and class so you can see change in each cohort
-
-

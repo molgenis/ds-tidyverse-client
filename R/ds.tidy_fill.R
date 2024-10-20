@@ -12,6 +12,7 @@
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
+  readline <- NULL
   datasources <- .set_datasources(datasources)
 
   assert_that(is.character("df.name"))
@@ -31,8 +32,6 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     )
     .fix_classes(df.name, names(class_conflicts), class_decisions, newobj, datasources)
   }
-
-  browser()
 
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
@@ -163,27 +162,6 @@ print_all_classes <- function(all_servers, all_classes) {
   cli_end()
 }
 
-#' Check User Response for Class Decision
-#'
-#' #' Checks the user's input to ensure it is valid for class decisions.
-#' #'
-#' #' @param answer The user's input.
-#' #' @param var The variable name.
-#' #' @importFrom cli cli_abort cli_alert_warning cli_alert_info
-#' #' @return The user's decision or a recursive prompt for input.
-#' #' @noRd
-#' check_response_class <- function(answer, var) {
-#'   if (answer == "6") {
-#'     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
-#'   } else if (!answer %in% as.character(1:5)) {
-#'     cli_alert_warning("Invalid input. Please try again.")
-#'     cli_alert_info("")
-#'     ask_question_wait_response_class(var)
-#'   } else {
-#'     return(answer)
-#'   }
-#' }
-
 #' Ask Question and Wait for Class Response
 #'
 #' Prompts the user with a question and waits for a response related to class decisions.
@@ -192,6 +170,7 @@ print_all_classes <- function(all_servers, all_classes) {
 #' @return The user's decision.
 #' @noRd
 ask_question_wait_response_class <- function(var) {
+  readline <- NULL
   ask_question(var)
   answer <- readline()
   if (answer == "6") {
@@ -458,12 +437,31 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @return None. Prints the message to the console.
 #' @noRd
 .print_class_recode_message <- function(class_decisions, different_classes, newobj) {
-  choice_neat <- change_choice_to_string(class_decisions)
+  choice_neat <- .change_choice_to_string(class_decisions)
   class_message <- paste0(different_classes, " --> ", choice_neat)
   cli_alert_success("The following classes have been set for all datasources in {newobj}: ")
   for (i in 1:length(class_message)) {
     cli_alert_info("{class_message[[i]]}")
   }
+}
+
+#' Convert Class Decision Code to String
+#'
+#' This function converts a numeric class decision input (represented as a string)
+#' into the corresponding class type string (e.g., "factor", "integer", "numeric", etc.).
+#' @param class_decision A string representing the class decision. It should be
+#' one of the following values: "1", "2", "3", "4", or "5".
+#' @return A string representing the class type corresponding to the input:
+#' "factor", "integer", "numeric", "character", or "logical".
+#' @noRd
+.change_choice_to_string <- function(class_decision) {
+  case_when(
+    class_decision == "1" ~ "factor",
+    class_decision == "2" ~ "integer",
+    class_decision == "3" ~ "numeric",
+    class_decision == "4" ~ "character",
+    class_decision == "5" ~ "logical"
+  )
 }
 
 #' Print Factor Levels Recode Message
@@ -496,24 +494,5 @@ ask_question_wait_response_levels <- function(level_conflicts) {
       pmap(function(.x, .y) {
         paste0(.x, " --> ", paste0(.y, collapse = ", "))
       })
-  )
-}
-
-#' Convert Class Decision Code to String
-#'
-#' This function converts a numeric class decision input (represented as a string)
-#' into the corresponding class type string (e.g., "factor", "integer", "numeric", etc.).
-#' @param class_decision A string representing the class decision. It should be
-#' one of the following values: "1", "2", "3", "4", or "5".
-#' @return A string representing the class type corresponding to the input:
-#' "factor", "integer", "numeric", "character", or "logical".
-#' @noRd
-.change_choice_to_string <- function(class_decision) {
-  case_when(
-    class_decision == "1" ~ "factor",
-    class_decision == "2" ~ "integer",
-    class_decision == "3" ~ "numeric",
-    class_decision == "4" ~ "character",
-    class_decision == "5" ~ "logical"
   )
 }
