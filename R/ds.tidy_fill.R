@@ -142,6 +142,27 @@ prompt_user_class_decision <- function(var, all_servers, all_classes) {
   return(ask_question_wait_response_class(var))
 }
 
+#' Print All Server-Class Pairs
+#'
+#' This function prints out a list of server names along with their corresponding
+#' class types. It formats the output with a bullet-point list using the `cli` package.
+#'
+#' @param all_servers A character vector containing the names of servers.
+#' @param all_classes A character vector containing the class types corresponding
+#' to each server.
+#' @return This function does not return a value. It prints the server-class pairs
+#' to the console as a bulleted list.
+#' @importFrom cli cli_ul cli_li cli_end
+#' @noRd
+print_all_classes <- function(all_servers, all_classes) {
+  combined <- paste(all_servers, all_classes, sep = ": ")
+  cli_ul()
+  for (i in 1:length(combined)) {
+    cli_li("{combined[i]}")
+  }
+  cli_end()
+}
+
 #' Check User Response for Class Decision
 #'
 #' #' Checks the user's input to ensure it is valid for class decisions.
@@ -487,7 +508,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @return A string representing the class type corresponding to the input:
 #' "factor", "integer", "numeric", "character", or "logical".
 #' @noRd
-change_choice_to_string <- function(class_decision) {
+.change_choice_to_string <- function(class_decision) {
   case_when(
     class_decision == "1" ~ "factor",
     class_decision == "2" ~ "integer",
@@ -495,25 +516,4 @@ change_choice_to_string <- function(class_decision) {
     class_decision == "4" ~ "character",
     class_decision == "5" ~ "logical"
   )
-}
-
-#' Print All Server-Class Pairs
-#'
-#' This function prints out a list of server names along with their corresponding
-#' class types. It formats the output with a bullet-point list using the `cli` package.
-#'
-#' @param all_servers A character vector containing the names of servers.
-#' @param all_classes A character vector containing the class types corresponding
-#' to each server.
-#' @return This function does not return a value. It prints the server-class pairs
-#' to the console as a bulleted list.
-#' @importFrom cli cli_ul cli_li cli_end
-#' @noRd
-print_all_classes <- function(all_servers, all_classes) {
-  combined <- paste(all_servers, all_classes, sep = ": ")
-  cli_ul()
-  for (i in 1:length(combined)) {
-    cli_li("{combined[i]}")
-  }
-  cli_end()
 }

@@ -236,7 +236,8 @@ test_that("ask_question_wait_response_class repeats with invalid response", {
     ), "Invalid input. Please try again"
   )
 })
-#
+
+# print_all_classes
 # prompt_user_class_decision
 # prompt_user_class_decision_all_vars
 
@@ -472,8 +473,14 @@ test_that(".print_out_messages prints the correct messages", {
   )
 })
 
-# change_choice_to_string
-# print_all_classes
+test_that(".change_choice_to_string converts numeric class codes to strings correctly", {
+  expect_equal(.change_choice_to_string("1"), "factor")
+  expect_equal(.change_choice_to_string("2"), "integer")
+  expect_equal(.change_choice_to_string("3"), "numeric")
+  expect_equal(.change_choice_to_string("4"), "character")
+  expect_equal(.change_choice_to_string("5"), "logical")
+})
+
 # Diferentiate new and old objects so these can plausibly be removed
 # Improve error messages for levels and class so you can see change in each cohort
 
