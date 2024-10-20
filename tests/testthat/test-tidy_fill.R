@@ -40,6 +40,7 @@ dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
 dslite.server$assignMethod("fixClassDS", "fixClassDS")
 dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
 dslite.server$aggregateMethod("getAllLevelsDS", "getAllLevelsDS")
+dslite.server$assignMethod("setAllLevelsDS", "setAllLevelsDS")
 
 builder <- DSI::newDSLoginBuilder()
 
@@ -68,6 +69,53 @@ datashield.assign.table(conns["server_1"], "df", "df_1")
 datashield.assign.table(conns["server_2"], "df", "df_2")
 datashield.assign.table(conns["server_3"], "df", "df_3")
 
+####################################################################################################
+# Code that will be used in multiple tests
+####################################################################################################
+var_class <- .get_var_classes("df", datasources = conns)
+
+class_conflicts <- .identify_class_conflicts(var_class)
+
+different_classes <- c("fac_col4", "fac_col5")
+
+class_decisions <- c("1", "5")
+
+.fix_classes(
+  df.name = "df",
+  different_classes = different_classes,
+  class_decisions = class_decisions,
+  newobj = "new_classes",
+  datasources = conns)
+
+cols_to_set <- c(
+  "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
+  "col15", "col18", "fac_col7", "fac_col10", "col13", "col16", "col19", "col11", "col14", "col17",
+  "col20")
+
+.add_missing_cols_to_df(
+  df.name = "df",
+  cols_to_add_if_missing = cols_to_set,
+  newobj = "with_new_cols",
+  datasources = conns)
+
+old_cols <- ds.colnames("df")
+new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
+              "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
+              "fac_col6", "fac_col7", "fac_col9")
+
+added_cols <- .get_added_cols(old_cols, new_cols_servers)
+
+var_class_fact <- .get_var_classes("with_new_cols", datasources = conns)
+
+fac_vars <- .identify_factor_vars(var_class_fact)
+
+fac_levels <- .get_factor_levels(fac_vars, "with_new_cols", conns)
+
+unique_levs <- .get_unique_levels(fac_levels, level_conflicts)
+
+####################################################################################################
+# Tests
+####################################################################################################
 test_that(".stop_if_cols_identical throws error if columns are identical", {
 
   identical_cols <- list(
@@ -97,8 +145,6 @@ test_that(".stop_if_cols_identical doesn't throw error if data frames have diffe
 
 })
 
-var_class <- .get_var_classes("df", datasources = conns)
-
 test_that(".get_var_classes returns correct output", {
 
   expected <- tibble(
@@ -127,8 +173,6 @@ test_that(".get_var_classes returns correct output", {
   expect_equal(var_class, expected)
 
 })
-
-class_conflicts <- .identify_class_conflicts(var_class)
 
 test_that(".identify_class_conflicts returns correct output", {
   expected <- list(
@@ -196,13 +240,6 @@ test_that("ask_question_wait_response_class repeats with invalid response", {
 # prompt_user_class_decision
 # prompt_user_class_decision_all_vars
 
-.fix_classes(
-  df.name = "df",
-  different_classes = c("fac_col4", "fac_col5"),
-  class_decisions = c("1", "5"),
-  newobj = "new_classes",
-  datasources = conns)
-
 test_that(".fix_classes sets the correct classes in serverside data frame", {
 
 expect_equal(
@@ -240,17 +277,6 @@ test_that(".get_unique_cols extracts unique names from a list", {
   )
 })
 
-cols_to_set <- c(
-  "fac_col1", "fac_col2", "fac_col3", "fac_col4", "fac_col5", "fac_col6", "fac_col9", "col12",
-  "col15", "col18", "fac_col7", "fac_col10", "col13", "col16", "col19", "col11", "col14", "col17",
-  "col20")
-
-.add_missing_cols_to_df(
-  df.name = "df",
-  cols_to_add_if_missing = cols_to_set,
-  newobj = "with_new_cols",
-  datasources = conns)
-
 test_that(".add_missing_cols_to_df correctly creates missing columns", {
 
   new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
@@ -270,11 +296,6 @@ test_that(".add_missing_cols_to_df correctly creates missing columns", {
 
 test_that(".get_added_cols correctly identifies newly added columns", {
 
-  old_cols <- ds.colnames("df")
-  new_cols <- c("col11", "col12", "col13", "col14", "col15", "col16", "col17", "col18", "col19",
-                "col20", "fac_col1", "fac_col10", "fac_col2", "fac_col3", "fac_col4", "fac_col5",
-                "fac_col6", "fac_col7", "fac_col9")
-
   new_cols_servers <- list(
     server_1 = new_cols,
     server_2 = new_cols,
@@ -282,7 +303,7 @@ test_that(".get_added_cols correctly identifies newly added columns", {
   )
 
   expect_equal(
-    .get_added_cols(old_cols, new_cols_servers),
+    added_cols,
     list(
       server_1 = c("col11", "col13", "col14", "col16", "col17", "col19", "col20", "fac_col10", "fac_col7"),
       server_2 = c("col11", "col12", "col14", "col15", "col17", "col18", "col20", "fac_col6", "fac_col9"),
@@ -291,9 +312,6 @@ test_that(".get_added_cols correctly identifies newly added columns", {
   )
 })
 
-var_class_fact <- .get_var_classes("with_new_cols", datasources = conns)
-fac_vars <- .identify_factor_vars(var_class_fact)
-
 test_that(".identify_factor_vars correctly identifies factor variables", {
   var_class_fact <- var_class |> dplyr::select(server: col18)
   expect_equal(
@@ -301,8 +319,6 @@ test_that(".identify_factor_vars correctly identifies factor variables", {
     c("fac_col1", "fac_col2", "fac_col3", "fac_col6", "fac_col9")
     )
 })
-
-fac_levels <- .get_factor_levels(fac_vars, "with_new_cols", conns)
 
 test_that(".get_factor_levels correctly identifies factor levels", {
   expected <- list(
@@ -366,13 +382,99 @@ test_that(".make_levels_message makes correct message", {
   expect_snapshot(.make_levels_message(level_conflicts))
 })
 
+test_that(".get_unique_levels extracts all possible levels", {
 
-# .get_unique_levels
-# .set_factor_levels
-# .print_out_messages
-# .print_var_recode_message
-# .print_class_recode_message
-# .print_levels_recode_message
-# .make_levels_recode_message
+  expected <- list(
+    fac_col2 = c("Blue", "Green", "Red"),
+    fac_col3 = c("No", "Yes"),
+    fac_col6 = c("Bird", "Cat", "Dog"),
+    fac_col9 = c("False", "True")
+  )
+
+  expect_equal(unique_levs, expected)
+
+})
+
+test_that(".set_factor_levels sets levels correctly", {
+  .set_factor_levels("with_new_cols", unique_levs,  conns)
+
+  expect_equal(
+    ds.levels("with_new_cols$fac_col2") |> map(~.x[[1]]),
+    list(
+      server_1 = c("Blue", "Green", "Red"),
+      server_2 = c("Blue", "Green", "Red"),
+      server_3 = c("Blue", "Green", "Red")
+    )
+  )
+
+  expect_equal(
+    ds.levels("with_new_cols$fac_col3") |> map(~.x[[1]]),
+    list(
+      server_1 = c("No", "Yes"),
+      server_2 = c("No", "Yes"),
+      server_3 = c("No", "Yes")
+    )
+  )
+
+  expect_equal(
+    ds.levels("with_new_cols$fac_col6") |> map(~.x[[1]]),
+    list(
+      server_1 = c("Bird", "Cat", "Dog"),
+      server_2 = c("Bird", "Cat", "Dog"),
+      server_3 = c("Bird", "Cat", "Dog")
+    )
+  )
+
+  expect_equal(
+    ds.levels("with_new_cols$fac_col9") |> map(~.x[[1]]),
+    list(
+      server_1 = c("False", "True"),
+      server_2 = c("False", "True"),
+      server_3 = c("False", "True")
+    )
+  )
+
+})
+
+test_that(".print_var_recode_message prints the correct message", {
+  expect_snapshot(.print_var_recode_message(added_cols, "test_df"))
+})
+
+test_that(".print_class_recode_message prints the correct message", {
+  expect_snapshot(
+    .print_class_recode_message(class_decisions, different_classes, "test_df")
+    )
+})
+
+test_that(".print_levels_recode_message prints the correct message", {
+  expect_snapshot(
+    .print_levels_recode_message(unique_levs, "test_df")
+  )
+})
+
+test_that(".make_levels_recode_message prints the correct message", {
+  expect_equal(
+    .make_levels_recode_message(unique_levs),
+    list(
+      "fac_col2 --> Blue, Green, Red",
+      "fac_col3 --> No, Yes",
+      "fac_col6 --> Bird, Cat, Dog",
+      "fac_col9 --> False, True"
+    )
+  )
+})
+
+test_that(".print_out_messages prints the correct messages", {
+  expect_snapshot(
+    .print_out_messages(
+      added_cols, class_decisions, different_classes, unique_levs, level_conflicts, "1", "test_df"
+      )
+  )
+})
+
 # change_choice_to_string
 # print_all_classes
+# Diferentiate new and old objects so these can plausibly be removed
+# Improve error messages for levels and class so you can see change in each cohort
+
+

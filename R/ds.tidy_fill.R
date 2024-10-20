@@ -12,7 +12,6 @@
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
-  browser()
   datasources <- .set_datasources(datasources)
 
   assert_that(is.character("df.name"))
@@ -32,6 +31,8 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     )
     .fix_classes(df.name, names(class_conflicts), class_decisions, newobj, datasources)
   }
+
+  browser()
 
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
@@ -373,9 +374,9 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @param datasources Data sources from which to aggregate data.
 #' @return None. Updates the DataFrame with the new factor levels.
 #' @noRd
-.set_factor_levels <- function(newobj, unique_levels, datasources) {
-  cally <- call("setAllLevelsDS", newobj, names(unique_levels), unique_levels)
-  datashield.assign(datasources, newobj, cally)
+.set_factor_levels <- function(df, unique_levels, datasources) {
+  cally <- call("setAllLevelsDS", df, names(unique_levels), unique_levels)
+  datashield.assign(datasources, df, cally)
 }
 
 #' Print Out Summary Messages
@@ -437,8 +438,8 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @noRd
 .print_class_recode_message <- function(class_decisions, different_classes, newobj) {
   choice_neat <- change_choice_to_string(class_decisions)
-  class_message <- paste0(names(different_classes), " --> ", choice_neat)
-  cli_alert_success("The following classes have been set in {newobj}: ")
+  class_message <- paste0(different_classes, " --> ", choice_neat)
+  cli_alert_success("The following classes have been set for all datasources in {newobj}: ")
   for (i in 1:length(class_message)) {
     cli_alert_info("{class_message[[i]]}")
   }
