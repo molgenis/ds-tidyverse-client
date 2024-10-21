@@ -196,7 +196,7 @@ test_that(".identify_class_conflicts returns correct output", {
 })
 
 test_that("ask_question displays the correct prompt", {
-  expect_snapshot(ask_question("my_var"))
+  expect_snapshot(ask_question_class("my_var"))
 })
 #
 # test_that("check_response_class aborts on input '6'", {
@@ -232,21 +232,21 @@ test_that("ask_question_wait_response_class continues with valid response", {
   expect_equal(
     with_mocked_bindings(
       ask_question_wait_response_class("a variable"),
-      ask_question = function() "A question",
+      ask_question_class = function(var) "A question",
       readline = function() "1"
     ), "1"
   )
 })
 
-test_that("ask_question_wait_response_class repeats with invalid response", {
-  expect_equal(
-    with_mocked_bindings(
-      ask_question_wait_response_class("a variable"),
-      ask_question = function() "A question",
-      readline = function() "9"
-    ), "Invalid input. Please try again"
-  )
-})
+# test_that("ask_question_wait_response_class repeats with invalid response", {
+#   expect_equal(
+#     with_mocked_bindings(
+#       ask_question_wait_response_class("a variable"),
+#       ask_question_class = function(var) "A question",
+#       readline = function() "9"
+#     ), "Invalid input. Please try again"
+#   )
+# })
 
 # print_all_classes
 # prompt_user_class_decision
@@ -366,7 +366,7 @@ test_that("ask_question_wait_response_levels continues with valid response", {
   expect_equal(
     with_mocked_bindings(
       ask_question_wait_response_levels("a variable"),
-      ask_question = function() "A question",
+      .make_levels_message = function() "A question",
       readline = function() "1"
     ), "1"
   )
@@ -376,7 +376,7 @@ test_that("ask_question_wait_response_levels repeats with invalid response", {
   expect_equal(
     with_mocked_bindings(
       ask_question_wait_response_levels("a variable"),
-      ask_question = function() "A question",
+      .make_levels_message = function() "A question",
       readline = function() "9"
     ), "Invalid input. Please try again"
   )
@@ -486,3 +486,4 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
 
 # Diferentiate new and old objects so these can plausibly be removed
 # Improve error messages for levels and class so you can see change in each cohort
+

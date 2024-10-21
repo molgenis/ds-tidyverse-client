@@ -12,7 +12,6 @@
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
-  readline <- NULL
   datasources <- .set_datasources(datasources)
 
   assert_that(is.character("df.name"))
@@ -171,7 +170,7 @@ print_all_classes <- function(all_servers, all_classes) {
 #' @noRd
 ask_question_wait_response_class <- function(var) {
   readline <- NULL
-  ask_question(var)
+  ask_question_class(var)
   answer <- readline()
   if (answer == "6") {
     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
@@ -197,7 +196,7 @@ ask_question_wait_response_class <- function(var) {
 #' @examples
 #' ask_question("variable_name")
 #' @noRd
-ask_question <- function(var) {
+ask_question_class <- function(var) {
   cli_alert_info("Would you like to:")
   class_options <- c("a factor", "an integer", "numeric", "a character", "a logical vector")
   class_message <- paste0("Convert `{var}` to ", class_options, " in all studies")
@@ -496,3 +495,5 @@ ask_question_wait_response_levels <- function(level_conflicts) {
       })
   )
 }
+
+readline <- NULL

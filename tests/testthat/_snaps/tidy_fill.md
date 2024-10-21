@@ -1,7 +1,7 @@
 # ask_question displays the correct prompt
 
     Code
-      ask_question("my_var")
+      ask_question_class("my_var")
     Message
       i Would you like to:
       1. Convert `my_var` to a factor in all studies
