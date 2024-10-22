@@ -222,8 +222,8 @@ test_that("prompt_user_class_decision function properly", {
     with_mocked_bindings(
       prompt_user_class_decision(
         var = "test_col",
-        all_servers = c("server_1", "server_2", "server_3"),
-        all_classes = c( "numeric", "character", "factor" )),
+        servers = c("server_1", "server_2", "server_3"),
+        classes = c( "numeric", "character", "factor" )),
       ask_question_wait_response_class = function(var) "test_col"
     )
   )
@@ -232,26 +232,29 @@ test_that("prompt_user_class_decision function properly", {
     with_mocked_bindings(
       prompt_user_class_decision(
         var = "test_col",
-        all_servers = c("server_1", "server_2", "server_3"),
-        all_classes = c( "numeric", "character", "factor" )),
+        servers = c("server_1", "server_2", "server_3"),
+        classes = c( "numeric", "character", "factor" )),
       ask_question_wait_response_class = function(var) "test_col"
     ),
     "test_col"
   )
 })
 
-prompt_user_class_decision <- function(var, all_servers, all_classes) {
-  cli_alert_warning("`ds.dataFrameFill` requires that all columns have the same class.")
-  cli_alert_danger("Column {.strong {var}} has following classes:")
-  print_all_classes(all_servers, all_classes)
-  cli_text("")
-  return(ask_question_wait_response_class(var))
-}
-
-
-#
-# prompt_user_class_decision
-# prompt_user_class_decision_all_vars
+test_that("prompt_user_class_decision_all_vars works properly", {
+  expect_equal(
+    with_mocked_bindings(
+      prompt_user_class_decision_all_vars(
+        vars = c("test_var_1", "test_var_2"),
+        all_servers = c("server_1", "server_2", "server_3"),
+        all_classes = tibble(
+          test_var_1 = c("numeric", "character", "factor"),
+          test_var_2 = c("logical", "integer", "factor")
+        )),
+      prompt_user_class_decision = function(var, server, classes) "1"
+    ),
+    c("1", "1")
+  )
+})
 
 test_that(".fix_classes sets the correct classes in serverside data frame", {
 

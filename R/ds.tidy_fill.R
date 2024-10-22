@@ -132,10 +132,10 @@ prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) 
 #' @importFrom cli cli_alert_warning cli_alert_danger
 #' @return A decision for the variable's class.
 #' @noRd
-prompt_user_class_decision <- function(var, all_servers, all_classes) {
+prompt_user_class_decision <- function(var, servers, classes) {
   cli_alert_warning("`ds.dataFrameFill` requires that all columns have the same class.")
   cli_alert_danger("Column {.strong {var}} has following classes:")
-  print_all_classes(all_servers, all_classes)
+  print_all_classes(servers, classes)
   cli_text("")
   return(ask_question_wait_response_class(var))
 }
