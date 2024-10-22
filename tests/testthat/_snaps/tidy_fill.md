@@ -11,6 +11,16 @@
       5. Convert `my_var` to a logical vector in all studies
       6. Cancel `ds.dataFrameFill` operation
 
+# print_all_classes prints the correct message
+
+    Code
+      print_all_classes(c("server_1", "server_2", "server_3"), c("numeric", "factor",
+        "integer"))
+    Message
+      * server_1: numeric
+      * server_2: factor
+      * server_3: integer
+
 # .make_levels_message makes correct message
 
     Code

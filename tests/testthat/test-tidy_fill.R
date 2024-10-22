@@ -6,7 +6,6 @@ library(purrr)
 library(dsTidyverse)
 # devtools::load_all("~/Library/Mobile Documents/com~apple~CloudDocs/work/repos/dsTidyverse")
 
-readline <- NULL
 df <- create_mixed_dataframe(n_rows = 100, n_factor_cols = 10, n_other_cols = 10)
 
 df_1 <- df %>% select(1:5, 6, 9, 12, 15, 18) %>%
@@ -198,35 +197,6 @@ test_that(".identify_class_conflicts returns correct output", {
 test_that("ask_question displays the correct prompt", {
   expect_snapshot(ask_question_class("my_var"))
 })
-#
-# test_that("check_response_class aborts on input '6'", {
-#   expect_error(check_response_class("6", "variable_name"), "Aborted `ds.dataFrameFill`")
-# })
-#
-# test_that("check_response_class returns valid input", {
-#   expect_equal(check_response_class("1", "variable_name"), "1")
-#   expect_equal(check_response_class("2", "variable_name"), "2")
-#   expect_equal(check_response_class("3", "variable_name"), "3")
-#   expect_equal(check_response_class("4", "variable_name"), "4")
-#   expect_equal(check_response_class("5", "variable_name"), "5")
-# })
-#
-# test_that("check_response_class warns on invalid input", {
-#   expect_message(
-#     check_response_class("invalid", "variable_name"),
-#     "Invalid input. Please try again."
-#   )
-# })
-#
-# test_that("check_response_class calls question() on invalid input", {
-#   expect_equal(
-#     with_mocked_bindings(
-#       check_response_class("invalid", "variable_name"),
-#       ask_question = function(var) "prompt"
-#     ),
-#     "prompt"
-#   )
-# })
 
 test_that("ask_question_wait_response_class continues with valid response", {
   expect_equal(
@@ -238,17 +208,48 @@ test_that("ask_question_wait_response_class continues with valid response", {
   )
 })
 
-# test_that("ask_question_wait_response_class repeats with invalid response", {
-#   expect_equal(
-#     with_mocked_bindings(
-#       ask_question_wait_response_class("a variable"),
-#       ask_question_class = function(var) "A question",
-#       readline = function() "9"
-#     ), "Invalid input. Please try again"
-#   )
-# })
+test_that("print_all_classes prints the correct message", {
+  expect_snapshot(
+    print_all_classes(
+      c("server_1", "server_2", "server_3"),
+      c("numeric", "factor", "integer")
+    )
+  )
+})
 
-# print_all_classes
+test_that("prompt_user_class_decision function properly", {
+  expect_message(
+    with_mocked_bindings(
+      prompt_user_class_decision(
+        var = "test_col",
+        all_servers = c("server_1", "server_2", "server_3"),
+        all_classes = c( "numeric", "character", "factor" )),
+      ask_question_wait_response_class = function(var) "test_col"
+    )
+  )
+
+  expect_equal(
+    with_mocked_bindings(
+      prompt_user_class_decision(
+        var = "test_col",
+        all_servers = c("server_1", "server_2", "server_3"),
+        all_classes = c( "numeric", "character", "factor" )),
+      ask_question_wait_response_class = function(var) "test_col"
+    ),
+    "test_col"
+  )
+})
+
+prompt_user_class_decision <- function(var, all_servers, all_classes) {
+  cli_alert_warning("`ds.dataFrameFill` requires that all columns have the same class.")
+  cli_alert_danger("Column {.strong {var}} has following classes:")
+  print_all_classes(all_servers, all_classes)
+  cli_text("")
+  return(ask_question_wait_response_class(var))
+}
+
+
+#
 # prompt_user_class_decision
 # prompt_user_class_decision_all_vars
 
@@ -370,16 +371,6 @@ test_that("ask_question_wait_response_levels continues with valid response", {
     ), "1"
   )
 })
-
-# test_that("ask_question_wait_response_levels repeats with invalid response", {
-#   expect_equal(
-#     with_mocked_bindings(
-#       ask_question_wait_response_levels("a variable"),
-#       .make_levels_message = function() "A question",
-#       readline = function() "9"
-#     ), "Invalid input. Please try again"
-#   )
-# })
 
 test_that(".make_levels_message makes correct message", {
   expect_snapshot(.make_levels_message(level_conflicts))
