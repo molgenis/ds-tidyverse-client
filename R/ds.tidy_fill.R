@@ -6,9 +6,8 @@
 #' @param df.name Name of the input DataFrame to fill.
 #' @param newobj Name of the new DataFrame object created after filling.
 #' @param datasources Data sources from which to aggregate data. Default is \code{NULL}.
-#'
-#' @import dplyr
-#' @import purrr
+#' @importFrom assertthat assert_that
+#' @importFrom DSI datashield.aggregate datashield.assign
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
@@ -257,6 +256,7 @@ ask_question_class <- function(var) {
 #'
 #' @param old_names A list of old column names.
 #' @param new_names A list of new column names.
+#' @importFrom purrr pmap
 #' @return A list of added column names.
 #' @noRd
 .get_added_cols <- function(old_names, new_names) {
@@ -301,6 +301,7 @@ ask_question_class <- function(var) {
 #'
 #' @param factor_levels A list of factor levels.
 #' @return A list of variables with level conflicts.
+#' @importFrom purrr map_lgl pmap_lgl
 #' @noRd
 .identify_level_conflicts <- function(factor_levels) {
   levels <- factor_levels %>%
@@ -352,6 +353,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #'
 #' @param factor_levels A list of factor levels.
 #' @param level_conflicts A list of variables with level conflicts.
+#' @importFrom purrr pmap
 #' @return A list of unique factor levels.
 #' @noRd
 .get_unique_levels <- function(factor_levels, level_conflicts) {
@@ -486,6 +488,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #'
 #' @param unique_levels A list of unique factor levels.
 #' @return A formatted string summarizing the level recoding.
+#' @importFrom purrr pmap
 #' @noRd
 .make_levels_recode_message <- function(unique_levels) {
   return(

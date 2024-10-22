@@ -477,6 +477,8 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
   expect_equal(.change_choice_to_string("5"), "logical")
 })
 
+# Tests when called directly
+
 # Diferentiate new and old objects so these can plausibly be removed
 # Improve error messages for levels and class so you can see change in each cohort
 
