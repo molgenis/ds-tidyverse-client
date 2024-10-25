@@ -1,26 +1,72 @@
-<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/CONTRIBUTING.html</loc></url>
-<url><loc>/articles/dstidyverse.html</loc></url>
-<url><loc>/articles/index.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/news/index.html</loc></url>
-<url><loc>/reference/ds.arrange.html</loc></url>
-<url><loc>/reference/ds.as_tibble.html</loc></url>
-<url><loc>/reference/ds.bind_cols.html</loc></url>
-<url><loc>/reference/ds.bind_rows.html</loc></url>
-<url><loc>/reference/ds.case_when.html</loc></url>
-<url><loc>/reference/ds.distinct.html</loc></url>
-<url><loc>/reference/ds.filter.html</loc></url>
-<url><loc>/reference/ds.group_by.html</loc></url>
-<url><loc>/reference/ds.group_keys.html</loc></url>
-<url><loc>/reference/ds.if_else.html</loc></url>
-<url><loc>/reference/ds.mutate.html</loc></url>
-<url><loc>/reference/ds.rename.html</loc></url>
-<url><loc>/reference/ds.select.html</loc></url>
-<url><loc>/reference/ds.slice.html</loc></url>
-<url><loc>/reference/ds.ungroup.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>/404.html</loc>
+  </url>
+  <url>
+    <loc>/CONTRIBUTING.html</loc>
+  </url>
+  <url>
+    <loc>/articles/dstidyverse.html</loc>
+  </url>
+  <url>
+    <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/authors.html</loc>
+  </url>
+  <url>
+    <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.arrange.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.as_tibble.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.bind_cols.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.bind_rows.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.case_when.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.distinct.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.filter.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.group_by.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.group_keys.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.if_else.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.mutate.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.rename.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.select.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.slice.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ds.ungroup.html</loc>
+  </url>
+  <url>
+    <loc>/reference/index.html</loc>
+  </url>
 </urlset>
-
