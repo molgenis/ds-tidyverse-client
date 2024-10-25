@@ -2,7 +2,7 @@
 #' @description DataSHIELD implentation of \code{dplyr::group_keys}.
 #' @param df.name Character specifying a serverside tibble.
 #' @param datasources DataSHIELD connections object.
-#' @return A tibble describing the groups.
+#' @return A data frame describing the groups.
 #' @importFrom DSI datashield.aggregate
 #' @examples
 #' \dontrun{

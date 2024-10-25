@@ -29,7 +29,9 @@ TRUE except when .data has been previously grouped with .drop = FALSE.}
 \item{datasources}{DataSHIELD connections object.}
 }
 \value{
-An object with the name specified by the \code{newobj} argument is written serverside.
+No return value, called for its side effects. A grouped data frame with class grouped_df
+\code{newobj} is created on the server, unless the combination of \code{tidy_expr} and \code{.add}
+yields a empty set of grouping columns, in which case a tibble will be created on the server.
 }
 \description{
 DataSHIELD implentation of \code{dplyr::group_by}.

@@ -42,7 +42,7 @@ check.}
 \item{datasources}{DataSHIELD connections object.}
 }
 \value{
-A serverside tibble with the name specified in the \code{newobj}.
+No return value, called for its side effects. A tibble with the name specified by \code{newobj} is created on the server.
 }
 \description{
 DataSHIELD implementation of \code{tibble::as_tibble}. Currently only implemented

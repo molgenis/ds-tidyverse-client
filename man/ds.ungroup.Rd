@@ -13,6 +13,10 @@ ds.ungroup(x = NULL, newobj = NULL, datasources = NULL)
 
 \item{datasources}{DataSHIELD connections object.}
 }
+\value{
+No return value, called for its side effects. An ungrouped data frame or tibble is
+created on the server.
+}
 \description{
 DataSHIELD implentation of \code{dplyr::ungroup}.
 }

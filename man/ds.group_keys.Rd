@@ -12,7 +12,7 @@ ds.group_keys(df.name = NULL, datasources = NULL)
 \item{datasources}{DataSHIELD connections object.}
 }
 \value{
-A tibble describing the groups.
+A data frame describing the groups.
 }
 \description{
 DataSHIELD implentation of \code{dplyr::group_keys}.

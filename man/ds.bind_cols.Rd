@@ -24,8 +24,9 @@ columns will be filled with NA.}
 \item{datasources}{datashield connections object.}
 }
 \value{
-A serverside data frame with name specified in \code{newobj} and the same type as the
-first element of \code{to_combine}.
+No return value, called for its side effects. A data frame with the name specified by
+\code{newobj} and the same type as the first element of \code{to_combine} is created on the
+server.
 }
 \description{
 DataSHIELD implementation of \code{dplyr::bind_cols}.

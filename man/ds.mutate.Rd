@@ -39,7 +39,8 @@ to add to the right hand side). See \code{tidy_expr} for more details.}
 \item{datasources}{datashield connections object.}
 }
 \value{
-An object with the name specified by the \code{newobj} argument is written serverside.
+No return value, called for its side effects. An object (typically a data frame or tibble)
+with the name specified by \code{newobj} is created on the server.
 }
 \description{
 DataSHIELD implementation of \code{dplyr::mutate}.

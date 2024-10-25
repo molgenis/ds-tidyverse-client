@@ -8,7 +8,9 @@
 #' @param size An optional size declaring the desired output size. If supplied, this overrides the size of condition.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
-#' @return One or more new columns created on the serverside data frame specified in the \code{newobj}.
+#' @return No return value, called for its side effects. A vector with the same size as
+#' \code{condition} and the same type as the common type of \code{true}, \code{false}, and
+#' \code{missing} is created on the server.
 #' @importFrom DSI datashield.assign
 #' @importFrom rlang enquo
 #' @examples

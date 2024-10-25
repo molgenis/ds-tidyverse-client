@@ -7,8 +7,9 @@
 #' \code{vctrs::vec_as_names()} for the meaning of these options.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources datashield connections object.
-#' @return A serverside data frame with name specified in \code{newobj} and the same type as the
-#' first element of \code{to_combine}.
+#' @return No return value, called for its side effects. A data frame with the name specified by
+#' \code{newobj} and the same type as the first element of \code{to_combine} is created on the
+#' server.
 #' @importFrom DSI datashield.assign
 #' @importFrom rlang enquo
 #' @examples
