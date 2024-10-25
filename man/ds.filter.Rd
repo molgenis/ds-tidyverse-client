@@ -30,7 +30,8 @@ kept as is.}
 \item{datasources}{DataSHIELD connections object.}
 }
 \value{
-An object with the name specified by the \code{newobj} argument is written serverside.
+No return value, called for its side effects. An object (typically a data frame or tibble)
+with the name specified by \code{newobj} is created on the server.
 }
 \description{
 DataSHIELD implentation of \code{dplyr::filter}.

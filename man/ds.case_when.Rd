@@ -36,7 +36,9 @@ ds.case_when(
 \item{datasources}{datashield connections object.}
 }
 \value{
-One or more new columns created on the serverside data frame specified in the \code{newobj}.
+No return value, called for its side effects. A vector with the same size as the common
+size computed from the inputs in \code{tidy_expr} and the same type as the common type of the
+RHS inputs in \code{tidy_expr} is created on the server.
 }
 \description{
 DataSHIELD implementation of \code{dplyr::case_when}.

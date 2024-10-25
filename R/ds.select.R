@@ -6,7 +6,8 @@
 #' select a range of variables.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
-#' @return An object with the name specified by the \code{newobj} argument is written serverside.
+#' @return No return value, called for its side effects. An object (typically a data frame or tibble)
+#' with the name specified by \code{newobj} is created on the server.
 #' @importFrom DSI datashield.assign
 #' @importFrom rlang enquo
 #' @examples

@@ -8,7 +8,9 @@
 #' TRUE except when .data has been previously grouped with .drop = FALSE.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
-#' @return An object with the name specified by the \code{newobj} argument is written serverside.
+#' @return No return value, called for its side effects. A grouped data frame with class grouped_df
+#' \code{newobj} is created on the server, unless the combination of \code{tidy_expr} and \code{.add}
+#' yields a empty set of grouping columns, in which case a tibble will be created on the server.
 #' @importFrom DSI datashield.assign
 #' @importFrom rlang enquo
 #' @examples
@@ -33,6 +35,8 @@ ds.group_by <- function(df.name = NULL, tidy_expr, .add = FALSE, .drop = TRUE, n
 #' @param x a tibble or data frame.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
+#' @return No return value, called for its side effects. An ungrouped data frame or tibble is
+#' created on the server.
 #' @examples
 #' \dontrun{
 #' ds.ungroup("grouped_df")
