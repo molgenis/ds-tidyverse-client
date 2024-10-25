@@ -38,7 +38,7 @@ dslite.server <- newDSLiteServer(
 
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
-dslite.server$assignMethod("fixClassDS", "fixClassDS")
+dslite.server$assignMethod("fixAllClassDS", "fixAllClassDS")
 dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
 dslite.server$aggregateMethod("getAllLevelsDS", "getAllLevelsDS")
 dslite.server$assignMethod("setAllLevelsDS", "setAllLevelsDS")
@@ -476,6 +476,16 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
   expect_equal(.change_choice_to_string("4"), "character")
   expect_equal(.change_choice_to_string("5"), "logical")
 })
+
+test_that("ds.tidy_fill works when called directly", {
+  with_mocked_bindings(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "test_fill"
+    ),
+    prompt_user_class_decision_all_vars = function(a, b, c)
+
+      ds.colnames("df")
 
 # Tests when called directly
 
