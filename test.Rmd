@@ -1,0 +1,114 @@
+---
+title: "dsTidyverse: An implementation of Tidyverse withint the DataSHIELD ecosystem"
+date: "2024-10-21"
+abstract: >
+  DataSHIELD is a popular R-based federated analysis solution which contains a wide range of statistical methods. However, currently within DataSHIELD there exist minimal tools for data manipulation. This means that preparing a dataset for analysis can be a lengthy and frustrating process. Within R, the Tidyverse collection of packages include a wide range of tools for efficient data manipulation. The aim of dsTidyverse is to implement selected functions from Tidyverse packages into DataSHIELD to enable efficient preparation of data in the federated analysis context.
+draft: true
+author:  
+  - name: Tim Cadman
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-7682-5645
+    email:  t.j.cadman@umcg.nl
+  - name: Mariska Slofstra
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-0400-0468
+    email:  
+  - name: Demetris Avraam
+    affiliation: 
+    address:
+    
+    url: 
+    orcid: 
+    email:  
+ - name: Stuart Wheater
+    affiliation: 
+    address:
+    
+    url: 
+    orcid: 
+    email:    
+ - name: Morris Swertz
+    affiliation: 
+    address:
+    
+    url: 
+    orcid: 
+    email:    
+type: package
+output: 
+  rjtools::rjournal_article:
+    self_contained: yes
+    toc: no
+bibliography: RJreferences.bib
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(plotly)
+library(ggplot2)
+library(palmerpenguins)
+library(kableExtra)
+```
+
+# Introduction
+"Federated analysis" refers to remote analysis on distributed servers where no individual level data is shared. One popular R-based federated analysis platform is DataSHIELD [link]. DataSHIELD allows the remote analysis of individual level data, whilst implementing various checks and safeguards to ensure that only non-dislosing summary statistics are returned to the analysist, not invididual data or anything that could be used to infer individual level data [ref to privacy paper].
+
+DataSHIELD currently
+
+
+Interactive data graphics provides plots that allow users to interact them. One of the most basic types of interaction is through tooltips, where users are provided additional information about elements in the plot by moving the cursor over the plot.
+
+This paper will first review some R packages on interactive graphics and their tooltip implementations. A new package \CRANpkg{ToOoOlTiPs} that provides customized tooltips for plot, is introduced. Some example plots will then be given to showcase how these tooltips help users to better read the graphics. 
+
+# Customizing tooltip design with \pkg{ToOoOlTiPs}
+
+\pkg{ToOoOlTiPs} is a packages for customizing tooltips in interactive graphics, it features these possibilities.
+
+# A gallery of tooltips examples
+
+The \CRANpkg{palmerpenguins} data [@palmerpenguins]  features three penguin species which has a lovely illustration by Alison Horst in Figure \@ref(fig:penguins-alison). 
+
+```{r penguins-alison, out.width = "100%", out.height = "30%", fig.cap = "Artwork by \\@allison\\_horst", fig.alt="A picture of three different penguins with their species: Chinstrap, Gentoo, and Adelie. "}
+knitr::include_graphics("figures/penguins.png")
+```
+
+Table `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(tab:penguins-tab-interactive)', '\\@ref(tab:penguins-tab-static)'))` prints at the first few rows of the `penguins` data:
+
+```{r penguins-tab-interactive, eval = knitr::is_html_output(), layout = "l-body-outset"}
+knitr::kable(head(penguins), format = "html", caption = "A basic table")
+```
+
+```{r penguins-tab-static, eval = knitr::is_latex_output()}
+knitr::kable(head(penguins), format = "latex", caption = "A basic table") %>% 
+  kableExtra::kable_styling(font_size = 7)
+```   
+
+Figure `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(fig:penguins-plotly)', '\\@ref(fig:penguins-ggplot)'))` shows an `r ifelse(knitr::is_html_output(), 'interactive', '')` plot of the penguins data, made using the `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\CRANpkg{plotly}', '\\CRANpkg{ggplot2}'))` package. 
+
+```{r penguins-plotly, echo = TRUE, fig.height = 5, fig.cap="A basic interactive plot made with the plotly package on palmer penguin data. Three species of penguins are plotted with bill depth on the x-axis and bill length on the y-axis. When hovering on a point, a tooltip will show the exact value of the bill depth and length for that point, along with the species name.", include=knitr::is_html_output(), eval=knitr::is_html_output(), fig.alt = "A scatterplot of bill length against bill depth, both measured in millimetre. The three species are shown in different colours and loosely forms three clusters. Adelie has small bill length and large bill depth, Gentoo has small bill depth but large bill length, and Chinstrap has relatively large bill depth and bill length."}
+p <- penguins %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, 
+             color = species)) + 
+  geom_point()
+ggplotly(p)
+```
+
+```{r penguins-ggplot, echo = TRUE, fig.height = 5, fig.cap="A basic non-interactive plot made with the ggplot2 package on palmer penguin data. Three species of penguins are plotted with bill depth on the x-axis and bill length on the y-axis. Visit the online article to access the interactive version made with the plotly package.", include=knitr::is_latex_output(), eval=knitr::is_latex_output()}
+penguins %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, 
+             color = species)) + 
+  geom_point()
+```
+
+# Summary
+
+We have displayed various tooltips that are available in the package \pkg{ToOoOlTiPs}. 
