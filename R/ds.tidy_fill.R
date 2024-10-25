@@ -166,6 +166,7 @@ print_all_classes <- function(all_servers, all_classes) {
 #'
 #' @param question The question to ask the user.
 #' @return The user's decision.
+#' @importFrom cli cli_text cli_alert_warning cli_abort
 #' @noRd
 ask_question_wait_response_class <- function(var) {
   readline <- NULL
