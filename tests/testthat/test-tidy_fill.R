@@ -5,6 +5,7 @@ library(dsBaseClient)
 library(purrr)
 library(dsTidyverse)
 # devtools::load_all("~/Library/Mobile Documents/com~apple~CloudDocs/work/repos/dsTidyverse")
+options("datashield.return_errors" = TRUE)
 
 df <- create_mixed_dataframe(n_rows = 100, n_factor_cols = 10, n_other_cols = 10)
 
@@ -38,7 +39,7 @@ dslite.server <- newDSLiteServer(
 
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
 dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
-dslite.server$assignMethod("fixAllClassDS", "fixAllClassDS")
+dslite.server$assignMethod("fixClassDS", "fixClassDS")
 dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
 dslite.server$aggregateMethod("getAllLevelsDS", "getAllLevelsDS")
 dslite.server$assignMethod("setAllLevelsDS", "setAllLevelsDS")
@@ -208,6 +209,15 @@ test_that("ask_question_wait_response_class continues with valid response", {
   )
 })
 
+test_that("ask_question_wait_response_class throws error if option 6 selected", {
+  expect_error(
+    with_mocked_bindings(
+      ask_question_wait_response_class("a variable"),
+      ask_question_class = function(var) "A question",
+      readline = function() "6")
+  )
+})
+
 test_that("print_all_classes prints the correct message", {
   expect_snapshot(
     print_all_classes(
@@ -223,8 +233,10 @@ test_that("prompt_user_class_decision function properly", {
       prompt_user_class_decision(
         var = "test_col",
         servers = c("server_1", "server_2", "server_3"),
-        classes = c( "numeric", "character", "factor" )),
-      ask_question_wait_response_class = function(var) "test_col"
+        classes = c("numeric", "character", "factor"),
+        newobj = "test_df",
+        datasources = datasources),
+      ask_question_wait_response_class = function(var, newobj, datasources) "test_col"
     )
   )
 
@@ -233,8 +245,10 @@ test_that("prompt_user_class_decision function properly", {
       prompt_user_class_decision(
         var = "test_col",
         servers = c("server_1", "server_2", "server_3"),
-        classes = c( "numeric", "character", "factor" )),
-      ask_question_wait_response_class = function(var) "test_col"
+        classes = c("numeric", "character", "factor"),
+        newobj = "test_df",
+        datasources = datasources),
+      ask_question_wait_response_class = function(var, newobj, datasources) "test_col"
     ),
     "test_col"
   )
@@ -250,7 +264,7 @@ test_that("prompt_user_class_decision_all_vars works properly", {
           test_var_1 = c("numeric", "character", "factor"),
           test_var_2 = c("logical", "integer", "factor")
         )),
-      prompt_user_class_decision = function(var, server, classes) "1"
+      prompt_user_class_decision = function(var, server, classes, newobj, datasources) "1"
     ),
     c("1", "1")
   )
@@ -323,6 +337,9 @@ test_that(".get_added_cols correctly identifies newly added columns", {
 })
 
 test_that(".identify_factor_vars correctly identifies factor variables", {
+
+
+
   var_class_fact <- var_class |> dplyr::select(server: col18)
   expect_equal(
     names(fac_vars),
@@ -477,15 +494,30 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
   expect_equal(.change_choice_to_string("5"), "logical")
 })
 
-test_that("ds.tidy_fill works when called directly", {
-  with_mocked_bindings(
-    ds.tidy_fill(
-      df = "df",
-      newobj = "test_fill"
-    ),
-    prompt_user_class_decision_all_vars = function(a, b, c)
+# test_that("ds.tidy_fill works when called directly", {
+#   with_mocked_bindings(
+#     ds.tidy_fill(
+#       df = "df",
+#       newobj = "test_fill"
+#     ),
+#     prompt_user_class_decision_all_vars = function(a, b, c)
+#
+#     ds.class("df$fac_col4")
+#     ds.class("test_fill$fac_col4")
+#
+#
+#       ds.colnames("test_fill")
 
-      ds.colnames("df")
+## 1. DFs identical
+## 2. Fill variables, no other changes
+## 3. Fill variables, class changes
+## 4. Fill variables, level changes
+## 5. Fill variables, class and level changes
+## 6. Fill variables
+## 7. If option for correct_levels is F then test ends
+
+## 7. Handle incorrect response for level fix
+## 8. Add default option to throw error rather than give menu
 
 # Tests when called directly
 

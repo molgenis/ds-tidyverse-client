@@ -5,16 +5,23 @@
 #'
 #' @param df.name Name of the input DataFrame to fill.
 #' @param newobj Name of the new DataFrame object created after filling.
+#' @param fix_class Character, determines behaviour if class of variables is not the same in all
+#' studies. Option "ask" (default) provides the user with a prompt asking if they want to set the
+#' class across all studies, option "no" will throw an error if class conflicts are present.
+#' @param fix_levels Character, determines behaviour if levels of factor variables is not the same
+#' in all studies. Option "ask" (default) provides the user with a prompt asking if they want to set
+#' the levels of factor variables to be the same across all studies, whilst option "no" will throw
+#' an error if factor variables do not have the same class.
 #' @param datasources Data sources from which to aggregate data. Default is \code{NULL}.
 #' @importFrom assertthat assert_that
 #' @importFrom DSI datashield.aggregate datashield.assign
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
-ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
-  datasources <- .set_datasources(datasources)
+ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_levels = "ask",
+                         datasources = NULL) {
 
-  assert_that(is.character("df.name"))
-  assert_that(is.character("newobj"))
+  .check_arguments(df.name, newobj, fix_class, fix_levels)
+  datasources <- .set_datasources(datasources)
 
   col_names <- datashield.aggregate(datasources, call("colnamesDS", df.name))
   .stop_if_cols_identical(col_names)
@@ -28,7 +35,9 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     class_decisions <- prompt_user_class_decision_all_vars(
       names(class_conflicts),
       var_classes$server,
-      dplyr::select(var_classes, all_of(names(class_conflicts)))
+      dplyr::select(var_classes, all_of(names(class_conflicts))),
+      newobj,
+      datasources
     )
     .fix_classes(newobj, names(class_conflicts), class_decisions, newobj, datasources)
   }
@@ -54,6 +63,13 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 
   .print_out_messages(added_cols, class_decisions, names(class_conflicts), unique_levels,
                       level_conflicts, levels_decision, newobj)
+}
+
+.check_arguments <- function(df.name, newobj, fix_class, fix_levels) {
+  assert_that(fix_class %in% c("ask", "no"))
+  assert_that(fix_levels %in% c("ask", "no"))
+  assert_that(is.character(df.name))
+  assert_that(is.character(newobj))
 }
 
 #' Stop If Columns Are Identical
@@ -115,10 +131,10 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
 #' @param all_classes The classes of the variables across servers.
 #' @return A vector of decisions for each variable's class.
 #' @noRd
-prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) {
+prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes, newobj, datasources) {
   decisions <- c()
   for (i in 1:length(vars)) {
-    decisions[i] <- prompt_user_class_decision(vars[i], all_servers, all_classes[[i]])
+    decisions[i] <- prompt_user_class_decision(vars[i], all_servers, all_classes[[i]], newobj, datasources)
   }
   return(decisions)
 }
@@ -133,12 +149,12 @@ prompt_user_class_decision_all_vars <- function(vars, all_servers, all_classes) 
 #' @importFrom cli cli_alert_warning cli_alert_danger
 #' @return A decision for the variable's class.
 #' @noRd
-prompt_user_class_decision <- function(var, servers, classes) {
+prompt_user_class_decision <- function(var, servers, classes, newobj, datasources) {
   cli_alert_warning("`ds.dataFrameFill` requires that all columns have the same class.")
   cli_alert_danger("Column {.strong {var}} has following classes:")
   print_all_classes(servers, classes)
   cli_text("")
-  return(ask_question_wait_response_class(var))
+  return(ask_question_wait_response_class(var, newobj, datasources))
 }
 
 #' Print All Server-Class Pairs
@@ -170,11 +186,12 @@ print_all_classes <- function(all_servers, all_classes) {
 #' @return The user's decision.
 #' @importFrom cli cli_text cli_alert_warning cli_abort
 #' @noRd
-ask_question_wait_response_class <- function(var) {
+ask_question_wait_response_class <- function(var, newobj, datasources) {
   readline <- NULL
   ask_question_class(var)
   answer <- readline()
   if (answer == "6") {
+    DSI::datashield.aggregate(datasources, call("rmDS", newobj))
     cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
   } else if (!answer %in% as.character(1:5)) {
     cli_text("")

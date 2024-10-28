@@ -56,7 +56,7 @@
     Code
       .print_levels_recode_message(unique_levs, "test_df")
     Message
-      v The following levels have been set in test_df: 
+      v The following levels have been set for all datasources in test_df: 
       i fac_col2 --> Blue, Green, Red
       i fac_col3 --> No, Yes
       i fac_col6 --> Bird, Cat, Dog
@@ -77,7 +77,7 @@
       i fac_col4 --> factor
       i fac_col5 --> logical
       
-      v The following levels have been set in test_df: 
+      v The following levels have been set for all datasources in test_df: 
       i fac_col2 --> Blue, Green, Red
       i fac_col3 --> No, Yes
       i fac_col6 --> Bird, Cat, Dog
