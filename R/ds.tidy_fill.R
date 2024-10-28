@@ -31,7 +31,9 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
 
   datashield.assign(datasources, newobj, as.symbol(df.name))
 
-  if (length(class_conflicts) > 0) {
+  if (length(class_conflicts) > 0 & fix_class == "no") {
+    cli_abort("Variables do not have the same class in all studies and `fix_class` is 'no'")
+  } else if (length(class_conflicts) > 0 & fix_class == "ask") {
     class_decisions <- prompt_user_class_decision_all_vars(
       names(class_conflicts),
       var_classes$server,
@@ -52,7 +54,10 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
   factor_levels <- .get_factor_levels(factor_vars, newobj, datasources)
   level_conflicts <- .identify_level_conflicts(factor_levels)
 
-  if (length(level_conflicts) > 0) {
+  if (length(level_conflicts) > 0 & fix_levels == "no") {
+    cli_abort("Factor variables do not have the same levels in all studies and `fix_levels` is 'no'")
+
+  } else if (length(level_conflicts) > 0 & fix_levels == "ask") {
     levels_decision <- ask_question_wait_response_levels(level_conflicts)
   }
 

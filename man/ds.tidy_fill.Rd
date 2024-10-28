@@ -4,12 +4,27 @@
 \alias{ds.tidy_fill}
 \title{Fill DataFrame with Missing Columns and Adjust Classes}
 \usage{
-ds.tidy_fill(df.name = NULL, newobj = NULL, datasources = NULL)
+ds.tidy_fill(
+  df.name = NULL,
+  newobj = NULL,
+  fix_class = "ask",
+  fix_levels = "ask",
+  datasources = NULL
+)
 }
 \arguments{
 \item{df.name}{Name of the input DataFrame to fill.}
 
 \item{newobj}{Name of the new DataFrame object created after filling.}
+
+\item{fix_class}{Character, determines behaviour if class of variables is not the same in all
+studies. Option "ask" (default) provides the user with a prompt asking if they want to set the
+class across all studies, option "no" will throw an error if class conflicts are present.}
+
+\item{fix_levels}{Character, determines behaviour if levels of factor variables is not the same
+in all studies. Option "ask" (default) provides the user with a prompt asking if they want to set
+the levels of factor variables to be the same across all studies, whilst option "no" will throw
+an error if factor variables do not have the same class.}
 
 \item{datasources}{Data sources from which to aggregate data. Default is \code{NULL}.}
 }
