@@ -22,16 +22,19 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
   var_classes <- .get_var_classes(df.name, datasources)
   class_conflicts <- .identify_class_conflicts(var_classes)
 
+  datashield.assign(datasources, newobj, as.symbol(df.name))
+
   if (length(class_conflicts) > 0) {
     class_decisions <- prompt_user_class_decision_all_vars(
       names(class_conflicts),
       var_classes$server,
       dplyr::select(var_classes, all_of(names(class_conflicts)))
     )
-    .fix_classes(df.name, names(class_conflicts), class_decisions, newobj, datasources)
+    .fix_classes(newobj, names(class_conflicts), class_decisions, newobj, datasources)
   }
+
   unique_cols <- .get_unique_cols(col_names)
-  .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
+  .add_missing_cols_to_df(newobj, unique_cols, newobj, datasources)
   new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
   added_cols <- .get_added_cols(col_names, new_names)
 
