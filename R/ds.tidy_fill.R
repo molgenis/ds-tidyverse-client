@@ -30,13 +30,12 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     )
     .fix_classes(df.name, names(class_conflicts), class_decisions, newobj, datasources)
   }
-
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(df.name, unique_cols, newobj, datasources)
   new_names <- datashield.aggregate(datasources, call("colnamesDS", newobj))
   added_cols <- .get_added_cols(col_names, new_names)
 
-  new_classes <- .get_var_classes(df.name, datasources)
+  new_classes <- .get_var_classes(newobj, datasources)
   factor_vars <- .identify_factor_vars(new_classes)
   factor_levels <- .get_factor_levels(factor_vars, newobj, datasources)
   level_conflicts <- .identify_level_conflicts(factor_levels)
@@ -50,7 +49,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, datasources = NULL) {
     .set_factor_levels(newobj, unique_levels, datasources)
   }
 
-  .print_out_messages(added_cols, class_decisions, class_conflicts, unique_levels,
+  .print_out_messages(added_cols, class_decisions, names(class_conflicts), unique_levels,
                       level_conflicts, levels_decision, newobj)
 }
 
@@ -477,7 +476,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @noRd
 .print_levels_recode_message <- function(unique_levels, newobj) {
   levels_message <- .make_levels_recode_message(unique_levels)
-  cli_alert_success("The following levels have been set in {newobj}: ")
+  cli_alert_success("The following levels have been set for all datasources in {newobj}: ")
   for (i in 1:length(levels_message)) {
     cli_alert_info("{levels_message[[i]]}")
   }
