@@ -17,7 +17,7 @@
 #' @importFrom DSI datashield.aggregate datashield.assign
 #' @return The filled DataFrame with added columns and adjusted classes or factor levels.
 #' @export
-ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_levels = "ask",
+ds.standardiseDf <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_levels = "ask",
                          datasources = NULL) {
   fill_warnings <- list()
 
@@ -228,7 +228,7 @@ ask_question_wait_response_class <- function(var, newobj, datasources) {
     cli_text("")
     cli_alert_warning("Invalid input. Please try again.")
     cli_text("")
-    ask_question_wait_response_class(var)
+    ask_question_wait_response_class(var, newobj, datasources)
   } else {
     return(answer)
   }

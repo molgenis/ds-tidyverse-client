@@ -259,7 +259,7 @@ test_that("prompt_user_class_decision function properly", {
   )
 })
 
-test_that("prompt_user_class_decision_all_vars works properly", {
+test_that("prompt_user_class_decision_all_vars returns correct value", {
   expect_equal(
     with_mocked_bindings(
       prompt_user_class_decision_all_vars(
@@ -268,7 +268,9 @@ test_that("prompt_user_class_decision_all_vars works properly", {
         all_classes = tibble(
           test_var_1 = c("numeric", "character", "factor"),
           test_var_2 = c("logical", "integer", "factor")
-        )),
+        ),
+        "test_df",
+        conns),
       prompt_user_class_decision = function(var, server, classes, newobj, datasources) "1"
     ),
     c("1", "1")
@@ -515,9 +517,9 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
   expect_equal(.change_choice_to_string("5"), "logical")
 })
 
-test_that("ds.tidy_fill doesn't run if dataframes are identical", {
+test_that("ds.standardiseDf doesn't run if dataframes are identical", {
   expect_error(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df_ident",
       newobj = "test_fill"
     ),
@@ -525,9 +527,9 @@ test_that("ds.tidy_fill doesn't run if dataframes are identical", {
   )
 })
 
-test_that("ds.tidy_fill works when called directly and class conversion is factor", {
+test_that("ds.standardiseDf works when called directly and class conversion is factor", {
   with_mocked_bindings(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df",
       newobj = "test_fill"
     ),
@@ -541,9 +543,9 @@ test_that("ds.tidy_fill works when called directly and class conversion is facto
   )
 })
 
-test_that("ds.tidy_fill returns warning when called directly and class conversion is integer", {
+test_that("ds.standardiseDf returns warning when called directly and class conversion is integer", {
     with_mocked_bindings(
-        ds.tidy_fill(
+        ds.standardiseDf(
           df = "df",
           newobj = "test_fill"
         ),
@@ -562,9 +564,9 @@ test_that("ds.tidy_fill returns warning when called directly and class conversio
   )
 })
 
-test_that("ds.tidy_fill returns warning when called directly and class conversion is numeric", {
+test_that("ds.standardiseDf returns warning when called directly and class conversion is numeric", {
     with_mocked_bindings(
-      ds.tidy_fill(
+      ds.standardiseDf(
         df = "df",
         newobj = "test_fill"
       ),
@@ -583,9 +585,9 @@ test_that("ds.tidy_fill returns warning when called directly and class conversio
   )
 })
 
-test_that("ds.tidy_fill returns warning when called directly and class conversion is character", {
+test_that("ds.standardiseDf returns warning when called directly and class conversion is character", {
   with_mocked_bindings(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df",
       newobj = "test_fill"
     ),
@@ -604,9 +606,9 @@ test_that("ds.tidy_fill returns warning when called directly and class conversio
   )
 })
 
-test_that("ds.tidy_fill returns warning when called directly and class conversion is logical", {
+test_that("ds.standardiseDf returns warning when called directly and class conversion is logical", {
   with_mocked_bindings(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df",
       newobj = "test_fill"
     ),
@@ -625,9 +627,9 @@ test_that("ds.tidy_fill returns warning when called directly and class conversio
   )
 })
 
-test_that("ds.tidy_fill changes levels if this option is selected", {
+test_that("ds.standardiseDf changes levels if this option is selected", {
   with_mocked_bindings(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df",
       newobj = "test_fill"
     ),
@@ -698,9 +700,9 @@ test_that("ds.tidy_fill changes levels if this option is selected", {
 
 })
 
-test_that("ds.tidy_fill doesn't run if classes are not identical and fix_class is no", {
+test_that("ds.standardiseDf doesn't run if classes are not identical and fix_class is no", {
   expect_error(
-    ds.tidy_fill(
+    ds.standardiseDf(
       df = "df",
       newobj = "shouldnt_exist",
       fix_class = "no"
@@ -714,10 +716,10 @@ test_that("ds.tidy_fill doesn't run if classes are not identical and fix_class i
   )
 })
 
-test_that("ds.tidy_fill doesn't run if levels are not identical and fix_class is no", {
+test_that("ds.standardiseDf doesn't run if levels are not identical and fix_class is no", {
   expect_error(
     with_mocked_bindings(
-      ds.tidy_fill(
+      ds.standardiseDf(
         df = "df",
         newobj = "shouldnt_exist",
         fix_levels = "no"
