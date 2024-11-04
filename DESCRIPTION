@@ -33,7 +33,8 @@ Imports:
   rlang,
   assertthat, 
   dplyr,
-  purrr
+  purrr, 
+  stringr
 Suggests: 
   testthat (>= 3.0.0),
   knitr,

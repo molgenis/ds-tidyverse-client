@@ -19,6 +19,7 @@
 #' @export
 ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_levels = "ask",
                          datasources = NULL) {
+  fill_warnings <- list()
 
   .check_arguments(df.name, newobj, fix_class, fix_levels)
   datasources <- .set_datasources(datasources)
@@ -32,6 +33,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
   datashield.assign(datasources, newobj, as.symbol(df.name))
 
   if (length(class_conflicts) > 0 & fix_class == "no") {
+    DSI::datashield.aggregate(datasources, call("rmDS", newobj))
     cli_abort("Variables do not have the same class in all studies and `fix_class` is 'no'")
   } else if (length(class_conflicts) > 0 & fix_class == "ask") {
     class_decisions <- prompt_user_class_decision_all_vars(
@@ -40,9 +42,15 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
       dplyr::select(var_classes, all_of(names(class_conflicts))),
       newobj,
       datasources
-    )
-    .fix_classes(newobj, names(class_conflicts), class_decisions, newobj, datasources)
-  }
+      )
+
+    withCallingHandlers({
+      .fix_classes(newobj, names(class_conflicts), class_decisions, newobj, datasources)
+    }, warning = function(w) {
+      fill_warnings <<- c(fill_warnings, conditionMessage(w))  # Append warning to the list
+      invokeRestart("muffleWarning")  # Suppress immediate display of the warning
+    })
+}
 
   unique_cols <- .get_unique_cols(col_names)
   .add_missing_cols_to_df(newobj, unique_cols, newobj, datasources)
@@ -55,10 +63,10 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
   level_conflicts <- .identify_level_conflicts(factor_levels)
 
   if (length(level_conflicts) > 0 & fix_levels == "no") {
+    DSI::datashield.aggregate(datasources, call("rmDS", newobj))
     cli_abort("Factor variables do not have the same levels in all studies and `fix_levels` is 'no'")
-
   } else if (length(level_conflicts) > 0 & fix_levels == "ask") {
-    levels_decision <- ask_question_wait_response_levels(level_conflicts)
+    levels_decision <- ask_question_wait_response_levels(level_conflicts, newobj, datasources)
   }
 
   if (levels_decision == "1") {
@@ -68,8 +76,26 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
 
   .print_out_messages(added_cols, class_decisions, names(class_conflicts), unique_levels,
                       level_conflicts, levels_decision, newobj)
+
+  .handle_warnings(fill_warnings)
+  .print_class_warning(class_conflicts, fix_class, class_decisions)
 }
 
+#' Check Function Arguments for Validity
+#'
+#' This function validates the arguments provided to ensure they meet specified conditions.
+#' It checks that the `fix_class` and `fix_levels` arguments are set to accepted values
+#' and that `df.name` and `newobj` are character strings.
+#'
+#' @param df.name A character string representing the name of the data frame.
+#' @param newobj A character string representing the name of the new object to be created.
+#' @param fix_class A character string indicating the method for handling class issues.
+#'   Must be either `"ask"` or `"no"`.
+#' @param fix_levels A character string indicating the method for handling level issues.
+#'   Must be either `"ask"` or `"no"`.
+#' @return NULL. This function is used for validation and does not return a value.
+#' @importFrom assertthat assert_that
+#' @noRd
 .check_arguments <- function(df.name, newobj, fix_class, fix_levels) {
   assert_that(fix_class %in% c("ask", "no"))
   assert_that(fix_levels %in% c("ask", "no"))
@@ -102,7 +128,7 @@ ds.tidy_fill <- function(df.name = NULL, newobj = NULL, fix_class = "ask", fix_l
 #' @import dplyr
 #' @noRd
 .get_var_classes <- function(df.name, datasources) {
-  cally <- call("classAllColsDS", df.name)
+  cally <- call("getClassAllColsDS", df.name)
   classes <- datashield.aggregate(datasources, cally) %>%
     bind_rows(.id = "server")
   return(classes)
@@ -271,7 +297,7 @@ ask_question_class <- function(var) {
 #' @return None. Updates the DataFrame with added columns.
 #' @noRd
 .add_missing_cols_to_df <- function(df.name, cols_to_add_if_missing, newobj, datasources) {
-  cally <- call("makeColsSameDS", df.name, cols_to_add_if_missing)
+  cally <- call("fixColsDS", df.name, cols_to_add_if_missing)
   datashield.assign(datasources, newobj, cally)
 }
 
@@ -345,14 +371,17 @@ ask_question_class <- function(var) {
 #' @param level_conflicts A list of variables with factor level conflicts.
 #' @return The user's decision.
 #' @noRd
-ask_question_wait_response_levels <- function(level_conflicts) {
+ask_question_wait_response_levels <- function(level_conflicts, newobj, datasources) {
   .make_levels_message(level_conflicts)
   answer <- readline()
-  if (!answer %in% as.character(1:2)) {
+  if (answer == "3") {
+    DSI::datashield.aggregate(datasources, call("rmDS", newobj))
+    cli_abort("Aborted `ds.dataFrameFill`", .call = NULL)
+  } else if (!answer %in% as.character(1:2)) {
     cli_alert_warning("Invalid input. Please try again.")
     cli_alert_info("")
     .make_levels_message(level_conflicts)
-    return(ask_question_wait_response_levels)
+    return(ask_question_wait_response_levels(level_conflicts, newobj, datasources))
   } else {
     return(answer)
   }
@@ -369,7 +398,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 .make_levels_message <- function(level_conflicts) {
   cli_alert_warning("Warning: factor variables {level_conflicts} do not have the same levels in all studies")
   cli_alert_info("Would you like to:")
-  cli_ol(c("Create the missing levels where they are not present", "Do nothing"))
+  cli_ol(c("Create the missing levels where they are not present", "Do nothing", "Cancel `ds.dataFrameFill` operation"))
 }
 
 #' Get Unique Factor Levels
@@ -401,7 +430,7 @@ ask_question_wait_response_levels <- function(level_conflicts) {
 #' @return None. Updates the DataFrame with the new factor levels.
 #' @noRd
 .set_factor_levels <- function(df, unique_levels, datasources) {
-  cally <- call("setAllLevelsDS", df, names(unique_levels), unique_levels)
+  cally <- call("fixLevelsDS", df, names(unique_levels), unique_levels)
   datashield.assign(datasources, df, cally)
 }
 
@@ -522,6 +551,50 @@ ask_question_wait_response_levels <- function(level_conflicts) {
         paste0(.x, " --> ", paste0(.y, collapse = ", "))
       })
   )
+}
+
+#' Handle Warnings for Class Conversion Issues
+#'
+#' This function iterates through a list of warnings generated during class conversion and
+#' triggers a danger alert if any warnings indicate that the conversion has resulted in `NA` values.
+#'
+#' @param fill_warnings A list or vector of warning messages generated during class conversion.
+#'   If any warnings indicate that `NA` values were introduced, a danger alert will be displayed.
+#' @return NULL. This function is used for its side effects of printing alerts.
+#' @importFrom cli cli_alert_danger
+#' @importFrom stringr str_detect
+#' @noRd
+.handle_warnings <- function(fill_warnings) {
+  if(length(fill_warnings) > 0) {
+    for(i in 1:length(fill_warnings)) {
+      if(str_detect(fill_warnings[[i]], "NAs introduced by coercion")){
+        cli_alert_danger("Class conversion resulted in the creation of NA values.")
+      } else {
+        cli_alert_danger(fill_warnings[[i]])
+      }
+    }
+  }
+}
+
+#' Print Warning for Class Conflicts in Data Conversion
+#'
+#' This function displays a warning when there are class conflicts in a dataset that may have resulted
+#' from incompatible class changes during data conversion. It alerts users to verify column classes,
+#' as incompatible changes could corrupt the data.
+#'
+#' @param class_conflicts A list or vector of conflicting classes identified during conversion.
+#' @param fix_class A string indicating the user's choice for fixing class conflicts. Typically,
+#'   this is "ask" if the user is prompted to confirm class changes.
+#' @param class_decisions A vector of decisions made for class conversions. When any value is not
+#'   "6", it indicates unresolved class conflicts.
+#' @return NULL. This function is used for its side effects of printing alerts.
+#' @importFrom cli cli_alert_warning
+#' @noRd
+.print_class_warning <- function(class_conflicts, fix_class, class_decisions) {
+  if(length(class_conflicts) > 0 & fix_class == "ask" & all(!class_decisions == "6")) {
+    cli_alert_warning("Please check all columns that have changed class. Not all class changes
+    are compatible with all data types, so this could have corrupted the data.")
+  }
 }
 
 readline <- NULL

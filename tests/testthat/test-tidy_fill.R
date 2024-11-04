@@ -1,4 +1,5 @@
 suppressWarnings(library(DSLite))
+library(purrr)
 library(dplyr)
 library(dsBase)
 library(dsBaseClient)
@@ -38,11 +39,11 @@ dslite.server <- newDSLiteServer(
 )
 
 dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse", "dsDanger")))
-dslite.server$aggregateMethod("classAllColsDS", "classAllColsDS")
+dslite.server$aggregateMethod("getClassAllColsDS", "getClassAllColsDS")
 dslite.server$assignMethod("fixClassDS", "fixClassDS")
-dslite.server$assignMethod("makeColsSameDS", "makeColsSameDS")
+dslite.server$assignMethod("fixColsDS", "fixColsDS")
 dslite.server$aggregateMethod("getAllLevelsDS", "getAllLevelsDS")
-dslite.server$assignMethod("setAllLevelsDS", "setAllLevelsDS")
+dslite.server$assignMethod("fixLevelsDS", "fixLevelsDS")
 
 builder <- DSI::newDSLoginBuilder()
 
@@ -70,6 +71,10 @@ conns <- DSI::datashield.login(logins = logindata, assign = FALSE)
 datashield.assign.table(conns["server_1"], "df", "df_1")
 datashield.assign.table(conns["server_2"], "df", "df_2")
 datashield.assign.table(conns["server_3"], "df", "df_3")
+
+datashield.assign.table(conns["server_1"], "df_ident", "df_1")
+datashield.assign.table(conns["server_2"], "df_ident", "df_1")
+datashield.assign.table(conns["server_3"], "df_ident", "df_1")
 
 ####################################################################################################
 # Code that will be used in multiple tests
@@ -386,9 +391,25 @@ test_that(".identify_level_conflicts correctly factor columns with different lev
 test_that("ask_question_wait_response_levels continues with valid response", {
   expect_equal(
     with_mocked_bindings(
-      suppressWarnings(ask_question_wait_response_levels("test variable")),
+      suppressWarnings(ask_question_wait_response_levels("test variable", "test_obj", conns)),
       readline = function() "1"
     ), "1"
+  )
+
+  expect_equal(
+    with_mocked_bindings(
+      suppressWarnings(ask_question_wait_response_levels("test variable", "test_obj", conns)),
+      readline = function() "1"
+    ), "1"
+  )
+
+})
+
+test_that("ask_question_wait_response_levels aborts with response of 3", {
+  expect_error(
+    with_mocked_bindings(
+      suppressWarnings(ask_question_wait_response_levels("test variable", "test_obj", conns)),
+      readline = function() "3")
   )
 })
 
@@ -494,33 +515,228 @@ test_that(".change_choice_to_string converts numeric class codes to strings corr
   expect_equal(.change_choice_to_string("5"), "logical")
 })
 
-# test_that("ds.tidy_fill works when called directly", {
-#   with_mocked_bindings(
-#     ds.tidy_fill(
-#       df = "df",
-#       newobj = "test_fill"
-#     ),
-#     prompt_user_class_decision_all_vars = function(a, b, c)
-#
-#     ds.class("df$fac_col4")
-#     ds.class("test_fill$fac_col4")
-#
-#
-#       ds.colnames("test_fill")
+test_that("ds.tidy_fill doesn't run if dataframes are identical", {
+  expect_error(
+    ds.tidy_fill(
+      df = "df_ident",
+      newobj = "test_fill"
+    ),
+    "Columns are identical"
+  )
+})
 
-## 1. DFs identical
-## 2. Fill variables, no other changes
-## 3. Fill variables, class changes
-## 4. Fill variables, level changes
-## 5. Fill variables, class and level changes
-## 6. Fill variables
-## 7. If option for correct_levels is F then test ends
+test_that("ds.tidy_fill works when called directly and class conversion is factor", {
+  with_mocked_bindings(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "test_fill"
+    ),
+    prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) "1",
+    ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "2"
+  )
 
-## 7. Handle incorrect response for level fix
-## 8. Add default option to throw error rather than give menu
+  expect_equal(
+    ds.class("test_fill$fac_col4")[[1]],
+    "factor"
+  )
+})
 
-# Tests when called directly
+test_that("ds.tidy_fill returns warning when called directly and class conversion is integer", {
+    with_mocked_bindings(
+        ds.tidy_fill(
+          df = "df",
+          newobj = "test_fill"
+        ),
+        prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("2", "2"),
+        ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "2"
+      )
 
-# Diferentiate new and old objects so these can plausibly be removed
-# Improve error messages for levels and class so you can see change in each cohort
+  expect_equal(
+    ds.class("test_fill$fac_col4")[[1]],
+    "integer"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col5")[[1]],
+    "integer"
+  )
+})
+
+test_that("ds.tidy_fill returns warning when called directly and class conversion is numeric", {
+    with_mocked_bindings(
+      ds.tidy_fill(
+        df = "df",
+        newobj = "test_fill"
+      ),
+      prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("3", "3"),
+      ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "2"
+    )
+
+  expect_equal(
+    ds.class("test_fill$fac_col4")[[1]],
+    "numeric"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col5")[[1]],
+    "numeric"
+  )
+})
+
+test_that("ds.tidy_fill returns warning when called directly and class conversion is character", {
+  with_mocked_bindings(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "test_fill"
+    ),
+    prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("4", "4"),
+    ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "2"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col4")[[1]],
+    "character"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col5")[[1]],
+    "character"
+  )
+})
+
+test_that("ds.tidy_fill returns warning when called directly and class conversion is logical", {
+  with_mocked_bindings(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "test_fill"
+    ),
+    prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("5", "5"),
+    ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "2"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col4")[[1]],
+    "logical"
+  )
+
+  expect_equal(
+    ds.class("test_fill$fac_col5")[[1]],
+    "logical"
+  )
+})
+
+test_that("ds.tidy_fill changes levels if this option is selected", {
+  with_mocked_bindings(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "test_fill"
+    ),
+    prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("1", "1"),
+    ask_question_wait_response_levels = function(levels_conflict, newobj, datasources) "1"
+  )
+
+  levels_2 <- ds.levels("test_fill$fac_col2") %>% map(~.$Levels)
+  levels_3 <- ds.levels("test_fill$fac_col3") %>% map(~.$Levels)
+  levels_4 <- ds.levels("test_fill$fac_col4") %>% map(~.$Levels)
+  levels_5 <- ds.levels("test_fill$fac_col5") %>% map(~.$Levels)
+  levels_6 <- ds.levels("test_fill$fac_col6") %>% map(~.$Levels)
+  levels_9 <- ds.levels("test_fill$fac_col9") %>% map(~.$Levels)
+
+  expect_equal(
+    levels_2,
+    list(
+      server_1 = c("Blue", "Green", "Red"),
+      server_2 = c("Blue", "Green", "Red"),
+      server_3 = c("Blue", "Green", "Red")
+    )
+  )
+
+  expect_equal(
+    levels_3,
+    list(
+      server_1 = c("No", "Yes"),
+      server_2 = c("No", "Yes"),
+      server_3 = c("No", "Yes")
+    )
+  )
+
+  expect_equal(
+    levels_4,
+    list(
+      server_1 = c("1", "2", "3", "A", "B", "C"),
+      server_2 = c("1", "2", "3", "A", "B", "C"),
+      server_3 = c("1", "2", "3", "A", "B", "C")
+    )
+  )
+
+  expect_equal(
+    levels_5,
+    list(
+      server_1 = c("1", "2", "3", "One", "Three", "Two"),
+      server_2 = c("1", "2", "3", "One", "Three", "Two"),
+      server_3 = c("1", "2", "3", "One", "Three", "Two")
+      )
+    )
+
+  expect_equal(
+    levels_6,
+    list(
+      server_1 = c("Bird", "Cat", "Dog"),
+      server_2 = c("Bird", "Cat", "Dog"),
+      server_3 = c("Bird", "Cat", "Dog")
+    )
+  )
+
+  expect_equal(
+    levels_9,
+    list(
+      server_1 = c("False", "True"),
+      server_2 = c("False", "True"),
+      server_3 = c("False", "True")
+    )
+  )
+
+})
+
+test_that("ds.tidy_fill doesn't run if classes are not identical and fix_class is no", {
+  expect_error(
+    ds.tidy_fill(
+      df = "df",
+      newobj = "shouldnt_exist",
+      fix_class = "no"
+    ),
+    "Variables do not have the same class in all studies"
+  )
+
+  expect_equal(
+    ds.exists("shouldnt_exist")[[1]],
+    FALSE
+  )
+})
+
+test_that("ds.tidy_fill doesn't run if levels are not identical and fix_class is no", {
+  expect_error(
+    with_mocked_bindings(
+      ds.tidy_fill(
+        df = "df",
+        newobj = "shouldnt_exist",
+        fix_levels = "no"
+      ),
+      prompt_user_class_decision_all_vars = function(var, server, classes, newobj, datasources) c("1", "1")
+    ),
+    "Factor variables do not have the same levels in all studies"
+  )
+
+  expect_equal(
+    ds.exists("shouldnt_exist")[[1]],
+    FALSE
+  )
+})
+
+
+## 9. Handle incorrect response for level fix
+
+
+
+
 

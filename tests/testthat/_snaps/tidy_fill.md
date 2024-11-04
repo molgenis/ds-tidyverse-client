@@ -30,6 +30,7 @@
       i Would you like to:
       1. Create the missing levels where they are not present
       2. Do nothing
+      3. Cancel `ds.dataFrameFill` operation
 
 # .print_var_recode_message prints the correct message
 
