@@ -1,5 +1,6 @@
 # dsTidyverseClient
 <!-- badges: start -->
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dsTidyverseClient)](https://CRAN.R-project.org/package=yourpackagename)
 [![CircleCI](https://circleci.com/gh/molgenis/ds-tidyverse-client.svg?style=shield)](https://app.circleci.com/pipelines/github/molgenis/ds-tidyverse-client)
 [![codecov](https://codecov.io/gh/molgenis/ds-tidyverse-client/branch/master/graph/badge.svg?token=ITPMERAWYI)](https://app.codecov.io/gh/molgenis/ds-tidyverse-client)
 <!-- badges: end -->
