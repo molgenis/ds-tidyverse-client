@@ -1,0 +1,597 @@
+---
+title: "Using tidyverse within DataSHIELD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using tidyverse within DataSHIELD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+## Overview
+`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
+
+As long as not potentially disclosing, all functionality from the original Tidyverse functions has been preserved. The main argument which is normally passed to the `...` parameter in Tidyverse functions is passed as a list to the parameter `tidy_select`. Other arguments are passed to the relevant parameters which retain the same names as the original function.
+
+To illustrate the usage of these functions, we use DSLite which creates a virtual DataSHIELD session.
+
+## Install and load packages
+
+```r
+## install.packages("dplyr")
+## install.packages("DSLite")
+## install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")
+## devtools::install_github("molgenis/dsTidyverse")
+## devtools::install_github("molgenis/dsTidyverseClient")
+require(DSLite)
+require(dplyr)
+require(dsBase)
+require(dsBaseClient)
+require(dsTidyverse)
+require(dsTidyverseClient)
+require(DSI)
+```
+
+## Set up DSLite environment and log in.
+
+```r
+
+data("mtcars")
+mtcars_group <- mtcars %>%
+  group_by(cyl) %>%
+  mutate(drop_test = factor("a", levels = c("a", "b")))
+
+dslite.server <- newDSLiteServer(
+  tables = list(
+    mtcars = mtcars,
+    mtcars_group = mtcars_group
+  )
+)
+
+dslite.server$config(defaultDSConfiguration(include=c("dsBase", "dsTidyverse")))
+dslite.server$assignMethod("selectDS", "selectDS")
+dslite.server$assignMethod("renameDS", "renameDS")
+dslite.server$assignMethod("mutateDS", "mutateDS")
+dslite.server$assignMethod("ifElseDS", "ifElseDS")
+dslite.server$assignMethod("caseWhenDS", "caseWhenDS")
+dslite.server$assignMethod("bindRowsDS", "bindRowsDS")
+dslite.server$assignMethod("bindColsDS", "bindColsDS")
+dslite.server$assignMethod("filterDS", "filterDS")
+dslite.server$assignMethod("sliceDS", "sliceDS")
+dslite.server$assignMethod("arrangeDS", "arrangeDS")
+dslite.server$assignMethod("distinctDS", "distinctDS")
+dslite.server$assignMethod("groupByDS", "groupByDS")
+dslite.server$assignMethod("ungroupDS", "ungroupDS")
+dslite.server$assignMethod("asTibbleDS", "asTibbleDS")
+
+dslite.server$aggregateMethod("groupKeysDS", "groupKeysDS")
+
+builder <- DSI::newDSLoginBuilder()
+
+builder$append(
+  server="server_1",
+  url="dslite.server",
+  table = "mtcars",
+  driver = "DSLiteDriver")
+
+logindata <- builder$build()
+conns <- DSI::datashield.login(logins = logindata, assign = TRUE)
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars",
+  symbol = "mtcars")
+
+datashield.assign.table(
+  conns = conns,
+  table = "mtcars_group",
+  symbol = "mtcars_group")
+```
+
+## Functions
+### Select
+`ds.select`, implements all the flexibility of `dplyr::select` in sub-setting columns. This includes:
+(i) the ability to pass unquoted column names which are evaluated as columns of `df.name`, and
+(ii) the ability to use tidyselect helper functions, such as `contains`. Below are some examples,
+for full details see the documentation for `dplyr::select`.
+
+#### Subset columns by name
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(mpg, disp, wt), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "mpg"  "disp" "wt"
+```
+#### Specify columns to exclude
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(!mpg), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#>  [1] "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+#### Specify a range of columns to keep
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(mpg:drat), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "mpg"  "cyl"  "disp" "hp"   "drat"
+```
+#### Specify column names using a regular expression
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(matches('[aeiou]')), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "disp" "drat" "qsec" "am"   "gear" "carb"
+```
+#### Combine multiple conditions with '&'
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') & ends_with('b')), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "carb"
+```
+#### Combine multiple conditions with '|'
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.select(df.name = "mtcars", tidy_expr = list(starts_with('c') | ends_with('b')), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "cyl"  "carb"
+```
+### Rename
+`ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
+evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
+
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.rename(df.name = "mtcars", tidy_expr = list(effiency = mpg, power = hp), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#>  [1] "effiency" "cyl"      "disp"     "power"    "drat"     "wt"       "qsec"    
+#>  [8] "vs"       "am"       "gear"     "carb"
+```
+
+### Mutate
+`ds.mutate` creates new columns in a server-side dataframe. These new columns are normally transformations of existing columns. This reduces the number of steps currently required in DataSHIELD, i.e. creating
+a new vector and joining it back to an existing data frame. Again, column names are passed unquoted.
+Below are some examples, see `dplyr::mutate` for full details.
+
+#### Create columns which are transformations of existing variables:
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.mutate(
+  df.name = "mtcars",
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#>  [1] "mpg"       "cyl"       "disp"      "hp"        "drat"      "wt"       
+#>  [7] "qsec"      "vs"        "am"        "gear"      "carb"      "mpg_trans"
+#> [13] "new_var"
+ds.mean("mtcars$cyl")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1        6.1875        0     32     32
+ds.mean("new_df$mpg_trans")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1        6187.5        0     32     32
+ds.mean("mtcars$hp")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      146.6875        0     32     32
+ds.mean("mtcars$drat")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      3.596563        0     32     32
+ds.mean("mtcars$qsec")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      17.84875        0     32     32
+ds.mean("new_df$new_var")$Mean.by.Study
+#>          EstimatedMean Nmissing Nvalid Ntotal
+#> server_1      8.372669        0     32     32
+```
+
+#### Choose where the new columns are positioned in the data frame with `.before` and `.after`:
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.mutate(
+  df.name = "mtcars",
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  newobj = "new_df",
+  .before = "disp")
+ds.colnames("new_df")
+#> $server_1
+#>  [1] "mpg"       "cyl"       "mpg_trans" "new_var"   "disp"      "hp"       
+#>  [7] "drat"      "wt"        "qsec"      "vs"        "am"        "gear"     
+#> [13] "carb"
+```
+
+#### Only keep the newly created variables with `.keep`:
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+ds.mutate(
+  df.name = "mtcars",
+  tidy_expr = list(mpg_trans = cyl*1000, new_var = (hp-drat)/qsec),
+  newobj = "new_df",
+  .keep = "none")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "mpg_trans" "new_var"
+```
+
+### if_else
+A shinier version of `base::ifelse`. As with the other implementations of tidyverse, variable/object
+names can be passed unquoted, this time in the `condition` argument.
+
+
+```r
+ds.if_else(
+  condition = list(mtcars$mpg > 20),
+  "high",
+  "low",
+  newobj = "mpg_cat")
+
+ds.table("mpg_cat")$output.list$TABLE_rvar.by.study_counts
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>        study
+#> mpg_cat server_1
+#>    high       14
+#>    low        18
+#>    NA          0
+```
+
+### bind_rows
+Bind any number of data frames by row, making a longer result. This is similar to
+do.call(rbind, dfs), but the output will contain all columns that appear in any of the inputs.
+
+
+```r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.dim("df_bound")[[1]]
+#> [1] 64 11
+```
+The argument `.id` can be used to create an additional column which records which dataframe each
+row came from:
+
+
+```r
+ds.bind_rows(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns,
+  .id = "where_it_came_from"
+)
+
+ds.colnames("df_bound")
+#> $server_1
+#>  [1] "where_it_came_from" "mpg"                "cyl"               
+#>  [4] "disp"               "hp"                 "drat"              
+#>  [7] "wt"                 "qsec"               "vs"                
+#> [10] "am"                 "gear"               "carb"
+```
+
+### bind_cols
+Bind any number of data frames by column, making a wider result. This is similar to do.call(cbind, dfs).
+
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $server_1
+#>  [1] "mpg...1"   "cyl...2"   "disp...3"  "hp...4"    "drat...5"  "wt...6"   
+#>  [7] "qsec...7"  "vs...8"    "am...9"    "gear...10" "carb...11" "mpg...12" 
+#> [13] "cyl...13"  "disp...14" "hp...15"   "drat...16" "wt...17"   "qsec...18"
+#> [19] "vs...19"   "am...20"   "gear...21" "carb...22"
+```
+The argument `.name_repair` handles duplicate or broken names, e.g.
+
+```r
+ds.colnames("mtcars")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+
+ds.bind_cols(
+  to_combine = list(mtcars, mtcars),
+  newobj = "df_bound",
+  .name_repair = "minimal",
+  datasources = conns
+)
+
+ds.colnames("df_bound")
+#> $server_1
+#>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+#> [12] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+### case_when
+An extension of `dplyr::if_else` which allows the specification of multiple conditions. Extremely
+useful for recoding variables.
+
+
+```r
+  ds.case_when(
+    tidy_expr = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 20 & mtcars$mpg < 30 ~ "medium",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded",
+    datasources = conns)
+
+ds.table("recoded")$output.list$TABLE_rvar.by.study_counts
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>         study
+#> recoded  server_1
+#>   high          4
+#>   low          18
+#>   medium       10
+#>   NA            0
+```
+
+You can also use the `.default` argument to control what happens if the condition is not met:
+
+
+```r
+  ds.case_when(
+    tidy_expr = list(
+      mtcars$mpg < 20 ~ "low",
+      mtcars$mpg >= 30 ~ "high"),
+    newobj = "recoded_missing",
+    .default = "something_missing",
+    datasources = conns)
+
+ds.table("recoded_missing")$output.list$TABLE_rvar.by.study_counts
+#> 
+#>  Data in all studies were valid 
+#> 
+#> Study 1 :  No errors reported from this study
+#>                    study
+#> recoded_missing     server_1
+#>   high                     4
+#>   low                     18
+#>   something_missing       10
+#>   NA                       0
+```
+See the help file for `dplyr::case_when` for all available arguments.
+
+### filter
+Subset set a data frame flexibly, retaining all rows that satisfy the condition supplied to
+`expression`
+
+
+```r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+  ds.filter(
+    df.name = "mtcars",
+    tidy_expr = list(cyl == 4 & mpg > 20),
+    newobj = "filtered",
+    datasources = conns)
+ds.dim("filtered")[[1]]
+#> [1] 11 11
+```
+
+Use the .by argument to perform the filtering by a specified group.
+
+```r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+  ds.filter(
+    df.name = "mtcars",
+    tidy_expr = list(mpg > median(mpg)),
+    .by = "cyl",
+    newobj = "filtered_by",
+    datasources = conns)
+ds.dim("filtered_by")[[1]]
+#> [1] 14 11
+```
+
+If filtering on an already grouped tibble, use the `preserve` argument to specify whether to retain
+the original groups or recalculate groups based on the resulting data. See the help file for
+`dplyr::filter` for more information.
+
+
+```r
+ds.dim("mtcars")[[1]]
+#> [1] 32 11
+    ds.filter(
+      df.name = "mtcars",
+      tidy_expr = list(mpg > median(mpg)),
+      .preserve = T,
+      newobj = "preserved_t",
+      datasources = conns
+      )
+ds.dim("preserved_t")[[1]]
+#> [1] 15 11
+```
+
+### Slice
+Subset rows using their positions. This is particularly useful if you want to take one observation
+within a group (for example if you have repeated measures data, and want to take one measurements
+per individual within an age group). Currently this can be done using `dh.createSubset`, however
+this should be replaced by `group_by` and `slice` as it will be vastly quicker.
+
+
+```r
+ds.dim("mtcars")[1]
+#> $`dimensions of mtcars in server_1`
+#> [1] 32 11
+ds.slice(
+  df.name = "mtcars",
+  tidy_expr = list(1:10),
+  newobj = "sliced_df"
+)
+ds.dim("sliced_df")[1]
+#> $`dimensions of sliced_df in server_1`
+#> [1] 10 11
+```
+
+
+```r
+ds.dim("mtcars")[1]
+#> $`dimensions of mtcars in server_1`
+#> [1] 32 11
+ds.slice(
+  df.name = "mtcars",
+  tidy_expr = list(1),
+  .by = "cyl",
+  newobj = "sliced_df_group"
+)
+ds.dim("sliced_df_group")[1]
+#> $`dimensions of sliced_df_group in server_1`
+#> [1]  3 11
+```
+
+### Arrange
+`arrange` is a more flexible version of `base::sort`, which orders the rows of a data frame by the values of selected columns.
+
+
+```r
+ds.arrange(
+  df.name = "mtcars",
+  tidy_expr = list(mpg, cyl),
+  newobj = "arranged_df",
+  datasources = conns
+  )
+```
+`arrange` can be used on a sorted data frame or tibble. The arrange argument `.by_group` (TRUE or FALSE) determines whether or not data is sorted by group.
+
+### Grouping
+Many data operations are performed on groups defined by variables. `group_by` takes an existing tibble or data frame and converts it into a grouped tibble. Subsequent operations can then be performed 'by group' rather than to the whole dataframe.
+
+To group a data frame:
+
+```r
+ds.group_by(
+  df.name = "mtcars",
+  tidy_expr = list(mpg, cyl),
+  newobj = "grouped"
+)
+ds.class("grouped")[[1]]
+#> [1] "grouped_df" "tbl_df"     "tbl"        "data.frame"
+```
+
+To ungroup a data frame:
+
+```r
+ds.ungroup("grouped", "no_longer_grouped")
+ds.class("no_longer_grouped")[[1]]
+#> [1] "tbl_df"     "tbl"        "data.frame"
+```
+
+To return to clientside details of the groups, use `ds.group_keys`. Note that
+this is subject to disclosure controls and will return an error if the number
+of groups is too high.
+
+
+```r
+my_groups <- ds.group_keys("mtcars_group")
+my_groups
+#> $server_1
+#> # A tibble: 3 × 1
+#>     cyl
+#>   <dbl>
+#> 1     4
+#> 2     6
+#> 3     8
+```
+
+### distinct
+Use `distinct` to keep only unique rows. Leave the `expr` argument empty to check uniqueness across all variables:
+
+
+```r
+ds.distinct(
+  df.name = "mtcars",
+  newobj = "distinct_df"
+)
+ds.dim("distinct_df")[[1]]
+#> [1] 32 11
+```
+In this example the dimensions of the resulting dataset are the same because all rows are distinct. Alternatively you can specify a subset of variables in which to check for unique rows:
+
+
+```r
+ds.distinct(
+  df.name = "mtcars",
+  tidy_expr = list(cyl, drat),
+  newobj = "distinct_subset"
+)
+ds.dim("distinct_subset")[[1]]
+#> [1] 26  2
+ds.colnames("distinct_subset")[[1]]
+#> [1] "cyl"  "drat"
+```
+See the help file of `dplyr::distinct` for information about other arguments.
+
+
+### Convert objects to tibbles
+'Tibbles' are the tidyverse version of dataframes. Currently within DataSHIELD it is possible
+to convert dataframes and matrices to tibbles:
+
+
+```r
+ds.class("mtcars")[[1]]
+#> [1] "data.frame"
+ds.as_tibble(
+  x = "mtcars",
+  newobj = "mtcars_tib",
+  datasources = conns)
+  ds.class("mtcars_tib")[[1]]
+#> [1] "tbl_df"     "tbl"        "data.frame"
+```

@@ -1,125 +1,163 @@
+#' Retrieve datasources if not specified
 #'
-#' @title Checks if the objects are defined in all studies
-#' @description This is an internal function.
-#' @details In DataSHIELD an object included in analysis must be defined (i.e. exists)
-#' in all the studies. If not the process should halt.
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login.
-#' If the \code{datasources} argument is not specified, the default set of connections will be
-#' used: see \code{\link{datashield.connections_default}}.
-#' @param obj a character vector, the name of the object(s) to look for.
-#' @param error.message a Boolean which specifies if the function should stop and return
-#' an error message when the input object is not defined in one or more studies or to
-#' return a list of TRUE/FALSE indicating in which studies the object is defined
-#' @keywords internal
-#' @return returns an error message if \code{error.message} argument is set to TRUE (default)
-#' and if the input object is not defined in one or more studies, or a Boolean value if
-#' @importFrom DSI datashield.aggregate
-#' \code{error.message} argument is set to FALSE.
-#' @author Demetris Avraam for DataSHIELD Development Team
+#' @param datasources An optional list of data sources. If not provided, the function will attempt
+#' to find available data sources.
+#' @importFrom DSI datashield.connections_find
+#' @return A list of data sources.
+#' @noRd
+.get_datasources <- function(datasources) {
+  if (is.null(datasources)) {
+    datasources <- datashield.connections_find()
+  }
+  return(datasources)
+}
+
+#' Verify that the provided data sources are of class 'DSConnection'.
 #'
-isDefined <- function(datasources=NULL, obj=NULL, error.message=TRUE){
-
-  inputobj <- unlist(obj)
-
-  for(i in 1:length(inputobj)){
-
-    extractObj <- extract(inputobj[i])
-
-    if(is.na(extractObj$holders)){
-      cally <- call('exists', extractObj$elements)
-      out <- DSI::datashield.aggregate(datasources, cally)
-    }else{
-      dfname <- as.name(extractObj$holders)
-      cally <- call('exists', extractObj$elements, dfname)
-      out <- DSI::datashield.aggregate(datasources, cally)
-    }
-
-    if(error.message==TRUE & any(out==FALSE)){
-      stop("The input object ", inputobj[i], " is not defined in ", paste(names(which(out==FALSE)), collapse=", "), "!" , call.=FALSE)
-    }else{
-      return(out)
-    }
+#' @param datasources A list of data sources.
+#' @importFrom cli cli_abort
+#' @noRd
+.verify_datasources <- function(datasources) {
+  is_connection_class <- sapply(datasources, function(x) inherits(unlist(x), "DSConnection"))
+  if (!all(is_connection_class)) {
+    cli_abort("The 'datasources' were expected to be a list of DSConnection-class objects")
   }
 }
 
+#' Set and verify data sources.
 #'
-#' @title Checks an object has been generated on the server side
-#' @description This is an internal function.
-#' @details After calling an assign function it is important
-#' to know whether or not the action has been completed by
-#' checking if the output actually exists on the server side.
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
-#' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param newobj a character, the name the object to look for.
-#' @keywords internal
-#' @return nothing is return but the process is stopped if
-#' the object was not generated in any one server.
-#' @importFrom DSI datashield.aggregate
+#' @param datasources An optional list of data sources. If not provided, the function will attempt
+#' to find available data sources.
+#' @return A list of verified data sources.
+#' @noRd
+.set_datasources <- function(datasources) {
+  datasources <- .get_datasources(datasources)
+  .verify_datasources(datasources)
+  return(datasources)
+}
+
+
+#' Set a new object or defaults to '.data' if no object is provided.
 #'
-isAssigned <- function(datasources=NULL, newobj=NULL){
-  cally <- call('exists', newobj)
-  qc <- DSI::datashield.aggregate(datasources, cally)
-  indx <- as.numeric(which(qc==TRUE))
-  if(length(indx) > 0 & length(indx) < length(datasources)){
-    stop("The output object, '", newobj, "', was generated only for ", names(datasources)[indx], "!", call.=FALSE)
+#' @param newobj An optional new object name. If not provided, the function defaults to '.data'.
+#' @return The provided new object name or '.data' if no object is provided.
+#' @noRd
+.set_new_obj <- function(.data, newobj) {
+  if (is.null(newobj)) {
+    newobj <- .data
   }
-  if(length(indx) == 0){
-    stop("The output object has not been generated for any of the studies!", call.=FALSE)
+  return(newobj)
+}
+
+#' Generate an encoding key which is used for encoding and decoding strings to pass the R parser
+#'
+#' @return A list containing the encoding key, with 'input' specifying the characters to be encoded
+#' and 'output' specifying their corresponding encoded values.
+#' @noRd
+.get_encode_dictionary <- function() {
+  encode_list <- list(
+    input = c("(", ")", "\"", ",", " ", ":", "!", "&", "|", "'", "[", "]", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
+    output = c(
+      "$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$COLON$", "$EXCL$", "$AND$", "$OR$",
+      "$APO$", "$LSQ$", "$RSQ", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$", "$GT$", "$LT$", "$TILDE$", "$LINE$"
+    )
+  )
+  return(encode_list)
+}
+
+#' Remove List
+#'
+#' This function removes the 'list(' portion from a string.
+#'
+#' @param string A string containing the characters 'list('.
+#' @return The string with 'list(' removed.
+#' @noRd
+.remove_list <- function(string) {
+  if (string != "NULL") {
+    string <- gsub("list\\(", "", string, fixed = FALSE)
+    string <- substr(string, 1, nchar(string) - 1)
   }
 }
 
+#' Converts expressions to a string and remove the 'list(' portion.
 #'
-#' @title Checks that an object has the same class in all studies
-#' @description This is an internal function.
-#' @details In DataSHIELD an object included in analysis must be of the same type in all
-#' the collaborating studies. If that is not the case the process is stopped
-#' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
-#' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param obj a string character, the name of the object to check for.
-#' @keywords internal
-#' @return a message or the class of the object if the object has the same class in all studies.
-#' @importFrom DSI datashield.aggregate
-#'
-#'
-checkClass <- function(datasources=NULL, obj=NULL){
-  # check the class of the input object
-  cally <- call("classDS", obj)
-  classesBy <- DSI::datashield.aggregate(datasources, cally, async = FALSE)
-  classes <- unique(unlist(classesBy))
-  for (n in names(classesBy)) {
-    if (!all(classes == classesBy[[n]])) {
-      message("The input data is not of the same class in all studies!")
-      message("Use the function 'ds.class' to verify the class of the input object in each study.")
-      stop(" End of process!", call.=FALSE)
-    }
-  }
-  return(classes)
+#' @param expr The expression to be converted.
+#' @return The formatted arguments as a string.
+#' @importFrom rlang quo_text
+#' @noRd
+.format_args_as_string <- function(expr) {
+  neat_args_as_string <- .remove_list(quo_text(expr))
+  return(neat_args_as_string)
 }
 
+#' Encode a string using the provided encoding key.
 #'
-#' @title Splits character by '$' and returns the single characters
-#' @description This is an internal function.
-#' @details Not required
-#' @param input a vector or a list of characters
-#' @keywords internal
-#' @return a vector of characters
-#'
-extract <- function(input){
-  input <- unlist(input)
-  output1 <- c()
-  output2 <- c()
-  for (i in 1:length(input)){
-    inputterms <- unlist(strsplit(input[i], "\\$", perl=TRUE))
-    if(length(inputterms) > 1){
-      obj1 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][2]
-    }else{
-      obj1 <- NA
-      obj2 <- strsplit(input[i], "\\$", perl=TRUE)[[1]][1]
+#' @param input_string The string to be encoded.
+#' @param encode_key The encoding key generated by '.get_encode_dictionary()'.
+#' @return The encoded string.
+#' @noRd
+.encode_tidy_eval <- function(input_string, encode_key) {
+  encode_vec <- encode_key$output
+  names(encode_vec) <- encode_key$input
+  split_string <- strsplit(input_string, "")[[1]]
+  output_string <- sapply(split_string, function(char) {
+    if (char %in% names(encode_vec)) {
+      encode_vec[[char]]
+    } else {
+      char
     }
-    output1 <- append(output1, obj1)
-    output2 <- append(output2, obj2)
+  })
+  return(paste(output_string, collapse = ""))
+}
+
+#' Check Select Arguments
+#'
+#' @param .data Character specifying a serverside data frame or tibble.
+#' @param newobj Optionally, character specifying name for new server-side data frame.
+#' @return This function does not return a value but is used for argument validation.
+#' @importFrom assertthat assert_that
+#' @noRd
+.check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE, check_obj = TRUE) {
+  if (check_df) {
+    assert_that(is.character(df.name))
   }
-  output <- list('holders'=output1, 'elements'=output2)
-  return(output)
+
+  if (check_obj) {
+    assert_that(is.character(newobj))
+  }
+}
+
+#' Create a Tidy Evaluation Call
+#'
+#' This function constructs a call object for a tidy evaluation function.
+#' It allows for the dynamic creation of function calls in a tidyverse-compatible manner.
+#'
+#' @param tidy_select Encoded tidyselect arguments
+#' @param fun_name The name of the function to be called (as a string), e.g., "select", "mutate".
+#' @param other_args A list of additional arguments to be passed to the function (optional).
+#' @return A call object that can be evaluated to perform the specified operation.
+#' @noRd
+.make_serverside_call <- function(fun_name, tidy_select, other_args) {
+  if (!is.null(tidy_select)) {
+    tidy_select <- .encode_tidy_eval(tidy_select, .get_encode_dictionary())
+  }
+  cally <- .build_cally(fun_name, c(list(tidy_select), other_args))
+  return(cally)
+}
+
+#' Construct a Call Object
+#'
+#' This function constructs and returns a call object based on the provided
+#' function name, dataframe name, tidyselect specification, and additional arguments.
+#'
+#' @param fun_name A character string representing the function name.
+#' @param df.name The name of the dataframe.
+#' @param tidy_select Tidyselect specification (e.g., column names or selection helpers).
+#' @param other_args Additional arguments to be included in the call. If NULL, no additional arguments are added.
+#' @importFrom rlang sym
+#' @return A call object constructed from the provided arguments.
+#' @noRd
+.build_cally <- function(fun_name, other_args) {
+  arg_list <- c(list(sym(fun_name)), other_args)
+  return(as.call(arg_list))
 }
