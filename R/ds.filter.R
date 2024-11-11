@@ -17,7 +17,7 @@
 #' \dontrun{
 #' ds.filter(
 #'   df.name = "mtcars",
-#'   expr = list(cyl == 4 & mpg > 20),
+#'   tidy_expr = list(cyl == 4 & mpg > 20),
 #'   newobj = "filtered",
 #'   datasources = conns
 #' )
