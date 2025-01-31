@@ -1,0 +1,263 @@
+---
+title: "dsTidyverse: An implementation of Tidyverse within the DataSHIELD ecosystem"
+date: "2024-10-21"
+abstract: >
+  This paper introduces dsTidyverse, an R package designed to enhance data handling within the federated analysis platform DataSHIELD. DataSHIELD enables multi-site analysis without direct data sharing, crucial for privacy-sensitive research. While DataSHIELD facilitates complex analysis, it lacks user-friendly data manipulation tools. dsTidyverse addresses this by implementing selected functions from the "Tidyverse" ecosystem within DataSHIELD's client-server architecture. The package provides functionality for selecting, renaming, and creating columns; conditional recoding; combining data frames; filtering rows; grouping data; and converting to tibbles. Rigorous disclosure checks are implemented to prevent individual-level data leakage. The paper demonstrates, through examples, how dsTidyverse simplifies common data manipulation tasks, improving user experience and analysis efficiency within DataSHIELD. The package is open-source, freely available on CRAN and GitHub, welcoming further development. See https://github.com/molgenis/ds-tidyverse
+draft: true
+author:  
+  - name: Tim Cadman
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-7682-5645
+    email:  t.j.cadman@umcg.nl
+  - name: Mariska Slofstra
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-0400-0468
+    email: m.k.slofstra@umcg.nl  
+  - name: Demetris Avraam
+    affiliation: Department of Public Health, University of Copenhagen
+    address: Øster Farimagsgade 5, 1353 Copenhagen, Denmark
+    orcid: 0000-0001-8908-2441
+    email: demetris.avraam@sund.ku.dk
+  - name: Eleanor Hyde
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0003-2744-0017
+    email: e.j.hyde@umcg.nl
+  - name: Niels Kikkert
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 
+    email: n.a.kikkert@umcg.nl
+  - name: Marije A. van der Geest
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-1919-6547
+    email: m.a.van.der.geest@umcg.nl
+  - name: Dick Postma
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    email: f.d.postma@umcg.nl
+  - name: Ruben L. Veenstra
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    email: r.l.veenstra@umcg.nl
+  - name: Stuart Wheater
+    affiliation: Arjuna Technologies
+    address: 
+    - Newcastle Helix, Urban Science Building, Newcastle upon Tyne
+    orcid: 0009-0003-2419-1964
+    email: stuart.wheater@arjuna.com
+  - name: Erik Zwart
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: 0000-0002-4552-003X
+    email: e.zwart@umcg.nl
+  - name: Morris Swertz
+    affiliation: Department of Genetics, Genomics Coordination Center
+    address:
+    - University Medical Centre
+    - Groningen, The Netherlands
+    url: https://umcgresearch.org/w/gcc
+    orcid: https://orcid.org/0000-0002-0979-3401
+    email: m.a.swertz@rug.nl
+type: package
+output: 
+  rjtools::rjournal_article:
+    self_contained: yes
+    toc: no
+bibliography: RJreferences.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(kableExtra)
+```
+
+# Introduction 
+Whilst analysis of single data sources is a core part of epidemiological research, incorporating data from multiple sources can have a number of advantages. These include increased statistical power to detect rare disease outcomes and the opportunity to replicate studies in different populations @pinot2021eu @cadman2024associations. Historically, analysis of multiple data sources has been conducted by either (i) data transfer or (ii) each partner conducting analyses separately and sharing summary statistics. Whilst effective in many situations, both approaches have drawbacks. Physical transfer of data can be restricted by data protection legislation and local data management policies, whilst requiring each partner to conduct parallel analyses can be time-inefficient and inflexible @knoppers2011towards. 
+
+A promising alternative is federated analysis - remote analysis which does not share individual-level data. Federated analysis offers a number of potential advantages: it allows one researcher to flexibly conduct all analysis whilst allowing control of the data to remain with the data owner @doiron2013data.  
+
+One mature implementation of federated analysis is the open-source R-based platform \url[DataSHIELD](https://datashield.org/)@gaye2014datashield. DataSHIELD is designed around a client-server architecture. In a multi-site setting, individual study participants’ data is stored on the server of each data source, often protected by a firewall. The data from each site is not directly viewable or accessible by the analyst and cannot be copied or transferred. On the client-side, the researcher has access to a number of DataSHIELD specific R packages. Using functions from these packages, the researcher issues analysis commands which are then sent to each server. There are two types of DataSHIELD functions: (i) assign-type functions, which create a new object on the server (for example recoding a variable), and (ii) aggregate-type functions, which return summary statistics to the researcher (e.g. means, standard deviations and model parameters). These commands are evaluated on each server, and automated checks are performed to ensure that the operations will not disclose individual level data. 
+
+DataSHIELD has been successfully used in many large Horizon 2020/Europe research projects including LifeCycle @jaddoe2020lifecycle @pinot2021eu (researching the role of novel integrated markers of early-life stressors on health across the lifecycle) and ATHLETE (understanding and preventing health effects of environmental hazards and their mixtures) @vrijheid2021advancing. It has an ever-expanding set of [packages](https://wiki.datashield.org/en/opmanag/community_packages) supporting a wide range of analyses, including omics, exposome, mediation, survival and machine learning @escriba2024federated 
+
+However, a key weakness in DataSHIELD is that it currently lacks effective functionality to perform basic data manipulation, as most development has focused on extending the analysis capabilities. Informally, many researchers have complained that it is very cumbersome to perform basic operations in DataSHIELD which would normally be straightforward using R. For example, within DataSHIELD there are currently limited options to (i) allow the user to recode variables using `if-else` style operations,  (ii) rename variables, (iii) subset columns by column name, (iv) subset rows by multiple conditions or (v) group data and perform operations by group. 
+
+Complicated workarounds are possible, but these greatly increase computational time and lead to verbose analysis scripts. Consider the example of transforming a continuous variable (BMI) into a 4-level categorical variable (underweight, normal, overweight, obese). Using the core DataSHIELD package (dsBaseClient), the user is required to first create separate vectors indicating whether participants are above each threshold, and then add these vectors together to create the final variable:
+```R
+ds.Boole(
+  V1 = "data$bmi_continuous",
+  V2 = 18.5,
+  Boolean.operator = ">",
+  newobj = "bmi_cat_1")
+
+ds.Boole(
+  V1 = "data$bmi_continuous",
+  V2 = 24.9,
+  Boolean.operator = ">",
+  newobj = "bmi_cat_2")
+
+ds.Boole(
+  V1 = "data$bmi_continuous",
+  V2 = 30,
+  Boolean.operator = ">",
+  newobj = "bmi_cat_3")
+
+ds.assign("bmi_cat_1+bmi_cat_2+bmi_cat_3", newobj = "bmi_cat")
+```
+
+In contrast with R outside of DataSHIELD there are many options for efficient data manipulation. One widely used set of packages is the “Tidyverse”, which comprises a set of packages for data science sharing a common design philosophy, grammar and data structures @wickham2019welcome. These include packages for data manipulation (dplyr), advanced data frames (tibble), packages for functional programming (purrr) and many others. 
+
+Whilst the functionality provided by these packages would greatly improve the user-experience with DataSHIELD, they cannot be used ‘off-the-shelf’. They first need to be translated into a bespoke DataSHIELD package using the client-server architecture described above, and additional checks need to be written to ensure they would not inadvertently facilitate the leakage of individual participant data. 
+We therefore report here the development of dsTidyverse,a DataSHIELD implementation of selected Tidyverse functions available as free open source software (LGPLv3) at github (https://github.com/molgenis/ds-tidyverse).
+ 
+# Implementation of dsTidyverse 
+## Package structure 
+As described above, each DataSHIELD package contains two components: a client-side and a server-side package. The client-side package is installed locally by the researcher and contains the functions called in their analysis scripts. The server-side package is installed on the server with the data, and contains functions that are called by the client-side package. For example, to return the mean of a vector, two functions are written: `ds.mean()` (client-side, included in the dsBaseClient package) and `meanDS()` (server-side, included in the dsBase package). When an analyst makes a call to `ds.mean()`, the following steps occur: 
+(i) arguments are checked for validity, by the client-side,
+(ii) an invocation requesting the calling of the function `meanDS()` is made via the DataSHIELD Interface (DSI) package [REF] which handles API calls to the server,
+(iii) the request, method and arguments, are checked for validity, by the server-side,
+(iv) the server-side function `meanDS()` calculates the mean and performs checks that this value is not disclosive, and 
+(i) the mean of the vector is returned to the client (in addition to some additional information such as the number of missing and non-missing values in the vector). 
+Following this architecture we implemented two packages: `dsTidyverse` and `dsTidyverseClient`. All code was reviewed by co-author SW (an experienced DataSHIELD developer and maintainer of dsBase), to ensure that it met DataSHIELD disclosure protection standards.
+
+## Functionality
+Given that DataSHIELD functions need to be implemented one-by-one, it was not realistic to implement the entire set of Tidyverse functions. Instead, we reviewed existing functionality in DataSHIELD and chose those Tidyverse functions which we believed would significantly improve data manipulation within DataSHIELD. Currently these functions are from the packages `dplyr` and `tibble`, though we are open to adding further functions on request and welcome Github pull requests (Table @tbl:functions).
+  
+| **Package**   | **Function** 	| **Description**                             	| 
+|---------------|------------------|-------------------------------------------------| 
+| `dplyr`   	| `select`     	| Choose columns from a data frame.          	| 
+| `dplyr`   	| `rename`     	| Rename columns in a data frame.            	| 
+| `dplyr`   	| `mutate`     	| Create or modify columns.                  	| 
+| `dplyr`   	| `if_else`    	| A vectorized conditional function.         	| 
+| `dplyr`   	| `case_when`  	| A general vectorized conditional function. 	| 
+| `dplyr`   	| `bind_cols`  	| Combine data frames by columns.            	| 
+| `dplyr`   	| `bind_rows`  	| Combine data frames by rows.               	| 
+| `dplyr`   	| `filter`     	| Filter rows based on conditions.           	| 
+| `dplyr`   	| `slice`      	| Select rows by position.                   	| 
+| `dplyr`   	| `arrange`    	| Arrange rows by values of a column or multiple columns. | 
+| `dplyr`   	| `group_by`   	| Group data by one or more columns.         	| 
+| `dplyr`   	| `ungroup`    	| Remove grouping from data.                 	| 
+| `dplyr`   	| `group_keys` 	| Retrieve the group keys from a grouped data frame. | 
+| `dplyr`   	| `distinct`   	| Return unique rows based on certain columns.   | 
+| `tibble`  	| `as_tibble`  	| Convert data to a tibble.                  	| 
+  
+: Table 1. Functions in the `dsTidyverse()` package {#tbl:functions} 
+
+Note that dsTidyverse supports non-standard evaluation[REF]. The name of the server-side data frame is passed in quotes to `df.name`, and the variable names ("sex" and "bmi") are evaluated as columns within "my_data". Various helper functions can also be used within the `tidy_expr` argument, for example `all_of` and `any_of` to specify multiple variables in filter conditions. See examples at the end of this section for example use of dsTidyverse, and the package vignette for a more detailed guide.
+
+### Disclosure checks 
+A key feature of DataSHIELD are the various disclosure checks performed on the server-side package to ensure that individual participant data or any other output that can be used to infer any individual participant information is not returned to the analyst. All but one of the dsTidyverse functions currently implemented are assign-type functions, and these carry a lot lower risk or direct disclosure as they do not return anything to the client. However – and especially in the case of subsetting operations – they carry a risk of indirect exposure. For example, through creating a subset of data only one row less than the original data, summary statistics of the two data frames could be compared to reveal the values of the row in difference. Therefore we implemented the following disclosure checks:
+1. We specified a list of permitted functions that can be passed within the `tidy_expr` argument; calls including non-permitted functions will be blocked. Note that these functions can only be used with assign-type functions and will not return information to the user. The currently permitted functions are:
+`everything`, `last_col`, `group_cols`, `starts_with`, `ends_with`, `contains`, `matches`, `num_range`, `all_of`, `any_of`, `where`, `rename`, `mutate`, `if_else`, `case_when`, `mean`, `median`, `mode`, `desc`, `nth`, `exp`, `sqrt`, `scale`, `round`, `floor`, `ceiling`, `trunc`, `abs`, `sign`, `sd`, `var`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `cumsum`, `cumprod`, `cummin`, `cummax`, `rank`, `diff` and `lag`
+
+2. We check that variable names passed within the `tidy_expr` argument are not longer than a specified parameter to reduce the risk that malicious code could be passed. 
+3. To guard against subsetting attacks [REF], we check that no subsets are created (e.g. by ds.filter()) with (i) number of rows lower than a specified parameter, or (ii) with the difference between the number of rows of the original dataset and the subset dataset less than a given parameter.  
+4. We check that `ds.group_keys` (which returns the groups in a grouped data frame) does not contain more groups than a specified parameter relative to the length of the data frame. If no checks were performed this would be highly disclosive as, for example, if the number of groups were the same as the number of rows this would return the entire column of participant data.  
+
+## Examples
+To illustrate the improvements brought about with dsTidyverse, here we provide three examples showing the previous solution using dsBaseClient and the improved solution with dsTidyverse.
+
+### Example 1: Recoding a continuous variable as categorical
+Here we revisit the example in the introduction of recoding a continuous BMI variable into four weight categories. Using dsTidyverseClient, this same operation can now be achieved in one call to `ds.case_when()`:
+
+```R
+ds.case_when(
+  tidy_expr = list(
+      data$bmi_continuous < 18.5 ~ 0,
+      data$bmi_continuous > 18.5 & data$bmi_continuous < 24.9 ~ 1,
+    data$bmi_continuous > 24.9  & data$bmi_continuous < 30 ~ 2,
+    data$bmi_continuous > 30 ~ 3),
+  newobj = "bmi_categorical"
+)
+```
+## Example 2: Creating a subset of columns
+In this example, we select five columns from an existing data frame (sex, age, height, weight, ethnicity). Currently using dsBaseClient, it is only possible to select columns by their number, not by their name. Therefore in order to subset by columns, the user first needs to return the column names, record the indices of the columns they need to keep, and create a subset. Using dsTidyverseClient this can be achieved by one call to ds.select.
+### Using dsBaseClient
+```R
+ds.colnames(“data)” ## Identify that the columns we want to keep at 1, 4, 5, 11, 14
+ds.dataFrameSubset(
+  df.name = "data", 
+  V1 = "id_var",
+  V2 = "id_var",
+  Boolean.operator = "==",
+  keep.cols = c("1", "4", "5", "11", "14"), 
+  newobj = "column_subset")
+```
+### Using dsTidyverseClient
+```R
+ds.select(
+  df.name = “data, 
+  tidy_expr = list(sex, age, height, weight, ethnicity),
+  newobj = “column_subset”
+)
+```
+In addition, we have implemented tidyverse selection helpers (e.g. `starts_with`, `end_with`, see ?dplyr::select for more details).
+
+## Example 3: Filtering on multiple conditions
+In this final example, we create a subset of the original data containing (i) females (ii) over 30, (iii) with a bmi >= 25. Currently using dsBaseClient this requires multiple calls to `ds.dataFrameSubset`. Using dsTidyverseClient, this can be achieved in one call to `ds.filter`.
+### Using dsBaseClient
+```R
+ds.dataFrameSubset(
+  df.name = "data", 
+  V1 = "sex",
+  V2 = "2",
+  Boolean.operator = "==",
+  newobj = "only_females")
+
+ds.dataFrameSubset(
+  df.name = "only_females", 
+  V1 = "age",
+  V2 = "30",
+  Boolean.operator = ">",
+  newobj = "females_over_thirty")
+
+ds.dataFrameSubset(
+  df.name = "females_over_thirty", 
+  V1 = "bmi",
+  V2 = "25",
+  Boolean.operator = ">=",
+  newobj = "final_subset")
+```
+### Using dsTidyverseClient
+```R
+ds.filter(
+  df.name = “data”,
+  tidy_expr = list(sex = 2 & age >30 & bmi >= 25),
+  newobj = “final_subset”)
+``` 
+## Summary
+In this paper we have illustrated the development of dsTidyverseClient, a DataSHIELD implementation of selected tidyverse functions. We hope that this package will provide researchers with more flexible, powerful tools for data manipulation and greatly improve the user experience of DataSHIELD.
+
+## Availablility 
+`dsTidyverse` is maintained as part of the long running \href{MOLGENIS open source project}{http://molgenis.org} for scientific software under liberal license LGPLv3. Both `dsTidyverse` and `dsTidyverseClient` are available on the CRAN. The github repositories can be found at \url[dsTidyverse](https://github.com/molgenis/ds-tidyverse) (serverside) and [dsTidyverseClient](https://github.com/molgenis/ds-tidyverse-client). Requests for implementation of new functions are welcome as are contributions from developers. 
+
+
+
