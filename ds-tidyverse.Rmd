@@ -104,9 +104,9 @@ Whilst analysis of single data sources is a core part of epidemiological researc
 
 A promising alternative is federated analysis - remote analysis which does not share individual-level data. Federated analysis offers a number of potential advantages: it allows one researcher to flexibly conduct all analysis whilst allowing control of the data to remain with the data owner @doiron2013data.  
 
-One mature implementation of federated analysis is the open-source R-based platform \url[DataSHIELD](https://datashield.org/)@gaye2014datashield. DataSHIELD is designed around a client-server architecture. In a multi-site setting, individual study participants’ data is stored on the server of each data source, often protected by a firewall. The data from each site is not directly viewable or accessible by the analyst and cannot be copied or transferred. On the client-side, the researcher has access to a number of DataSHIELD specific R packages. Using functions from these packages, the researcher issues analysis commands which are then sent to each server. There are two types of DataSHIELD functions: (i) assign-type functions, which create a new object on the server (for example recoding a variable), and (ii) aggregate-type functions, which return summary statistics to the researcher (e.g. means, standard deviations and model parameters). These commands are evaluated on each server, and automated checks are performed to ensure that the operations will not disclose individual level data. 
+One mature implementation of federated analysis is the open-source R-based platform [DataSHIELD](https://datashield.org/) @gaye2014datashield. DataSHIELD is designed around a client-server architecture. In a multi-site setting, individual study participants’ data is stored on the server of each data source, often protected by a firewall. The data from each site is not directly viewable or accessible by the analyst and cannot be copied or transferred. On the client-side, the researcher has access to a number of DataSHIELD specific R packages. Using functions from these packages, the researcher issues analysis commands which are then sent to each server. There are two types of DataSHIELD functions: (i) assign-type functions, which create a new object on the server (for example recoding a variable), and (ii) aggregate-type functions, which return summary statistics to the researcher (e.g. means, standard deviations and model parameters). These commands are evaluated on each server, and automated checks are performed to ensure that the operations will not disclose individual level data. 
 
-DataSHIELD has been successfully used in many large Horizon 2020/Europe research projects including LifeCycle @jaddoe2020lifecycle @pinot2021eu (researching the role of novel integrated markers of early-life stressors on health across the lifecycle) and ATHLETE (understanding and preventing health effects of environmental hazards and their mixtures) @vrijheid2021advancing. It has an ever-expanding set of [packages](https://wiki.datashield.org/en/opmanag/community_packages) supporting a wide range of analyses, including omics, exposome, mediation, survival and machine learning @escriba2024federated 
+DataSHIELD has been successfully used in many large European research projects including LifeCycle (researching the role of novel integrated markers of early-life stressors on health across the lifecycle; @jaddoe2020lifecycle @pinot2021eu) and ATHLETE (understanding and preventing health effects of environmental hazards and their mixtures; @vrijheid2021advancing) . It has an ever-expanding set of [packages](https://wiki.datashield.org/en/opmanag/community_packages) supporting a wide range of analyses, including omics, exposome, mediation, survival and machine learning @escriba2024federated 
 
 However, a key weakness in DataSHIELD is that it currently lacks effective functionality to perform basic data manipulation, as most development has focused on extending the analysis capabilities. Informally, many researchers have complained that it is very cumbersome to perform basic operations in DataSHIELD which would normally be straightforward using R. For example, within DataSHIELD there are currently limited options to (i) allow the user to recode variables using `if-else` style operations,  (ii) rename variables, (iii) subset columns by column name, (iv) subset rows by multiple conditions or (v) group data and perform operations by group. 
 
@@ -136,7 +136,7 @@ ds.assign("bmi_cat_1+bmi_cat_2+bmi_cat_3", newobj = "bmi_cat")
 In contrast with R outside of DataSHIELD there are many options for efficient data manipulation. One widely used set of packages is the “Tidyverse”, which comprises a set of packages for data science sharing a common design philosophy, grammar and data structures @wickham2019welcome. These include packages for data manipulation (dplyr), advanced data frames (tibble), packages for functional programming (purrr) and many others. 
 
 Whilst the functionality provided by these packages would greatly improve the user-experience with DataSHIELD, they cannot be used ‘off-the-shelf’. They first need to be translated into a bespoke DataSHIELD package using the client-server architecture described above, and additional checks need to be written to ensure they would not inadvertently facilitate the leakage of individual participant data. 
-We therefore report here the development of dsTidyverse,a DataSHIELD implementation of selected Tidyverse functions available as free open source software (LGPLv3) at github (https://github.com/molgenis/ds-tidyverse).
+We therefore report here the development of dsTidyverse,a DataSHIELD implementation of selected Tidyverse functions available as free open source software (LGPLv3) at [github](https://github.com/molgenis/ds-tidyverse).
  
 # Implementation of dsTidyverse 
 ## Package structure 
@@ -149,29 +149,43 @@ As described above, each DataSHIELD package contains two components: a client-si
 Following this architecture we implemented two packages: `dsTidyverse` and `dsTidyverseClient`. All code was reviewed by co-author SW (an experienced DataSHIELD developer and maintainer of dsBase), to ensure that it met DataSHIELD disclosure protection standards.
 
 ## Functionality
-Given that DataSHIELD functions need to be implemented one-by-one, it was not realistic to implement the entire set of Tidyverse functions. Instead, we reviewed existing functionality in DataSHIELD and chose those Tidyverse functions which we believed would significantly improve data manipulation within DataSHIELD. Currently these functions are from the packages `dplyr` and `tibble`, though we are open to adding further functions on request and welcome Github pull requests (Table @tbl:functions).
-  
-| **Package**   | **Function** 	| **Description**                             	| 
-|---------------|------------------|-------------------------------------------------| 
-| `dplyr`   	| `select`     	| Choose columns from a data frame.          	| 
-| `dplyr`   	| `rename`     	| Rename columns in a data frame.            	| 
-| `dplyr`   	| `mutate`     	| Create or modify columns.                  	| 
-| `dplyr`   	| `if_else`    	| A vectorized conditional function.         	| 
-| `dplyr`   	| `case_when`  	| A general vectorized conditional function. 	| 
-| `dplyr`   	| `bind_cols`  	| Combine data frames by columns.            	| 
-| `dplyr`   	| `bind_rows`  	| Combine data frames by rows.               	| 
-| `dplyr`   	| `filter`     	| Filter rows based on conditions.           	| 
-| `dplyr`   	| `slice`      	| Select rows by position.                   	| 
-| `dplyr`   	| `arrange`    	| Arrange rows by values of a column or multiple columns. | 
-| `dplyr`   	| `group_by`   	| Group data by one or more columns.         	| 
-| `dplyr`   	| `ungroup`    	| Remove grouping from data.                 	| 
-| `dplyr`   	| `group_keys` 	| Retrieve the group keys from a grouped data frame. | 
-| `dplyr`   	| `distinct`   	| Return unique rows based on certain columns.   | 
-| `tibble`  	| `as_tibble`  	| Convert data to a tibble.                  	| 
-  
-: Table 1. Functions in the `dsTidyverse()` package {#tbl:functions} 
+Given that DataSHIELD functions need to be implemented one-by-one, it was not realistic to implement the entire set of Tidyverse functions. Instead, we reviewed existing functionality in DataSHIELD and chose those Tidyverse functions which we believed would significantly improve data manipulation within DataSHIELD. Currently these functions are from the packages `dplyr` and `tibble`, though we are open to adding further functions on request and welcome Github pull requests. The functions implemented at time of writing are listed in Table `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(tab:functions-tab-interactive)', '\\@ref(tab:functions-tab-static)'))`.
 
-Note that dsTidyverse supports non-standard evaluation[REF]. The name of the server-side data frame is passed in quotes to `df.name`, and the variable names ("sex" and "bmi") are evaluated as columns within "my_data". Various helper functions can also be used within the `tidy_expr` argument, for example `all_of` and `any_of` to specify multiple variables in filter conditions. See examples at the end of this section for example use of dsTidyverse, and the package vignette for a more detailed guide.
+```{r make-table}
+table_data <- data.frame(
+  Package = c(rep("dplyr", 14), "tibble"),
+  Function = c("select", "rename", "mutate", "if_else", "case_when", 
+               "bind_cols", "bind_rows", "filter", "slice", "arrange", 
+               "group_by", "ungroup", "group_keys", "distinct", "as_tibble"),
+  Description = c("Choose columns from a data frame.",
+                  "Rename columns in a data frame.",
+                  "Create or modify columns.",
+                  "A vectorized conditional function.",
+                  "A general vectorized conditional function.",
+                  "Combine data frames by columns.",
+                  "Combine data frames by rows.",
+                  "Filter rows based on conditions.",
+                  "Select rows by position.",
+                  "Arrange rows by values of a column or multiple columns.",
+                  "Group data by one or more columns.",
+                  "Remove grouping from data.",
+                  "Retrieve the group keys from a grouped data frame.",
+                  "Return unique rows based on certain columns.",
+                  "Convert data to a tibble."))
+
+table_caption <- "Implemented Tidyverse functions"
+```
+
+```{r functions-tab-interactive, eval = knitr::is_html_output(), layout = "l-body-outset"}
+knitr::kable(table_data, format = "html", caption = table_caption)
+```
+
+```{r pfunctions-tab-static, eval = knitr::is_latex_output()}
+knitr::kable(table_data, format = "latex", caption = table_caption) %>% 
+  kableExtra::kable_styling(font_size = 7)
+```  
+
+Note that dsTidyverse supports non-standard evaluation (@mailund2018tidy). The name of the server-side data frame is passed in quotes to `df.name`, and the variable names ("sex" and "bmi") are evaluated as columns within "my_data". Various helper functions can also be used within the `tidy_expr` argument, for example `all_of` and `any_of` to specify multiple variables in filter conditions. See examples at the end of this section for example use of dsTidyverse, and the package vignette for a more detailed guide.
 
 ### Disclosure checks 
 A key feature of DataSHIELD are the various disclosure checks performed on the server-side package to ensure that individual participant data or any other output that can be used to infer any individual participant information is not returned to the analyst. All but one of the dsTidyverse functions currently implemented are assign-type functions, and these carry a lot lower risk or direct disclosure as they do not return anything to the client. However – and especially in the case of subsetting operations – they carry a risk of indirect exposure. For example, through creating a subset of data only one row less than the original data, summary statistics of the two data frames could be compared to reveal the values of the row in difference. Therefore we implemented the following disclosure checks:
