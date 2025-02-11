@@ -70,14 +70,14 @@ test_that("ds.select correctly passes `matches`", {
   skip_if_not_installed("dsBaseClient")
   ds.select(
     df.name = "mtcars",
-    tidy_expr = list(matches("[aeiou]")),
+    tidy_expr = list(matches("a")),
     newobj = "matches",
     datasources = conns
   )
 
   expect_equal(
     ds.colnames("matches", datasources = conns)[[1]],
-    c("disp", "drat", "qsec", "am", "gear", "carb")
+    c("drat", "am", "gear", "carb")
   )
 })
 
