@@ -125,12 +125,6 @@ ds.colnames("mtcars")
 ds.select(df.name = "mtcars", tidy_expr = list(mpg:drat), newobj = "new_df")
 ds.colnames("new_df")
 ```
-#### Specify column names using a regular expression
-```{r}
-ds.colnames("mtcars")
-ds.select(df.name = "mtcars", tidy_expr = list(matches('[aeiou]')), newobj = "new_df")
-ds.colnames("new_df")
-```
 #### Combine multiple conditions with '&'
 ```{r}
 ds.colnames("mtcars")
