@@ -3,6 +3,7 @@ require(DSI)
 require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
+require(dsBase)
 
 login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
@@ -10,6 +11,7 @@ datashield.assign.table(conns, "mtcars", "mtcars")
 
 test_that("ds.arrange doesn't return error with correct arguments", {
   skip_if_not_installed("dsBaseClient")
+  print(listDisclosureSettingsDS())
   ds.arrange(
     df.name = "mtcars",
     tidy_expr = list(cyl),

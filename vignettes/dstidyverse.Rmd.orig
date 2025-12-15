@@ -23,7 +23,7 @@ options(knitr.duplicate.label = "allow")
 ```
 
 ## Overview
-`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://www.tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
+`dsTidyVerseClient` is the DataSHIELD implementation of selected functions from the Tidyverse (https://tidyverse.org/). Most of these functions are from `dplyr`, with some planned implementations for functions from `purrr` and `tidyr`.
 
 As long as not potentially disclosing, all functionality from the original Tidyverse functions has been preserved. The main argument which is normally passed to the `...` parameter in Tidyverse functions is passed as a list to the parameter `tidy_select`. Other arguments are passed to the relevant parameters which retain the same names as the original function.
 
