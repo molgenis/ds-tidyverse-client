@@ -106,3 +106,23 @@ test_that("ds.mutate passes with different .after argument", {
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "mpg_trans", "new_var", "vs", "am", "gear", "carb")
   )
 })
+
+date_df <- data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE)
+date_login_data <- .prepare_dslite(assign_method = "mutateDS", tables = list(date_df = date_df))
+date_conns <- datashield.login(logins = date_login_data)
+datashield.assign.table(date_conns, "date_df", "date_df")
+
+test_that("ds.mutate passes with as.Date on a character column", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate(
+    df.name = "date_df",
+    tidy_expr = list(date_col = as.Date(date_str)),
+    newobj = "date_result",
+    datasources = date_conns
+  )
+
+  expect_equal(
+    ds.class("date_result$date_col", datasources = date_conns)[[1]],
+    "Date"
+  )
+})
