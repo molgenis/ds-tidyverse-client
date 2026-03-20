@@ -5,18 +5,38 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data(mtcars)
-pf_na_df <- data.frame(x = c(1, NA, 3, NA, 5), stringsAsFactors = FALSE)
-pf_date_df <- data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE)
-pf_date_dmy_df <- data.frame(date_str = c("15/01/2024", "30/06/2024", "25/12/2024"), stringsAsFactors = FALSE)
-pf_login_data <- .prepare_dslite(
+na_df <- data.frame(x = c(1, NA, 3, NA, 5), stringsAsFactors = FALSE)
+date_df <- data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE)
+date_dmy_df <- data.frame(date_str = c("15/01/2024", "30/06/2024", "25/12/2024"), stringsAsFactors = FALSE)
+date_mdy_df <- data.frame(date_str = c("01/15/2024", "06/30/2024", "12/25/2024"), stringsAsFactors = FALSE)
+date_dmy_dash_df <- data.frame(date_str = c("15-01-2024", "30-06-2024", "25-12-2024"), stringsAsFactors = FALSE)
+date_ymd_slash_df <- data.frame(date_str = c("2024/01/15", "2024/06/30", "2024/12/25"), stringsAsFactors = FALSE)
+date_dby_df <- data.frame(date_str = c("15 Jan 2024", "30 Jun 2024", "25 Dec 2024"), stringsAsFactors = FALSE)
+date_bdy_df <- data.frame(date_str = c("Jan 15, 2024", "Jun 30, 2024", "Dec 25, 2024"), stringsAsFactors = FALSE)
+date_compact_df <- data.frame(date_str = c("20240115", "20240630", "20241225"), stringsAsFactors = FALSE)
+date_dot_df <- data.frame(date_str = c("15.01.2024", "30.06.2024", "25.12.2024"), stringsAsFactors = FALSE)
+login_data <- .prepare_dslite(
   assign_method = "mutateDS",
-  tables = list(mtcars = mtcars, pf_na_df = pf_na_df, pf_date_df = pf_date_df, pf_date_dmy_df = pf_date_dmy_df)
+  tables = list(
+    mtcars = mtcars, na_df = na_df, date_df = date_df,
+    date_dmy_df = date_dmy_df, date_mdy_df = date_mdy_df,
+    date_dmy_dash_df = date_dmy_dash_df, date_ymd_slash_df = date_ymd_slash_df,
+    date_dby_df = date_dby_df, date_bdy_df = date_bdy_df,
+    date_compact_df = date_compact_df, date_dot_df = date_dot_df
+  )
 )
-conns <- datashield.login(logins = pf_login_data)
+conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
-datashield.assign.table(conns, "pf_na_df", "pf_na_df")
-datashield.assign.table(conns, "pf_date_df", "pf_date_df")
-datashield.assign.table(conns, "pf_date_dmy_df", "pf_date_dmy_df")
+datashield.assign.table(conns, "na_df", "na_df")
+datashield.assign.table(conns, "date_df", "date_df")
+datashield.assign.table(conns, "date_dmy_df", "date_dmy_df")
+datashield.assign.table(conns, "date_mdy_df", "date_mdy_df")
+datashield.assign.table(conns, "date_dmy_dash_df", "date_dmy_dash_df")
+datashield.assign.table(conns, "date_ymd_slash_df", "date_ymd_slash_df")
+datashield.assign.table(conns, "date_dby_df", "date_dby_df")
+datashield.assign.table(conns, "date_bdy_df", "date_bdy_df")
+datashield.assign.table(conns, "date_compact_df", "date_compact_df")
+datashield.assign.table(conns, "date_dot_df", "date_dot_df")
 
 # Math functions
 
@@ -207,7 +227,7 @@ test_that("ds.mutate permits as.numeric()", {
 
 test_that("ds.mutate permits as.Date() with ISO format", {
   skip_if_not_installed("dsBaseClient")
-  ds.mutate("pf_date_df", tidy_expr = list(new_col = as.Date(date_str)), newobj = "res", datasources = conns)
+  ds.mutate("date_df", tidy_expr = list(new_col = as.Date(date_str)), newobj = "res", datasources = conns)
   expect_equal(
     ds.class("res$new_col", datasources = conns)[[1]],
     "Date"
@@ -216,7 +236,7 @@ test_that("ds.mutate permits as.Date() with ISO format", {
 
 test_that("ds.mutate permits as.Date() with positional format argument", {
   skip_if_not_installed("dsBaseClient")
-  ds.mutate("pf_date_dmy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%d/%m/%Y"))), newobj = "res", datasources = conns)
+  ds.mutate("date_dmy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%d/%m/%Y"))), newobj = "res", datasources = conns)
   expect_equal(
     round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
     round(mean(as.numeric(as.Date(c("15/01/2024", "30/06/2024", "25/12/2024"), "%d/%m/%Y"))), 2)
@@ -225,10 +245,73 @@ test_that("ds.mutate permits as.Date() with positional format argument", {
 
 test_that("ds.mutate as.Date() without format gives wrong result for non-ISO dates", {
   skip_if_not_installed("dsBaseClient")
-  ds.mutate("pf_date_dmy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str))), newobj = "res_wrong", datasources = conns)
+  ds.mutate("date_dmy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str))), newobj = "res_wrong", datasources = conns)
   correct_mean <- round(mean(as.numeric(as.Date(c("15/01/2024", "30/06/2024", "25/12/2024"), "%d/%m/%Y"))), 2)
   wrong_mean <- round(ds.mean("res_wrong$date_num", datasources = conns)$Mean.by.Study[1, 1], 2)
   expect_false(wrong_mean == correct_mean)
+})
+
+test_that("ds.mutate permits as.Date() with US format %m/%d/%Y", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_mdy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%m/%d/%Y"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("01/15/2024", "06/30/2024", "12/25/2024"), "%m/%d/%Y"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with dash format %d-%m-%Y", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_dmy_dash_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%d-%m-%Y"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("15-01-2024", "30-06-2024", "25-12-2024"), "%d-%m-%Y"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with %Y/%m/%d format", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_ymd_slash_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%Y/%m/%d"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("2024/01/15", "2024/06/30", "2024/12/25"), "%Y/%m/%d"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with abbreviated month %d %b %Y", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_dby_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%d %b %Y"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("15 Jan 2024", "30 Jun 2024", "25 Dec 2024"), "%d %b %Y"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with %b %d, %Y format", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_bdy_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%b %d, %Y"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("Jan 15, 2024", "Jun 30, 2024", "Dec 25, 2024"), "%b %d, %Y"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with compact %Y%m%d format", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_compact_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%Y%m%d"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("20240115", "20240630", "20241225"), "%Y%m%d"))), 2)
+  )
+})
+
+test_that("ds.mutate permits as.Date() with dot format %d.%m.%Y", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("date_dot_df", tidy_expr = list(date_num = as.numeric(as.Date(date_str, "%d.%m.%Y"))), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$date_num", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(as.numeric(as.Date(c("15.01.2024", "30.06.2024", "25.12.2024"), "%d.%m.%Y"))), 2)
+  )
 })
 
 # Window functions
@@ -255,7 +338,7 @@ test_that("ds.mutate permits cumsum()", {
 
 test_that("ds.mutate permits is.na()", {
   skip_if_not_installed("dsBaseClient")
-  ds.mutate("pf_na_df", tidy_expr = list(new_col = is.na(x)), newobj = "res", datasources = conns)
+  ds.mutate("na_df", tidy_expr = list(new_col = is.na(x)), newobj = "res", datasources = conns)
   expect_equal(
     ds.class("res$new_col", datasources = conns)[[1]],
     "logical"
@@ -295,7 +378,7 @@ test_that("ds.mutate permits desc()", {
 
 test_that("ds.mutate permits as.numeric(as.Date()) nested call", {
   skip_if_not_installed("dsBaseClient")
-  ds.mutate("pf_date_df", tidy_expr = list(new_col = as.numeric(as.Date(date_str))), newobj = "res", datasources = conns)
+  ds.mutate("date_df", tidy_expr = list(new_col = as.numeric(as.Date(date_str))), newobj = "res", datasources = conns)
   expect_equal(
     round(ds.mean("res$new_col", datasources = conns)$Mean.by.Study[1, 1], 2),
     round(mean(as.numeric(as.Date(c("2024-01-15", "2024-06-30", "2024-12-25")))), 2)
