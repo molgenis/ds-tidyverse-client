@@ -5,9 +5,11 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-login_data <- .prepare_dslite(assign_method = "selectDS", tables = list(mtcars = mtcars))
+num_range_df <- data.frame(x1 = 1:5, x2 = 6:10, x3 = 11:15, y1 = 16:20, stringsAsFactors = FALSE)
+login_data <- .prepare_dslite(assign_method = "selectDS", tables = list(mtcars = mtcars, num_range_df = num_range_df))
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "num_range_df", "num_range_df")
 
 test_that("ds.select fails with correct error message if data not present ", {
   skip_if_not_installed("dsBaseClient")
@@ -243,5 +245,20 @@ test_that("ds.select correctly passes strings with '='", {
   expect_equal(
     ds.colnames("equals", datasources = conns)[[1]],
     c("test", "cyl", "gear")
+  )
+})
+
+test_that("ds.select correctly passes `num_range`", {
+  skip_if_not_installed("dsBaseClient")
+  ds.select(
+    df.name = "num_range_df",
+    tidy_expr = list(num_range("x", 1:2)),
+    newobj = "num_range_res",
+    datasources = conns
+  )
+
+  expect_equal(
+    ds.colnames("num_range_res", datasources = conns)[[1]],
+    c("x1", "x2")
   )
 })

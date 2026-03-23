@@ -374,6 +374,15 @@ test_that("ds.mutate permits desc()", {
   )
 })
 
+test_that("ds.mutate permits scale()", {
+  skip_if_not_installed("dsBaseClient")
+  ds.mutate("mtcars", tidy_expr = list(new_col = scale(mpg)), newobj = "res", datasources = conns)
+  expect_equal(
+    round(ds.mean("res$new_col", datasources = conns)$Mean.by.Study[1, 1], 2),
+    round(mean(scale(mtcars$mpg)), 2)
+  )
+})
+
 # Nested function calls (regression test for c( regex)
 
 test_that("ds.mutate permits as.numeric(as.Date()) nested call", {
