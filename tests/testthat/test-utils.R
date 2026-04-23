@@ -75,11 +75,11 @@ test_that(".set_new_obj defaults to .data if no new object name is provided", {
 
 test_that(".get_encode_dictionary returns the expected encoding key", {
   expected_encode_list <- list(
-    input = c("(", ")", "\"", ",", " ", "!", "&", "|", "'", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n"),
+    input = c("(", ")", "\"", ",", " ", "!", "&", "|", "'", "=", "+", "-", "*", "/", "^", ">", "<", "~", "\n", "%"),
     output = c(
       "$LB$", "$RB$", "$QUOTE$", "$COMMA$", "$SPACE$", "$EXCL$", "$AND$", "$OR$",
       "$APO$", "$EQU$", "$ADD$", "$SUB$", "$MULT$", "$DIVIDE$", "$POWER$",
-      "$GT$", "$LT$", "$TILDE$", "$LINE$"
+      "$GT$", "$LT$", "$TILDE$", "$LINE$", "$PCT$"
     )
   )
   actual_encode_list <- .get_encode_dictionary()
@@ -136,7 +136,7 @@ test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
 test_that(".encode_tidy_eval correctly encodes strings with unpermitted values", {
   encode_key <- .get_encode_dictionary()
   input_string <- "asd, qwe, wer == rew &}{}%"
-  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$$AND$}{}%"
+  expected_output <- "asd$COMMA$$SPACE$qwe$COMMA$$SPACE$wer$SPACE$$EQU$$EQU$$SPACE$rew$SPACE$$AND$}{}$PCT$"
   result <- .encode_tidy_eval(input_string, encode_key)
   expect_equal(result, expected_output)
 })

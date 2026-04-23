@@ -21,7 +21,20 @@
 #' @importFrom DSI newDSLoginBuilder
 #' @export
 .prepare_dslite <- function(assign_method = NULL, aggregate_method = NULL, tables = NULL) {
-  options(datashield.env = environment())
+  options(
+    datashield.env = environment(),
+    datashield.privacyControlLevel = "banana",
+    nfilter.tab = 3,
+    nfilter.subset = 3,
+    nfilter.glm = 0.33,
+    nfilter.string = 80,
+    nfilter.stringShort = 20,
+    nfilter.kNN = 3,
+    nfilter.levels.density = 0.33,
+    nfilter.levels.max = 40,
+    nfilter.noise = 0.25,
+    nfilter.privacy.old = 5
+  )
   dslite.server <- DSLite::newDSLiteServer(tables = tables)
   dslite.server$config(defaultDSConfiguration(include = c("dsBase", "dsTidyverse")))
   dslite.server$aggregateMethod("exists", "base::exists")
