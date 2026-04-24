@@ -13,7 +13,7 @@ ds.arrange(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{A list containing variables, or functions of variables. Use \code{dplyr::desc()} to sort a
 variable in descending order.}
@@ -29,7 +29,7 @@ only.}
 No return value, called for its side effects. An object (typically a data frame or tibble) with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::arrange}.
+DataSHIELD implementation of \code{dplyr::arrange}.
 }
 \examples{
 \dontrun{

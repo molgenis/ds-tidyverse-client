@@ -7,7 +7,7 @@
 ds.rename(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List with format new_name = old_name to rename selected variables.}
 
@@ -20,7 +20,7 @@ No return value, called for its side effects. An object (typically a data frame 
 with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::rename}.
+DataSHIELD implementation of \code{dplyr::rename}.
 }
 \examples{
 \dontrun{

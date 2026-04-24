@@ -15,7 +15,7 @@ ds.mutate(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List of tidyselect syntax to be passed to dplyr::mutate.}
 

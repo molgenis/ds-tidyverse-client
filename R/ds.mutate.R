@@ -1,6 +1,6 @@
 #' @title Create, modify, and delete columns
 #' @description DataSHIELD implementation of \code{dplyr::mutate}.
-#' @param df.name Character specifying a serverside data frame or tibble.
+#' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr List of tidyselect syntax to be passed to dplyr::mutate.
 #' @param .keep Control which columns from \code{df.name} are retained in the output. Options include:
 #' \itemize{

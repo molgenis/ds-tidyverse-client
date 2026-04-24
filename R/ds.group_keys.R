@@ -1,6 +1,6 @@
 #' @title Describe the groups within a grouped tibble or data frame
-#' @description DataSHIELD implentation of \code{dplyr::group_keys}.
-#' @param df.name Character specifying a serverside tibble.
+#' @description DataSHIELD implementation of \code{dplyr::group_keys}.
+#' @param df.name Character specifying a server-side tibble.
 #' @param datasources DataSHIELD connections object.
 #' @return A data frame describing the groups.
 #' @importFrom DSI datashield.aggregate

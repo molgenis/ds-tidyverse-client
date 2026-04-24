@@ -1,6 +1,6 @@
 #' @title Group by one or more variables
-#' @description DataSHIELD implentation of \code{dplyr::group_by}.
-#' @param df.name Character specifying a serverside data frame or tibble.
+#' @description DataSHIELD implementation of \code{dplyr::group_by}.
+#' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr List of variables or computations to group by.
 #' @param .add 	When FALSE, the default, \code{group_by()} will override existing groups. To add to the
 #' existing groups, use .add = TRUE.
@@ -31,7 +31,7 @@ ds.group_by <- function(df.name = NULL, tidy_expr, .add = FALSE, .drop = TRUE, n
 }
 
 #' @title Remove grouping from a tibble or data frame
-#' @description DataSHIELD implentation of \code{dplyr::ungroup}.
+#' @description DataSHIELD implementation of \code{dplyr::ungroup}.
 #' @param x a tibble or data frame.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.

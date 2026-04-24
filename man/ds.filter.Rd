@@ -14,7 +14,7 @@ ds.filter(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List of expressions that return a logical value, and are defined in terms of the
 variables in \code{df.name}.}
@@ -34,7 +34,7 @@ No return value, called for its side effects. An object (typically a data frame 
 with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::filter}.
+DataSHIELD implementation of \code{dplyr::filter}.
 }
 \examples{
 \dontrun{

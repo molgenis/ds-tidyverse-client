@@ -1,6 +1,6 @@
 #' @title Keep distinct/unique rows
-#' @description DataSHIELD implentation of \code{dplyr::distinct}.
-#' @param df.name Character specifying a serverside data frame or tibble.
+#' @description DataSHIELD implementation of \code{dplyr::distinct}.
+#' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr Optionally, list of variables to use when determining uniqueness. If there are multiple rows
 #' for a given combination of inputs, only the first row will be preserved. If omitted, will use all
 #' variables in the data frame.

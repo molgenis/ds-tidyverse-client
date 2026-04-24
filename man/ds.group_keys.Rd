@@ -7,7 +7,7 @@
 ds.group_keys(df.name = NULL, datasources = NULL)
 }
 \arguments{
-\item{df.name}{Character specifying a serverside tibble.}
+\item{df.name}{Character specifying a server-side tibble.}
 
 \item{datasources}{DataSHIELD connections object.}
 }
@@ -15,7 +15,7 @@ ds.group_keys(df.name = NULL, datasources = NULL)
 A data frame describing the groups.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::group_keys}.
+DataSHIELD implementation of \code{dplyr::group_keys}.
 }
 \examples{
 \dontrun{
