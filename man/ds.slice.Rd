@@ -14,7 +14,7 @@ ds.slice(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List, provide either positive values to keep, or negative values to drop. The values
 provided must be either all positive or all negative. Indices beyond the number of rows in the
@@ -36,7 +36,7 @@ No return value, called for its side effects. An object (typically a data frame 
 with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::slice}.
+DataSHIELD implementation of \code{dplyr::slice}.
 }
 \examples{
 \dontrun{

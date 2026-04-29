@@ -18,7 +18,7 @@ No return value, called for its side effects. An ungrouped data frame or tibble 
 created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::ungroup}.
+DataSHIELD implementation of \code{dplyr::ungroup}.
 }
 \examples{
 \dontrun{

@@ -112,7 +112,7 @@
 
 #' Check Select Arguments
 #'
-#' @param .data Character specifying a serverside data frame or tibble.
+#' @param .data Character specifying a server-side data frame or tibble.
 #' @param newobj Optionally, character specifying name for new server-side data frame.
 #' @return This function does not return a value but is used for argument validation.
 #' @importFrom assertthat assert_that

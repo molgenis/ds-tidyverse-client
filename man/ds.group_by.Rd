@@ -14,7 +14,7 @@ ds.group_by(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List of variables or computations to group by.}
 
@@ -34,7 +34,7 @@ No return value, called for its side effects. A grouped data frame with class gr
 yields a empty set of grouping columns, in which case a tibble will be created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::group_by}.
+DataSHIELD implementation of \code{dplyr::group_by}.
 }
 \examples{
 \dontrun{

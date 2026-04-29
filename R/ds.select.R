@@ -1,6 +1,6 @@
 #' @title Keep or drop columns using their names and types
-#' @description DataSHIELD implentation of \code{dplyr::select}.
-#' @param df.name Character specifying a serverside data frame or tibble.
+#' @description DataSHIELD implementation of \code{dplyr::select}.
+#' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr List of one or more unquoted expressions separated by commas. Variable names can
 #' be used as if they were positions in the data frame, so expressions like x:y can be used to
 #' select a range of variables.

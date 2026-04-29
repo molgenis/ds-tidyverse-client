@@ -393,7 +393,7 @@ ds.ungroup("grouped", "no_longer_grouped")
 ds.class("no_longer_grouped")[[1]]
 ```
 
-To return to clientside details of the groups, use `ds.group_keys`. Note that
+To return to client-side details of the groups, use `ds.group_keys`. Note that
 this is subject to disclosure controls and will return an error if the number
 of groups is too high.
 

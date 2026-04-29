@@ -7,7 +7,7 @@
 ds.select(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{List of one or more unquoted expressions separated by commas. Variable names can
 be used as if they were positions in the data frame, so expressions like x:y can be used to
@@ -22,7 +22,7 @@ No return value, called for its side effects. An object (typically a data frame 
 with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::select}.
+DataSHIELD implementation of \code{dplyr::select}.
 }
 \examples{
 \dontrun{

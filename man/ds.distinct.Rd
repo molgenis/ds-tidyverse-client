@@ -13,7 +13,7 @@ ds.distinct(
 )
 }
 \arguments{
-\item{df.name}{Character specifying a serverside data frame or tibble.}
+\item{df.name}{Character specifying a server-side data frame or tibble.}
 
 \item{tidy_expr}{Optionally, list of variables to use when determining uniqueness. If there are multiple rows
 for a given combination of inputs, only the first row will be preserved. If omitted, will use all
@@ -31,7 +31,7 @@ No return value, called for its side effects. An object (typically a data frame 
 with the name specified by \code{newobj} is created on the server.
 }
 \description{
-DataSHIELD implentation of \code{dplyr::distinct}.
+DataSHIELD implementation of \code{dplyr::distinct}.
 }
 \examples{
 \dontrun{

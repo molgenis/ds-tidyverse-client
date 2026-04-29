@@ -1,3 +1,6 @@
+## Version 1.1.0
+* Added `%` encoding support for date format strings, enabling date formats (e.g. `"%Y-%m-%d"`) to be passed through the parser in functions like `ds.mutate`
+
 ## Version 1.0.2
 * Introduced stricter privacy checks to block potential inference attacks
 

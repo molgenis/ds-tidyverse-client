@@ -1,6 +1,6 @@
 #' @title Rename columns
-#' @description DataSHIELD implentation of \code{dplyr::rename}.
-#' @param df.name Character specifying a serverside data frame or tibble.
+#' @description DataSHIELD implementation of \code{dplyr::rename}.
+#' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr List with format new_name = old_name to rename selected variables.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
