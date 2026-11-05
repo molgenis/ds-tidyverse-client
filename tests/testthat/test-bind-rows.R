@@ -57,3 +57,14 @@ test_that("ds.case_when works with .id arg", {
     c("which_df", "mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 })
+
+test_that("ds.bind_rows errors when to_combine is not wrapped in list", {
+  expect_error(
+    ds.bind_rows(
+      to_combine = c(mtcars, mtcars),
+      newobj = "test",
+      datasources = conns
+    ),
+    "`to_combine` must be wrapped in `list\\(\\)`"
+  )
+})

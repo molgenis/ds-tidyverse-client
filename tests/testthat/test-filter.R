@@ -84,3 +84,15 @@ test_that("ds.filter works with .preserve arg", {
     "data.frame"
   )
 })
+
+test_that("ds.filter errors when tidy_expr is not wrapped in list", {
+  expect_error(
+    ds.filter(
+      df.name = "mtcars",
+      tidy_expr = cyl == 4 & mpg > 20,
+      newobj = "filtered",
+      datasources = conns
+    ),
+    "`tidy_expr` must be wrapped in `list\\(\\)`"
+  )
+})
