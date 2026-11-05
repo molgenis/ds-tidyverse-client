@@ -17,9 +17,10 @@ cohorts <- list(c1 = make_cohort(60, 1), c2 = make_cohort(50, 2), c3 = make_coho
 cohorts$c1$age[1:4] <- NA
 cohorts$c2$smk[1:6] <- NA
 mixed <- mutate(cohorts$c1, age = as.character(age))
+sparse <- mutate(cohorts$c1, rare = factor(c("a", rep("b", 59))), sparse_age = c(30, 31, rep(NA, 58)))
 pooled_data <- bind_rows(cohorts)
 
-login_data <- .prepare_dslite(tables = c(cohorts, list(mixed = mixed)))
+login_data <- .prepare_dslite(tables = c(cohorts, list(mixed = mixed, sparse = sparse)))
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns["server_1"], "df", "c1")
 datashield.assign.table(conns["server_2"], "df", "c2")
@@ -27,6 +28,7 @@ datashield.assign.table(conns["server_3"], "df", "c3")
 datashield.assign.table(conns["server_1"], "mixed_df", "mixed")
 datashield.assign.table(conns["server_2"], "mixed_df", "c2")
 datashield.assign.table(conns["server_3"], "mixed_df", "c3")
+datashield.assign.table(conns, "sparse_df", "sparse")
 
 mean_sd <- list(gtsummary::all_continuous() ~ "{mean} ({sd})", gtsummary::all_categorical() ~ "{n} ({p}%)")
 local_summary <- function(...) {
@@ -86,4 +88,18 @@ test_that("ds.table_one rejects variables of unsupported or inconsistent class",
 test_that("ds.table_one checks its arguments", {
   expect_error(ds.table_one("df", age, datasources = conns))
   expect_error(ds.table_one("df", "age", .by = c("sex", "smk"), datasources = conns))
+})
+
+test_that("ds.table_one shows the server message when a count is blocked", {
+  expect_error(
+    ds.table_one("sparse_df", "rare", datasources = conns),
+    "server_1: At least one count is between 1 and nfilter.tab"
+  )
+})
+
+test_that("ds.table_one shows the server message when a summary is blocked", {
+  expect_error(
+    ds.table_one("sparse_df", "sparse_age", datasources = conns),
+    "server_2: At least one variable has between 1 and nfilter.tab"
+  )
 })

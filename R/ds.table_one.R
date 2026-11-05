@@ -42,6 +42,25 @@ ds.table_one <- function(df = NULL, vars = NULL, .by = NULL, labels = NULL,
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df, NULL, check_obj = FALSE)
   assertthat::assert_that(is.character(vars), is.null(.by) || assertthat::is.string(.by))
+  ard <- .with_server_errors(.build_table_one_ard(df, vars, .by, overall, datasources))
+  tbl <- gtsummary::tbl_ard_summary(
+    ard, by = dplyr::all_of(.by), statistic = statistic, label = labels, missing = missing,
+    overall = overall && !is.null(.by)
+  )
+  tbl <- gtsummary::modify_header(tbl, gtsummary::all_stat_cols() ~ "**{level}**  \nN = {n}")
+  .add_quantile_note(tbl, length(datasources))
+}
+
+#' Get pooled statistics for a Table 1 from the servers as a cards ARD
+#'
+#' @param df Character specifying a server-side data frame.
+#' @param vars Character vector of the variables to summarise.
+#' @param .by The name of the grouping variable, or NULL.
+#' @param overall Logical; if \code{TRUE}, add statistics for all rows.
+#' @param datasources DataSHIELD connections object.
+#' @return A cards ARD with the statistics, the \code{.by} levels and the total N.
+#' @noRd
+.build_table_one_ard <- function(df, vars, .by, overall, datasources) {
   types <- .get_variable_types(df, vars, datasources)
   by_counts <- .pooled_rows(ds.count(df, !!!syms(.by), .pooled = TRUE, datasources = datasources))
   ard <- cards::bind_ard(.summarise_table_one(df, types, .by, datasources), .total_n_ard(by_counts))
@@ -52,12 +71,27 @@ ds.table_one <- function(df = NULL, vars = NULL, .by = NULL, labels = NULL,
   if (!is.null(.by) && overall) {
     ard <- cards::bind_ard(ard, .summarise_table_one(df, types, NULL, datasources))
   }
-  tbl <- gtsummary::tbl_ard_summary(
-    ard, by = dplyr::all_of(.by), statistic = statistic, label = labels, missing = missing,
-    overall = overall && !is.null(.by)
-  )
-  tbl <- gtsummary::modify_header(tbl, gtsummary::all_stat_cols() ~ "**{level}**  \nN = {n}")
-  .add_quantile_note(tbl, length(datasources))
+  return(ard)
+}
+
+#' Evaluate an expression, adding the servers' messages to any DataSHIELD error
+#'
+#' DSI clears its stored errors at the start of each call, so any errors present after a failure
+#' belong to the call that failed.
+#'
+#' @param expr An expression that calls the servers.
+#' @return The value of \code{expr}.
+#' @importFrom DSI datashield.errors
+#' @noRd
+.with_server_errors <- function(expr) {
+  tryCatch(expr, error = function(e) {
+    server_errors <- unlist(datashield.errors())
+    if (length(server_errors) == 0) {
+      stop(e)
+    }
+    messages <- gsub("([{}])", "\\1\\1", paste0(names(server_errors), ": ", server_errors))
+    cli_abort(c("A server blocked or failed a request.", stats::setNames(messages, rep("x", length(messages)))))
+  })
 }
 
 #' Get whether each variable is continuous or categorical from its server-side class
