@@ -23,20 +23,18 @@
 
 #' Make the tables the tests read from the servers
 #'
-#' Uploaded to Armadillo by `data_files/molgenis_armadillo-upload_testing_datasets.R`.
+#' Uploaded to Armadillo by `data_files/molgenis_armadillo-upload_testing_datasets.R`. Only plain
+#' data frames: Armadillo loads tables with `data.frame()`, dropping tibble and group classes and
+#' repairing duplicate names, so the tests build those objects on the server.
 #'
 #' @return A named list of data frames.
 .test_tables <- function() {
   mtcars <- datasets::mtcars
-  mtcars_group <- dplyr::mutate(dplyr::group_by(mtcars, cyl), drop_test = factor("a", levels = c("a", "b")))
-  mtcars_group_carb <- dplyr::mutate(dplyr::group_by(mtcars, carb), drop_test = factor("a", levels = c("a", "b")))
   list(
     mtcars = mtcars,
     mtcars_cat_var = dplyr::mutate(mtcars, cat_var = factor(ifelse(mpg > 20, "high", "low"))),
-    mtcars_dup_names = cbind(mtcars, dplyr::tibble(cyl = 2)),
-    mtcars_group = mtcars_group,
-    mtcars_group_carb = mtcars_group_carb,
-    mtcars_bad_group = dplyr::group_by(mtcars, qsec),
+    mtcars_drop_test = dplyr::mutate(mtcars, drop_test = factor("a", levels = c("a", "b"))),
+    cyl_2 = data.frame(cyl = rep(2, nrow(mtcars))),
     test_matrix_values = data.frame(value = 1:20),
     na_df = data.frame(x = c(1, NA, 3, NA, 5), stringsAsFactors = FALSE),
     date_df = data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE),

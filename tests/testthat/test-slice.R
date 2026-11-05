@@ -9,7 +9,8 @@ data("mtcars")
 login_data <- .prepare_login(assign_method = "sliceDS")
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
-datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group_carb"))
+datashield.assign.table(conns, "mtcars_drop_test", .test_table("mtcars_drop_test"))
+ds.group_by("mtcars_drop_test", tidy_expr = list(carb), newobj = "mtcars_group", datasources = conns)
 
 test_that("ds.slice correctly subsets rows", {
   skip_if_not_installed("dsBaseClient")
