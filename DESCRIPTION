@@ -31,7 +31,9 @@ Imports:
   DSI (>= 1.7.0),
   cli,
   rlang,
-  assertthat
+  assertthat,
+  generics,
+  stats
 Suggests: 
   testthat (>= 3.0.0),
   knitr,
@@ -40,6 +42,7 @@ Suggests:
   dsBase,
   dsBaseClient, 
   dsTidyverse, 
-  dplyr
+  dplyr,
+  modelsummary
 Config/testthat/edition: 3
 VignetteBuilder: knitr
