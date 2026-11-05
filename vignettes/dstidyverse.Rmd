@@ -157,6 +157,18 @@ ds.colnames("new_df")
 #> $server_1
 #> [1] "cyl"  "carb"
 ```
+#### Use a vector of column names defined in your local session
+Names in `tidy_expr` are evaluated on the server, so a vector defined in your local session is not
+found there. Prefix it with `!!` to insert its value into the expression before it is sent. This
+works in the `tidy_expr` of any function, for example `list(mpg > !!threshold)` in `ds.filter`.
+
+``` r
+my_vars <- c("mpg", "cyl")
+ds.select(df.name = "mtcars", tidy_expr = list(!!my_vars), newobj = "new_df")
+ds.colnames("new_df")
+#> $server_1
+#> [1] "mpg" "cyl"
+```
 ### Rename
 `ds.rename` renames columns within a server-side dataframe. Column names are passed unquoted and are
 evaluated as column names within `df.name`. Below are some examples, see `dplyr::rename` for full details.
