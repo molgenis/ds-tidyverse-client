@@ -110,3 +110,15 @@ test_that("ds.select correctly passes strings with '='", {
     c("test", "cyl", "gear")
   )
 })
+
+test_that("ds.select errors when newobj is not a valid name", {
+  expect_error(
+    ds.select(
+      df.name = "mtcars",
+      tidy_expr = list(mpg),
+      newobj = "my-obj",
+      datasources = conns
+    ),
+    "`newobj` must be a single string that is a syntactically valid R name"
+  )
+})
