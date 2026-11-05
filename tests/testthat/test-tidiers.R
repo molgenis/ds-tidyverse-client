@@ -65,6 +65,8 @@ test_that("glance.ds_glm returns one row", {
   out <- glance(glm_gaussian)
   expect_s3_class(out, "tbl_df")
   expect_equal(nrow(out), 1)
+  expect_equal(names(out)[1], "cohort")
+  expect_equal(out$cohort, "pooled")
   expect_equal(out$nobs, glm_gaussian$Nvalid)
   expect_equal(out$deviance, glm_gaussian$dev)
   expect_equal(out$df.residual, glm_gaussian$df)

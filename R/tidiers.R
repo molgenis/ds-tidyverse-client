@@ -44,7 +44,7 @@ as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
 #'
 #'   \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
 #'
-#'   \code{glance()} returns one row for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
+#'   \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
 #'   that failed have missing values.
 #'
 #'   Statistics, p-values and confidence intervals that the servers do not return are computed with a
@@ -101,6 +101,7 @@ tidy.ds_lmerSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, exponentiat
 #' @export
 glance.ds_glm <- function(x, ...) {
   tibble(
+    cohort = "pooled",
     deviance = x[["dev"]],
     df.residual = x[["df"]],
     nobs = x[["Nvalid"]],

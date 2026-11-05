@@ -64,7 +64,7 @@ A tibble.
 
   \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
 
-  \code{glance()} returns one row for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
+  \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
   that failed have missing values.
 
   Statistics, p-values and confidence intervals that the servers do not return are computed with a
