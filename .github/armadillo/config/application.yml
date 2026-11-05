@@ -1,0 +1,33 @@
+armadillo:
+  docker-management-enabled: false
+  docker-run-in-container: true
+  container-prefix: 'dev-'
+  profiles:
+    - name: default
+      image: datashield/rock-base:latest
+      port: 8085
+      host: default
+      package-whitelist:
+        - dsBase
+        - dsTidyverse
+      function-blacklist: [ ]
+      options:
+        datashield:
+          seed: 342325352
+
+spring:
+  security:
+    user:
+      name: admin
+      password: admin
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+
+storage:
+  root-dir: /data
+
+audit.log.path: '/logs/audit.log'
+
+stdout.log.path: '/logs/armadillo.log'
