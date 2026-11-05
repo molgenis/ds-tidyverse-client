@@ -41,7 +41,8 @@ The functions permitted on the server are \code{n}, \code{mean}, \code{sd}, \cod
 
 With \code{.shape = "long"}, each column \code{<variable>_<statistic>}, as named by
 \code{across()}, is split into \code{variable} and \code{stat_name} at the last underscore. A
-column name without an underscore, such as \code{n}, gives \code{variable = NA}.
+column name without an underscore, such as \code{n}, gives \code{variable = NA}. Each
+statistic name must be one of those recognised for pooling, listed below.
 
 With \code{.pooled = TRUE}, rows with \code{cohort = "pooled"} are added. Statistics are
 recognised by name: \code{n} is summed; \code{mean} is weighted by \code{n}; \code{sd} and

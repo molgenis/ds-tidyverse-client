@@ -94,11 +94,29 @@ test_that("ds.summarise pooling requires an n statistic for each variable", {
   )
 })
 
+test_that("ds.summarise long shape names columns that do not end in a recognised statistic", {
+  expect_error(
+    ds.summarise("df", n = n(), avg = mean(mpg), across(hp, list(max_ish = median)), .by = "am",
+      .shape = "long", datasources = conns),
+    "\"avg\" and \"hp_max_ish\" do not"
+  )
+  expect_error(
+    ds.summarise("df", n = n(), mpg_mean = mean(mpg), mpg_q = median(mpg), .by = "am",
+      .shape = "long", datasources = conns),
+    "\"mpg_q\" does not"
+  )
+})
+
 test_that("ds.summarise pooling rejects statistics it does not recognise", {
   expect_error(
     ds.summarise("df", n = n(), avg = mean(mpg), .by = "am", .pooled = TRUE, datasources = conns),
-    "can only be pooled if they are named"
+    "must end in a recognised statistic"
   )
+})
+
+test_that("ds.summarise wide shape keeps any column names", {
+  observed <- ds.summarise("df", n = n(), avg = mean(mpg), .by = "am", datasources = conns)
+  expect_equal(names(observed), c("cohort", "am", "n", "avg"))
 })
 
 test_that("ds.summarise returns server errors for disclosive requests", {

@@ -7,7 +7,8 @@
 #'
 #' With \code{.shape = "long"}, each column \code{<variable>_<statistic>}, as named by
 #' \code{across()}, is split into \code{variable} and \code{stat_name} at the last underscore. A
-#' column name without an underscore, such as \code{n}, gives \code{variable = NA}.
+#' column name without an underscore, such as \code{n}, gives \code{variable = NA}. Each
+#' statistic name must be one of those recognised for pooling, listed below.
 #'
 #' With \code{.pooled = TRUE}, rows with \code{cohort = "pooled"} are added. Statistics are
 #' recognised by name: \code{n} is summed; \code{mean} is weighted by \code{n}; \code{sd} and
@@ -90,6 +91,7 @@ ds.summarise <- function(.data = NULL, ..., .by = NULL, .shape = c("wide", "long
 #' \code{stat_name} and \code{stat}.
 #' @noRd
 .pivot_summaries_longer <- function(out, .by) {
+  .check_stat_names(setdiff(names(out), c("cohort", .by)))
   out |>
     tidyr::pivot_longer(
       -dplyr::all_of(c("cohort", .by)),
@@ -98,6 +100,32 @@ ds.summarise <- function(.data = NULL, ..., .by = NULL, .shape = c("wide", "long
       values_to = "stat"
     ) |>
     dplyr::mutate(variable = dplyr::na_if(.data$variable, ""))
+}
+
+#' Get the statistic names recognised by the long shape and by pooling
+#'
+#' @return A character vector of statistic names.
+#' @noRd
+.recognised_stats <- function() {
+  c("n", "mean", "sd", "var", "median", "p05", "p10", "p25", "p50", "p75", "p90", "p95")
+}
+
+#' Check that each column name ends in a recognised statistic name
+#'
+#' @param columns The names of the summary columns.
+#' @return None. Throws an error naming the columns that do not.
+#' @importFrom cli cli_abort
+#' @noRd
+.check_stat_names <- function(columns) {
+  recognised <- .recognised_stats()
+  unknown <- columns[!sub("^.*_", "", columns) %in% recognised]
+  if (length(unknown) > 0) {
+    cli_abort(c(
+      "With {.code .shape = \"long\"} or {.code .pooled = TRUE}, column names must end in a recognised statistic.",
+      "i" = "Recognised statistics are {.val {recognised}}.",
+      "x" = "{.val {unknown}} {?does/do} not."
+    ))
+  }
 }
 
 #' Pivot long summaries back to one column per variable and statistic
@@ -181,11 +209,6 @@ ds.summarise <- function(.data = NULL, ..., .by = NULL, .shape = c("wide", "long
 #' @importFrom cli cli_abort
 #' @noRd
 .check_poolable <- function(long) {
-  poolable <- c("n", "mean", "sd", "var", "median", "p05", "p10", "p25", "p50", "p75", "p90", "p95")
-  unknown <- setdiff(long$stat_name, poolable)
-  if (length(unknown) > 0) {
-    cli_abort(c("Statistics can only be pooled if they are named {.val {poolable}}.", "x" = "Found {.val {unknown}}."))
-  }
   vars <- dplyr::summarise(long, has_n = "n" %in% .data$stat_name, has_mean = "mean" %in% .data$stat_name,
     needs_mean = any(c("sd", "var") %in% .data$stat_name), .by = "variable")
   if (!all(vars$has_n) || any(vars$needs_mean & !vars$has_mean)) {
