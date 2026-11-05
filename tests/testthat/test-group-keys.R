@@ -4,17 +4,7 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-mtcars_group <- mtcars %>%
-  group_by(cyl) %>%
-  mutate(drop_test = factor("a", levels = c("a", "b")))
-
-login_data <- .prepare_login(
-  aggregate_method = "groupKeysDS",
-  tables = list(
-    mtcars = mtcars,
-    mtcars_group = mtcars_group
-  )
-)
+login_data <- .prepare_login(aggregate_method = "groupKeysDS")
 
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group"))

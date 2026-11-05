@@ -5,14 +5,11 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-mtcars_group <- mtcars %>%
-  group_by(carb) %>%
-  mutate(drop_test = factor("a", levels = c("a", "b")))
 
-login_data <- .prepare_login(assign_method = "sliceDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "sliceDS")
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
-datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group"))
+datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group_carb"))
 
 test_that("ds.slice correctly subsets rows", {
   skip_if_not_installed("dsBaseClient")

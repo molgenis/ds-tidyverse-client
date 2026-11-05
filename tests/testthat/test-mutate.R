@@ -5,7 +5,7 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data(mtcars)
-login_data <- .prepare_login(assign_method = "mutateDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "mutateDS")
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 

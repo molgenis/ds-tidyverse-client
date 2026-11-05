@@ -4,10 +4,9 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
-login_data <- .prepare_login(assign_method = "caseWhenDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "caseWhenDS")
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "mtcars", .test_table("mtcars_cat_var"))
 
 test_that("ds.case_when passes and numeric condition and numeric output", {
   skip_if_not_installed("dsBaseClient")

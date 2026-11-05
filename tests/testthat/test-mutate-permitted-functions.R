@@ -5,26 +5,7 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data(mtcars)
-na_df <- data.frame(x = c(1, NA, 3, NA, 5), stringsAsFactors = FALSE)
-date_df <- data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE)
-date_dmy_df <- data.frame(date_str = c("15/01/2024", "30/06/2024", "25/12/2024"), stringsAsFactors = FALSE)
-date_mdy_df <- data.frame(date_str = c("01/15/2024", "06/30/2024", "12/25/2024"), stringsAsFactors = FALSE)
-date_dmy_dash_df <- data.frame(date_str = c("15-01-2024", "30-06-2024", "25-12-2024"), stringsAsFactors = FALSE)
-date_ymd_slash_df <- data.frame(date_str = c("2024/01/15", "2024/06/30", "2024/12/25"), stringsAsFactors = FALSE)
-date_dby_df <- data.frame(date_str = c("15 Jan 2024", "30 Jun 2024", "25 Dec 2024"), stringsAsFactors = FALSE)
-date_bdy_df <- data.frame(date_str = c("Jan 15, 2024", "Jun 30, 2024", "Dec 25, 2024"), stringsAsFactors = FALSE)
-date_compact_df <- data.frame(date_str = c("20240115", "20240630", "20241225"), stringsAsFactors = FALSE)
-date_dot_df <- data.frame(date_str = c("15.01.2024", "30.06.2024", "25.12.2024"), stringsAsFactors = FALSE)
-login_data <- .prepare_login(
-  assign_method = "mutateDS",
-  tables = list(
-    mtcars = mtcars, na_df = na_df, date_df = date_df,
-    date_dmy_df = date_dmy_df, date_mdy_df = date_mdy_df,
-    date_dmy_dash_df = date_dmy_dash_df, date_ymd_slash_df = date_ymd_slash_df,
-    date_dby_df = date_dby_df, date_bdy_df = date_bdy_df,
-    date_compact_df = date_compact_df, date_dot_df = date_dot_df
-  )
-)
+login_data <- .prepare_login(assign_method = "mutateDS")
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 datashield.assign.table(conns, "na_df", .test_table("na_df"))

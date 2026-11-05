@@ -2,48 +2,66 @@
 #'
 #' @param assign_method,aggregate_method Passed to `.prepare_dslite()`; unused on Armadillo, which
 #'   reads the methods from the installed packages.
-#' @param tables A named list of tables to be made available at `.test_table(name)`.
 #'
 #' @return A DataSHIELD login object for DSLite (the default) or Armadillo (`"ArmadilloDriver"`).
-.prepare_login <- function(assign_method = NULL, aggregate_method = NULL, tables = list()) {
+#'   Either server holds `.test_tables()`.
+.prepare_login <- function(assign_method = NULL, aggregate_method = NULL) {
   if (getOption("default_driver", "DSLiteDriver") == "ArmadilloDriver") {
-    return(.prepare_armadillo(tables))
+    return(.prepare_armadillo())
   }
-  .prepare_dslite(assign_method, aggregate_method, tables)
+  .prepare_dslite(assign_method, aggregate_method, .test_tables())
 }
 
 #' Give the server-side path of a test table
 #'
-#' @param name The table name, as given in `tables` of `.prepare_login()`.
+#' @param name A table name from `.test_tables()`.
 #'
 #' @return The `project/folder/table` path used by both DSLite and Armadillo.
 .test_table <- function(name) {
   file.path("tidyverse", "test", name)
 }
 
-#' Upload tables to the local Armadillo and create a login object for it
+#' Make the tables the tests read from the servers
 #'
-#' @param tables A named list of data frames to upload to project `tidyverse`, folder `test`.
-#'   The project is recreated first, so it holds only these tables, as a DSLite server would.
+#' Uploaded to Armadillo by `data_files/molgenis_armadillo-upload_testing_datasets.R`.
+#'
+#' @return A named list of data frames.
+.test_tables <- function() {
+  mtcars <- datasets::mtcars
+  mtcars_group <- dplyr::mutate(dplyr::group_by(mtcars, cyl), drop_test = factor("a", levels = c("a", "b")))
+  mtcars_group_carb <- dplyr::mutate(dplyr::group_by(mtcars, carb), drop_test = factor("a", levels = c("a", "b")))
+  list(
+    mtcars = mtcars,
+    mtcars_cat_var = dplyr::mutate(mtcars, cat_var = factor(ifelse(mpg > 20, "high", "low"))),
+    mtcars_dup_names = cbind(mtcars, dplyr::tibble(cyl = 2)),
+    mtcars_group = mtcars_group,
+    mtcars_group_carb = mtcars_group_carb,
+    mtcars_bad_group = dplyr::group_by(mtcars, qsec),
+    test_matrix_values = data.frame(value = 1:20),
+    na_df = data.frame(x = c(1, NA, 3, NA, 5), stringsAsFactors = FALSE),
+    date_df = data.frame(date_str = c("2024-01-15", "2024-06-30", "2024-12-25"), stringsAsFactors = FALSE),
+    date_dmy_df = data.frame(date_str = c("15/01/2024", "30/06/2024", "25/12/2024"), stringsAsFactors = FALSE),
+    date_mdy_df = data.frame(date_str = c("01/15/2024", "06/30/2024", "12/25/2024"), stringsAsFactors = FALSE),
+    date_dmy_dash_df = data.frame(date_str = c("15-01-2024", "30-06-2024", "25-12-2024"), stringsAsFactors = FALSE),
+    date_ymd_slash_df = data.frame(date_str = c("2024/01/15", "2024/06/30", "2024/12/25"), stringsAsFactors = FALSE),
+    date_dby_df = data.frame(date_str = c("15 Jan 2024", "30 Jun 2024", "25 Dec 2024"), stringsAsFactors = FALSE),
+    date_bdy_df = data.frame(date_str = c("Jan 15, 2024", "Jun 30, 2024", "Dec 25, 2024"), stringsAsFactors = FALSE),
+    date_compact_df = data.frame(date_str = c("20240115", "20240630", "20241225"), stringsAsFactors = FALSE),
+    date_dot_df = data.frame(date_str = c("15.01.2024", "30.06.2024", "25.12.2024"), stringsAsFactors = FALSE),
+    num_range_df = data.frame(x1 = 1:5, x2 = 6:10, x3 = 11:15, y1 = 16:20, stringsAsFactors = FALSE)
+  )
+}
+
+#' Create a login object for the local Armadillo
 #'
 #' @return A DataSHIELD login object for three connections to the Armadillo profile
 #'   `getOption("armadillo_profile", "default")`.
-.prepare_armadillo <- function(tables) {
+.prepare_armadillo <- function() {
   loadNamespace("DSMolgenisArmadillo")
-  url <- "http://localhost:8080"
-  MolgenisArmadillo::armadillo.login_basic(url, "admin", "admin")
-  if ("tidyverse" %in% MolgenisArmadillo::armadillo.list_projects()) {
-    MolgenisArmadillo::armadillo.delete_project("tidyverse")
-  }
-  MolgenisArmadillo::armadillo.create_project("tidyverse")
-  for (name in names(tables)) {
-    MolgenisArmadillo::armadillo.upload_table("tidyverse", "test", tables[[name]], name)
-  }
-
   builder <- DSI::newDSLoginBuilder()
   for (server in c("server_1", "server_2", "server_3")) {
     builder$append(
-      server = server, url = url, user = "admin", password = "admin",
+      server = server, url = "http://localhost:8080", user = "admin", password = "admin",
       driver = "ArmadilloDriver", profile = getOption("armadillo_profile", "default")
     )
   }

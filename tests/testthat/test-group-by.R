@@ -4,17 +4,7 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-mtcars_group <- mtcars %>%
-  group_by(cyl) %>%
-  mutate(drop_test = factor("a", levels = c("a", "b")))
-
-login_data <- .prepare_login(
-  assign_method = "groupByDS",
-  tables = list(
-    mtcars = mtcars,
-    mtcars_group = mtcars_group
-  )
-)
+login_data <- .prepare_login(assign_method = "groupByDS")
 
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
@@ -35,10 +25,7 @@ test_that("ds.group_by correctly groups a data frame", {
   )
 })
 
-login_data <- .prepare_login(
-  assign_method = "ungroupDS",
-  tables = list(mtcars_group = mtcars_group)
-)
+login_data <- .prepare_login(assign_method = "ungroupDS")
 
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group"))

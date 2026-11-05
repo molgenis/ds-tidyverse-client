@@ -5,7 +5,7 @@ require(dsTidyverse)
 require(dsBaseClient)
 require(dsBase)
 
-login_data <- .prepare_login(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "arrangeDS")
 conns <- datashield.login(logins = login_data)
 datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
