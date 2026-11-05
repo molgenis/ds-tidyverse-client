@@ -122,3 +122,15 @@ test_that("ds.select errors when newobj is not a valid name", {
     "`newobj` must be a single string that is a syntactically valid R name"
   )
 })
+
+test_that("ds.select errors when df.name is not a character", {
+  expect_error(
+    ds.select(
+      df.name = NULL,
+      tidy_expr = list(mpg),
+      newobj = "new_df",
+      datasources = conns
+    ),
+    "df.name is not a character vector"
+  )
+})
