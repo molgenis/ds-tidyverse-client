@@ -15,11 +15,15 @@ export(ds.rename)
 export(ds.select)
 export(ds.slice)
 export(ds.ungroup)
-importFrom(DSI,datashield.aggregate)
-importFrom(DSI,datashield.assign)
-importFrom(DSI,datashield.connections_find)
+importFrom(DSI,
+  datashield.aggregate,
+  datashield.assign,
+  datashield.connections_find
+)
 importFrom(assertthat,assert_that)
 importFrom(cli,cli_abort)
-importFrom(rlang,enquo)
-importFrom(rlang,quo_text)
-importFrom(rlang,sym)
+importFrom(rlang,
+  enquo,
+  quo_text,
+  sym
+)
