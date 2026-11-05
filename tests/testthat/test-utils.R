@@ -178,10 +178,26 @@ test_that(".check_tidy_args returns correct errors", {
 
   expect_error(
     .check_tidy_args(df.name = "test", newobj = NULL, check_df = TRUE, check_obj = TRUE),
-    "newobj is not a character vector"
+    "`newobj` must be a single string that is a syntactically valid R name"
   )
 
   expect_silent(
     .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
   )
+})
+
+test_that(".check_tidy_args rejects invalid newobj values", {
+  invalid <- list(NULL, NA_character_, c("a", "b"), character(0), 1, "1abc", "my obj", "my-obj", "_abc", "if", "")
+  for (newobj in invalid) {
+    expect_error(
+      .check_tidy_args(newobj = newobj, check_df = FALSE),
+      "`newobj` must be a single string that is a syntactically valid R name"
+    )
+  }
+})
+
+test_that(".check_tidy_args accepts valid newobj values", {
+  for (newobj in c("abc", "my.obj", "my_obj", ".obj", "obj1")) {
+    expect_silent(.check_tidy_args(newobj = newobj, check_df = FALSE))
+  }
 })

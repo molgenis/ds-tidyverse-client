@@ -116,14 +116,16 @@
 #' @param newobj Optionally, character specifying name for new server-side data frame.
 #' @return This function does not return a value but is used for argument validation.
 #' @importFrom assertthat assert_that
+#' @importFrom rlang is_string
+#' @importFrom cli cli_abort
 #' @noRd
 .check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE, check_obj = TRUE) {
   if (check_df) {
     assert_that(is.character(df.name))
   }
 
-  if (check_obj) {
-    assert_that(is.character(newobj))
+  if (check_obj && !(is_string(newobj) && make.names(newobj) == newobj)) {
+    cli_abort("{.arg newobj} must be a single string that is a syntactically valid R name.")
   }
 }
 
