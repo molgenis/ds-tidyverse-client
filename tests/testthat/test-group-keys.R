@@ -8,7 +8,7 @@ mtcars_group <- mtcars %>%
   group_by(cyl) %>%
   mutate(drop_test = factor("a", levels = c("a", "b")))
 
-login_data <- .prepare_dslite(
+login_data <- .prepare_login(
   aggregate_method = "groupKeysDS",
   tables = list(
     mtcars = mtcars,
@@ -17,8 +17,8 @@ login_data <- .prepare_dslite(
 )
 
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars_group", "mtcars_group")
-datashield.assign.table(conns, "mtcars_bad_group", "mtcars_bad_group")
+datashield.assign.table(conns, "mtcars_group", .test_table("mtcars_group"))
+datashield.assign.table(conns, "mtcars_bad_group", .test_table("mtcars_bad_group"))
 
 test_that("ds.group_keys correctly returns groups", {
   skip_if_not_installed("dsBaseClient")

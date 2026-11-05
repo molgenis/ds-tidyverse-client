@@ -15,7 +15,7 @@ date_dby_df <- data.frame(date_str = c("15 Jan 2024", "30 Jun 2024", "25 Dec 202
 date_bdy_df <- data.frame(date_str = c("Jan 15, 2024", "Jun 30, 2024", "Dec 25, 2024"), stringsAsFactors = FALSE)
 date_compact_df <- data.frame(date_str = c("20240115", "20240630", "20241225"), stringsAsFactors = FALSE)
 date_dot_df <- data.frame(date_str = c("15.01.2024", "30.06.2024", "25.12.2024"), stringsAsFactors = FALSE)
-login_data <- .prepare_dslite(
+login_data <- .prepare_login(
   assign_method = "mutateDS",
   tables = list(
     mtcars = mtcars, na_df = na_df, date_df = date_df,
@@ -26,17 +26,17 @@ login_data <- .prepare_dslite(
   )
 )
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
-datashield.assign.table(conns, "na_df", "na_df")
-datashield.assign.table(conns, "date_df", "date_df")
-datashield.assign.table(conns, "date_dmy_df", "date_dmy_df")
-datashield.assign.table(conns, "date_mdy_df", "date_mdy_df")
-datashield.assign.table(conns, "date_dmy_dash_df", "date_dmy_dash_df")
-datashield.assign.table(conns, "date_ymd_slash_df", "date_ymd_slash_df")
-datashield.assign.table(conns, "date_dby_df", "date_dby_df")
-datashield.assign.table(conns, "date_bdy_df", "date_bdy_df")
-datashield.assign.table(conns, "date_compact_df", "date_compact_df")
-datashield.assign.table(conns, "date_dot_df", "date_dot_df")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "na_df", .test_table("na_df"))
+datashield.assign.table(conns, "date_df", .test_table("date_df"))
+datashield.assign.table(conns, "date_dmy_df", .test_table("date_dmy_df"))
+datashield.assign.table(conns, "date_mdy_df", .test_table("date_mdy_df"))
+datashield.assign.table(conns, "date_dmy_dash_df", .test_table("date_dmy_dash_df"))
+datashield.assign.table(conns, "date_ymd_slash_df", .test_table("date_ymd_slash_df"))
+datashield.assign.table(conns, "date_dby_df", .test_table("date_dby_df"))
+datashield.assign.table(conns, "date_bdy_df", .test_table("date_bdy_df"))
+datashield.assign.table(conns, "date_compact_df", .test_table("date_compact_df"))
+datashield.assign.table(conns, "date_dot_df", .test_table("date_dot_df"))
 
 # Math functions
 

@@ -4,9 +4,9 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-login_data <- .prepare_dslite(assign_method = "bindColsDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "bindColsDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.bind_cols binds two data frames together", {
   skip_if_not_installed("dsBaseClient")

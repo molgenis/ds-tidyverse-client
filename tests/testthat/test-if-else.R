@@ -5,9 +5,9 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 mtcars <- mtcars %>% mutate(cat_var = factor(ifelse(mpg > 20, "high", "low")))
-login_data <- .prepare_dslite(assign_method = "ifElseDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "ifElseDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.if_else correctly passes argument with numeric condition and categorical outcome", {
   skip_if_not_installed("dsBaseClient")

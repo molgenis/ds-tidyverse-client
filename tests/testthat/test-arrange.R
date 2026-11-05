@@ -5,9 +5,9 @@ require(dsTidyverse)
 require(dsBaseClient)
 require(dsBase)
 
-login_data <- .prepare_dslite(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "arrangeDS", tables = list(mtcars = mtcars))
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.arrange doesn't return error with correct arguments", {
   skip_if_not_installed("dsBaseClient")

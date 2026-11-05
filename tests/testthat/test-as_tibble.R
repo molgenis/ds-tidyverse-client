@@ -9,7 +9,7 @@ mtcars_dup_names <- cbind(mtcars, tibble(cyl = 2))
 
 test_matrix <- matrix(data = 1:20, ncol = 4)
 
-login_data <- .prepare_dslite(
+login_data <- .prepare_login(
   assign_method = "asTibbleDS",
   tables = list(
     mtcars = mtcars,
@@ -19,9 +19,9 @@ login_data <- .prepare_dslite(
 )
 
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
-datashield.assign.table(conns, "mtcars_dup_names", "mtcars_dup_names")
-datashield.assign.table(conns, "test_matrix", "test_matrix")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "mtcars_dup_names", .test_table("mtcars_dup_names"))
+datashield.assign.table(conns, "test_matrix", .test_table("test_matrix"))
 
 test_that("ds.as_tibble correctly converts a data frame to a tibble", {
   skip_if_not_installed("dsBaseClient")
