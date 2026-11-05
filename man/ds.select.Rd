@@ -11,7 +11,8 @@ ds.select(df.name = NULL, tidy_expr = NULL, newobj = NULL, datasources = NULL)
 
 \item{tidy_expr}{List of one or more unquoted expressions separated by commas. Variable names can
 be used as if they were positions in the data frame, so expressions like x:y can be used to
-select a range of variables.}
+select a range of variables. To use a vector of column names defined in your local session,
+prefix it with \code{!!}, e.g. \code{list(!!my_vars)}.}
 
 \item{newobj}{Character specifying name for new server-side data frame.}
 
@@ -31,6 +32,14 @@ ds.select(
   tidy_expr = list(mpg, starts_with("t")),
   newobj = "df_subset",
   dataources = conns
+)
+
+my_vars <- c("mpg", "cyl")
+ds.select(
+  df.name = "mtcars",
+  tidy_expr = list(!!my_vars),
+  newobj = "df_subset",
+  datasources = conns
 )
 }
 }
