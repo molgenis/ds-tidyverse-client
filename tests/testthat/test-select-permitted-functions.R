@@ -5,11 +5,10 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-num_range_df <- data.frame(x1 = 1:5, x2 = 6:10, x3 = 11:15, y1 = 16:20, stringsAsFactors = FALSE)
-login_data <- .prepare_dslite(assign_method = "selectDS", tables = list(mtcars = mtcars, num_range_df = num_range_df))
+login_data <- .prepare_login(assign_method = "selectDS")
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
-datashield.assign.table(conns, "num_range_df", "num_range_df")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "num_range_df", .test_table("num_range_df"))
 
 test_that("ds.select correctly passes `starts_with`", {
   skip_if_not_installed("dsBaseClient")

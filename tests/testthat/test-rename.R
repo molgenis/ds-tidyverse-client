@@ -5,9 +5,9 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "bindRowsDS")
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.rename fails with correct error message if data not present ", {
   skip_if_not_installed("dsBaseClient")

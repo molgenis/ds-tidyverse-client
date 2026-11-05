@@ -5,23 +5,18 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-mtcars_dup_names <- cbind(mtcars, tibble(cyl = 2))
 
-test_matrix <- matrix(data = 1:20, ncol = 4)
-
-login_data <- .prepare_dslite(
-  assign_method = "asTibbleDS",
-  tables = list(
-    mtcars = mtcars,
-    mtcars_dup_names = mtcars_dup_names,
-    test_matrix = test_matrix
-  )
-)
+login_data <- .prepare_login(assign_method = "asTibbleDS")
 
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
-datashield.assign.table(conns, "mtcars_dup_names", "mtcars_dup_names")
-datashield.assign.table(conns, "test_matrix", "test_matrix")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "cyl_2", .test_table("cyl_2"))
+ds.bind_cols(to_combine = list(mtcars, cyl_2), .name_repair = "minimal", newobj = "mtcars_dup_names", datasources = conns)
+datashield.assign.table(conns, "test_matrix_values", .test_table("test_matrix_values"))
+ds.matrix(
+  mdata = "test_matrix_values$value", from = "serverside.vector", nrows.scalar = 5, ncols.scalar = 4,
+  newobj = "test_matrix", datasources = conns
+)
 
 test_that("ds.as_tibble correctly converts a data frame to a tibble", {
   skip_if_not_installed("dsBaseClient")

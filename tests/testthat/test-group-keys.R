@@ -4,21 +4,13 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-mtcars_group <- mtcars %>%
-  group_by(cyl) %>%
-  mutate(drop_test = factor("a", levels = c("a", "b")))
-
-login_data <- .prepare_dslite(
-  aggregate_method = "groupKeysDS",
-  tables = list(
-    mtcars = mtcars,
-    mtcars_group = mtcars_group
-  )
-)
+login_data <- .prepare_login(aggregate_method = "groupKeysDS")
 
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars_group", "mtcars_group")
-datashield.assign.table(conns, "mtcars_bad_group", "mtcars_bad_group")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
+datashield.assign.table(conns, "mtcars_drop_test", .test_table("mtcars_drop_test"))
+ds.group_by("mtcars_drop_test", tidy_expr = list(cyl), newobj = "mtcars_group", datasources = conns)
+ds.group_by("mtcars", tidy_expr = list(qsec), newobj = "mtcars_bad_group", datasources = conns)
 
 test_that("ds.group_keys correctly returns groups", {
   skip_if_not_installed("dsBaseClient")

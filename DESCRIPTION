@@ -39,7 +39,9 @@ Suggests:
   DSLite, 
   dsBase,
   dsBaseClient, 
-  dsTidyverse, 
-  dplyr
+  dsTidyverse,
+  dplyr,
+  MolgenisArmadillo,
+  DSMolgenisArmadillo
 Config/testthat/edition: 3
 VignetteBuilder: knitr
