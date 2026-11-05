@@ -95,3 +95,16 @@ test_that("ds.if_else correctly passes argument with = ", {
     c(54, 42, 0)
   )
 })
+
+test_that("ds.if_else errors when condition is not wrapped in list", {
+  expect_error(
+    ds.if_else(
+      condition = mtcars$mpg > 20,
+      true = "high",
+      false = "low",
+      newobj = "test",
+      datasources = conns
+    ),
+    "`condition` must be wrapped in `list\\(\\)`"
+  )
+})

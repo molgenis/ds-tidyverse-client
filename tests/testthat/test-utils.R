@@ -116,13 +116,17 @@ test_that(".format_args_as_string correctly formats including 'list'", {
   expect_equal(result, expected)
 })
 
-test_that(".format_args_as_string correctly formats excluding 'list'", {
+test_that(".format_args_as_string errors when expression is not wrapped in 'list'", {
   expr <- rlang::expr(
     c(LAB_TSC, starts_with("LAB"), ends_with("ED"))
   )
-  expected <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  result <- .format_args_as_string(expr)
-  expect_equal(result, expected)
+  expect_error(.format_args_as_string(expr), "`tidy_expr` must be wrapped in `list\\(\\)`")
+  expect_error(.format_args_as_string(expr, "to_combine"), "`to_combine` must be wrapped in `list\\(\\)`")
+})
+
+test_that(".format_args_as_string allows NULL and missing expressions", {
+  expect_null(.format_args_as_string(rlang::quo(NULL)))
+  expect_equal(.format_args_as_string(rlang::new_quosure(rlang::missing_arg())), "")
 })
 
 test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
@@ -156,15 +160,14 @@ test_that(".build_cally build correct call object", {
 })
 
 test_that(".make_serverside_call encodes and builds call object", {
-  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+  tidy_select <- .format_args_as_string(rlang::quo(list(c(LAB_TSC, starts_with("LAB"), ends_with("ED")))))
   returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata"))
-  expected <- call("mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$", "mydata")
+  expected <- call("mutateDS", "c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$$QUOTE$LAB$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$$QUOTE$ED$QUOTE$$RB$$RB$", "mydata")
   expect_equal(expected, returned)
 
   returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata", "extra_arg_1", "extra_arg_2"))
   expected <- call(
-    "mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$",
+    "mutateDS", "c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$$QUOTE$LAB$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$$QUOTE$ED$QUOTE$$RB$$RB$",
     "mydata", "extra_arg_1", "extra_arg_2"
   )
   expect_equal(expected, returned)

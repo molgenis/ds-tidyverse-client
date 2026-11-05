@@ -82,12 +82,31 @@
 #' Converts expressions to a string and remove the 'list(' portion.
 #'
 #' @param expr The expression to be converted.
+#' @param arg Name of the argument the expression was passed to, used in the error message.
 #' @return The formatted arguments as a string.
 #' @importFrom rlang quo_text
 #' @noRd
-.format_args_as_string <- function(expr) {
+.format_args_as_string <- function(expr, arg = "tidy_expr") {
+  .check_wrapped_in_list(expr, arg)
   neat_args_as_string <- .remove_list(quo_text(expr))
   return(neat_args_as_string)
+}
+
+#' Check that an expression is NULL, missing or a call to 'list()'.
+#'
+#' @param expr The expression or quosure to be checked.
+#' @param arg Name of the argument the expression was passed to, used in the error message.
+#' @importFrom rlang get_expr is_call is_missing
+#' @importFrom cli cli_abort
+#' @noRd
+.check_wrapped_in_list <- function(expr, arg) {
+  expr <- get_expr(expr)
+  if (!is_missing(expr) && !is.null(expr) && !is_call(expr, "list")) {
+    cli_abort(c(
+      "{.arg {arg}} must be wrapped in {.code list()}.",
+      "i" = "For example, use {.code list(mpg > 20)} rather than {.code mpg > 20}."
+    ))
+  }
 }
 
 #' Encode a string using the provided encoding key.
