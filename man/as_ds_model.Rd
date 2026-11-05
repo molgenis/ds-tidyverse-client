@@ -4,19 +4,21 @@
 \alias{as_ds_model}
 \title{Mark a DataSHIELD model result with its model class}
 \usage{
-as_ds_model(x, type = c("glm", "glmSLMA", "lmerSLMA"))
+as_ds_model(x, type = c("glm", "glmSLMA", "lmerSLMA", "glmerSLMA"))
 }
 \arguments{
 \item{x}{The object returned by the model function.}
 
-\item{type}{The model function that returned `x`: one of `"glm"`, `"glmSLMA"` or `"lmerSLMA"`.}
+\item{type}{The model function that returned `x`: one of `"glm"`, `"glmSLMA"`, `"lmerSLMA"`
+or `"glmerSLMA"`.}
 }
 \value{
 `x` with the class `ds_<type>`.
 }
 \description{
-Adds the class `ds_glm`, `ds_glmSLMA` or `ds_lmerSLMA` to the output of
-  \code{dsBaseClient::ds.glm}, \code{dsBaseClient::ds.glmSLMA} or \code{dsBaseClient::ds.lmerSLMA}, so
+Adds the class `ds_glm`, `ds_glmSLMA`, `ds_lmerSLMA` or `ds_glmerSLMA` to the output of
+  \code{dsBaseClient::ds.glm}, \code{dsBaseClient::ds.glmSLMA}, \code{dsBaseClient::ds.lmerSLMA} or
+  \code{dsBaseClient::ds.glmerSLMA}, so
   that \code{tidy()} and \code{glance()} can be used on it. An object that already has the class is
   returned unchanged.
 }

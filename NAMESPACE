@@ -2,9 +2,11 @@
 
 S3method(glance,ds_glm)
 S3method(glance,ds_glmSLMA)
+S3method(glance,ds_glmerSLMA)
 S3method(glance,ds_lmerSLMA)
 S3method(tidy,ds_glm)
 S3method(tidy,ds_glmSLMA)
+S3method(tidy,ds_glmerSLMA)
 S3method(tidy,ds_lmerSLMA)
 export(as_ds_model)
 export(ds.arrange)

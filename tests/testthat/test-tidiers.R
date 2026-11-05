@@ -9,6 +9,9 @@ slma_failed <- as_ds_model(read_fixture("glmSLMA_study1_failed"), "glmSLMA")
 lmer_raw <- read_fixture("lmerSLMA_full")
 lmer <- as_ds_model(lmer_raw, "lmerSLMA")
 lmer_failed <- as_ds_model(read_fixture("lmerSLMA_studies_failed"), "lmerSLMA")
+glmer <- as_ds_model(read_fixture("glmerSLMA_full"), "glmerSLMA")
+glmer_no_metafor <- as_ds_model(read_fixture("glmerSLMA_no_metafor"), "glmerSLMA")
+glmer_failed <- as_ds_model(read_fixture("glmerSLMA_studies_failed"), "glmerSLMA")
 z <- stats::qnorm(0.975)
 
 test_that("as_ds_model adds the class once", {
@@ -193,6 +196,46 @@ test_that("glance.ds_lmerSLMA gives failed cohorts missing values", {
   expect_equal(out$converged, c(TRUE, NA, NA))
 })
 
+test_that("tidy.ds_glmerSLMA returns cohort z-tests and no residual row for a binomial model", {
+  out <- tidy(glmer)
+  study1 <- out[out$cohort == "study1", ]
+  coefs <- glmer$output.summary$study1$coefficients
+  expect_equal(study1$effect, c("fixed", "fixed", "ran_pars"))
+  expect_equal(study1$group, c(NA, NA, "clinic"))
+  expect_equal(study1$term, c("(Intercept)", "LAB_TSC", "sd__(Intercept)"))
+  expect_equal(study1$statistic[1:2], unname(coefs[, "z value"]))
+  expect_equal(study1$p.value[1:2], unname(coefs[, "Pr(>|z|)"]))
+  expect_equal(study1$estimate[3], unname(attr(glmer$output.summary$study1$varcor$clinic, "stddev")))
+})
+
+test_that("tidy.ds_glmerSLMA pools fixed effects and exponentiates them only", {
+  out <- tidy(glmer, conf.int = TRUE, exponentiate = TRUE)
+  linear <- tidy(glmer, conf.int = TRUE)
+  pooled <- out[out$cohort == "pooled", ]
+  expect_equal(pooled$estimate, exp(unname(glmer$SLMA.pooled.ests.matrix[, "pooled.REML"])))
+  fixed <- out$effect == "fixed"
+  expect_equal(out$conf.low[fixed], exp(linear$conf.low[fixed]))
+  expect_equal(out$estimate[!fixed], linear$estimate[!fixed])
+  expect_equal(unique(tidy(glmer_no_metafor)$cohort), c("study1", "study2", "study3"))
+})
+
+test_that("tidy.ds_glmerSLMA and glance.ds_glmerSLMA handle failed studies", {
+  expect_equal(unique(tidy(glmer_failed)$cohort), c("study1", "pooled"))
+  expect_equal(tidy(glmer_failed)$term[tidy(glmer_failed)$cohort == "pooled"], c("(Intercept)", "LAB_TSC", "GENDER1"))
+  out <- glance(glmer_failed)
+  expect_equal(out$nobs, c(400, NA, NA))
+  expect_equal(out$converged, c(TRUE, NA, NA))
+})
+
+test_that("glance.ds_glmerSLMA returns one row per cohort", {
+  out <- glance(glmer)
+  log_lik <- glmer$output.summary$study2$logLik
+  expect_s3_class(out, "tbl_df")
+  expect_equal(out$cohort, c("study1", "study2", "study3"))
+  expect_equal(out$BIC[2], -2 * as.numeric(log_lik) + log(400) * attr(log_lik, "df"))
+  expect_true(all(out$converged))
+})
+
 test_that("modelsummary renders one and several ds.glm models", {
   skip_if_not_installed("modelsummary")
   one <- modelsummary::modelsummary(glm_gaussian, output = "data.frame")
@@ -213,6 +256,16 @@ test_that("modelsummary renders SLMA models with a cohort layout", {
     shape = term + group + cohort ~ model, gof_map = NA, output = "data.frame"
   )
   expect_true("sd__Observation" %in% mixed$term)
+})
+
+test_that("modelsummary renders a glmer SLMA model", {
+  skip_if_not_installed("modelsummary")
+  out <- modelsummary::modelsummary(
+    list(lmer = lmer, glmer = glmer),
+    shape = term + group + cohort ~ model, gof_map = NA, output = "data.frame"
+  )
+  expect_true(all(c("sd__(Intercept)", "LAB_TSC") %in% out$term))
+  expect_setequal(out$cohort, c("study1", "study2", "study3", "pooled"))
 })
 
 test_that("modelsummary renders a ds.glm and an SLMA model together", {

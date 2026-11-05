@@ -8,6 +8,8 @@
 \alias{glance.ds_glm}
 \alias{glance.ds_glmSLMA}
 \alias{glance.ds_lmerSLMA}
+\alias{tidy.ds_glmerSLMA}
+\alias{glance.ds_glmerSLMA}
 \title{Tidy and glance methods for DataSHIELD models}
 \usage{
 \method{tidy}{ds_glm}(x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE, ...)
@@ -35,6 +37,17 @@
 \method{glance}{ds_glmSLMA}(x, ...)
 
 \method{glance}{ds_lmerSLMA}(x, ...)
+
+\method{tidy}{ds_glmerSLMA}(
+  x,
+  conf.int = FALSE,
+  conf.level = 0.95,
+  exponentiate = FALSE,
+  pooling = c("REML", "ML", "FE"),
+  ...
+)
+
+\method{glance}{ds_glmerSLMA}(x, ...)
 }
 \arguments{
 \item{x}{A model result marked with \code{as_ds_model()}.}
@@ -50,7 +63,8 @@ effects are exponentiated.}
 \item{...}{Not used.}
 
 \item{pooling}{The pooled estimates to report: `"REML"`, `"ML"` or `"FE"`, as estimated by
-\code{metafor::rma} in \code{ds.glmSLMA} and \code{ds.lmerSLMA}.}
+\code{metafor::rma} in \code{ds.glmSLMA}, \code{ds.lmerSLMA}
+and \code{ds.glmerSLMA}.}
 }
 \value{
 A tibble.
@@ -58,15 +72,16 @@ A tibble.
 \description{
 \code{tidy()} returns one row per model term. For study-level meta-analysis (SLMA)
   results it returns one block of rows per cohort that returned estimates, then a block with
-  `cohort = "pooled"` holding the pooled estimates, if \code{ds.glmSLMA} or \code{ds.lmerSLMA}
-  pooled them. Mixed models also return each cohort's random-effect standard deviations and
+  `cohort = "pooled"` holding the pooled estimates, if \code{ds.glmSLMA}, \code{ds.lmerSLMA} or
+  \code{ds.glmerSLMA} pooled them. Mixed models also return each cohort's random-effect standard deviations and
   correlations, with `effect = "ran_pars"`.
 
   \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
 
-  \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
-  that failed have missing values.
+  \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per
+  cohort for SLMA results. Cohorts that failed have missing values.
 
-  Statistics, p-values and confidence intervals that the servers do not return are computed with a
-  normal approximation.
+  Statistics and p-values of pooled rows, and all confidence intervals, are computed with a normal
+  approximation. Cohort p-values come from the model summaries, so \code{ds.lmerSLMA} cohorts have
+  none, while \code{ds.glmerSLMA} cohorts have those of the z-tests.
 }

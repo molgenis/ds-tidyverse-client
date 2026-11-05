@@ -7,12 +7,14 @@ generics::tidy
 generics::glance
 
 #' @title Mark a DataSHIELD model result with its model class
-#' @description Adds the class `ds_glm`, `ds_glmSLMA` or `ds_lmerSLMA` to the output of
-#'   \code{dsBaseClient::ds.glm}, \code{dsBaseClient::ds.glmSLMA} or \code{dsBaseClient::ds.lmerSLMA}, so
+#' @description Adds the class `ds_glm`, `ds_glmSLMA`, `ds_lmerSLMA` or `ds_glmerSLMA` to the output of
+#'   \code{dsBaseClient::ds.glm}, \code{dsBaseClient::ds.glmSLMA}, \code{dsBaseClient::ds.lmerSLMA} or
+#'   \code{dsBaseClient::ds.glmerSLMA}, so
 #'   that \code{tidy()} and \code{glance()} can be used on it. An object that already has the class is
 #'   returned unchanged.
 #' @param x The object returned by the model function.
-#' @param type The model function that returned `x`: one of `"glm"`, `"glmSLMA"` or `"lmerSLMA"`.
+#' @param type The model function that returned `x`: one of `"glm"`, `"glmSLMA"`, `"lmerSLMA"`
+#'   or `"glmerSLMA"`.
 #' @return `x` with the class `ds_<type>`.
 #' @importFrom cli cli_abort
 #' @examples
@@ -21,7 +23,7 @@ generics::glance
 #' tidy(as_ds_model(fit, "glmSLMA"), conf.int = TRUE)
 #' }
 #' @export
-as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
+as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA", "glmerSLMA")) {
   type <- match.arg(type)
   model_class <- paste0("ds_", type)
   if (inherits(x, model_class)) {
@@ -38,17 +40,18 @@ as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
 #' @title Tidy and glance methods for DataSHIELD models
 #' @description \code{tidy()} returns one row per model term. For study-level meta-analysis (SLMA)
 #'   results it returns one block of rows per cohort that returned estimates, then a block with
-#'   `cohort = "pooled"` holding the pooled estimates, if \code{ds.glmSLMA} or \code{ds.lmerSLMA}
-#'   pooled them. Mixed models also return each cohort's random-effect standard deviations and
+#'   `cohort = "pooled"` holding the pooled estimates, if \code{ds.glmSLMA}, \code{ds.lmerSLMA} or
+#'   \code{ds.glmerSLMA} pooled them. Mixed models also return each cohort's random-effect standard deviations and
 #'   correlations, with `effect = "ran_pars"`.
 #'
 #'   \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
 #'
-#'   \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
-#'   that failed have missing values.
+#'   \code{glance()} returns one row, with `cohort = "pooled"`, for \code{ds.glm} and one row per
+#'   cohort for SLMA results. Cohorts that failed have missing values.
 #'
-#'   Statistics, p-values and confidence intervals that the servers do not return are computed with a
-#'   normal approximation.
+#'   Statistics and p-values of pooled rows, and all confidence intervals, are computed with a normal
+#'   approximation. Cohort p-values come from the model summaries, so \code{ds.lmerSLMA} cohorts have
+#'   none, while \code{ds.glmerSLMA} cohorts have those of the z-tests.
 #' @param x A model result marked with \code{as_ds_model()}.
 #' @param conf.int Logical: whether to add the columns `conf.low` and `conf.high`.
 #' @param conf.level The confidence level of the interval.
@@ -56,7 +59,8 @@ as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
 #'   odds ratios or rate ratios. Standard errors are not changed, and for mixed models only the fixed
 #'   effects are exponentiated.
 #' @param pooling The pooled estimates to report: `"REML"`, `"ML"` or `"FE"`, as estimated by
-#'   \code{metafor::rma} in \code{ds.glmSLMA} and \code{ds.lmerSLMA}.
+#'   \code{metafor::rma} in \code{ds.glmSLMA}, \code{ds.lmerSLMA}
+#'   and \code{ds.glmerSLMA}.
 #' @param ... Not used.
 #' @return A tibble.
 #' @name ds_model_tidiers
@@ -147,8 +151,16 @@ glance.ds_lmerSLMA <- function(x, ...) {
   })
 }
 
+#' @rdname ds_model_tidiers
+#' @export
+tidy.ds_glmerSLMA <- tidy.ds_lmerSLMA
+
+#' @rdname ds_model_tidiers
+#' @export
+glance.ds_glmerSLMA <- glance.ds_lmerSLMA
+
 #' Get the per-study summaries of an SLMA result, whichever shape it was returned in
-#' @param x The output of ds.glmSLMA or ds.lmerSLMA.
+#' @param x The output of ds.glmSLMA, ds.lmerSLMA or ds.glmerSLMA.
 #' @return A named list with one element per study.
 #' @noRd
 .slma_studies <- function(x) {
@@ -157,7 +169,7 @@ glance.ds_lmerSLMA <- function(x, ...) {
 }
 
 #' Get the per-study summaries of the studies that returned estimates
-#' @param x The output of ds.glmSLMA or ds.lmerSLMA.
+#' @param x The output of ds.glmSLMA, ds.lmerSLMA or ds.glmerSLMA.
 #' @return A named list with one element per study that returned coefficients.
 #' @noRd
 .valid_studies <- function(x) {
@@ -188,7 +200,7 @@ glance.ds_lmerSLMA <- function(x, ...) {
 #'
 #' The pooled matrix loses its row names when study 1 failed or only one study is valid, so the terms
 #' are taken from a valid study.
-#' @param x The output of ds.glmSLMA or ds.lmerSLMA.
+#' @param x The output of ds.glmSLMA, ds.lmerSLMA or ds.glmerSLMA.
 #' @param studies The valid studies of `x`.
 #' @param pooling The pooling method: "REML", "ML" or "FE".
 #' @return A matrix as taken by .coefficient_rows, or NULL if `x` has no pooled estimates.
@@ -301,7 +313,7 @@ glance.ds_lmerSLMA <- function(x, ...) {
 }
 
 #' Make one glance row per cohort, with missing values for cohorts that failed
-#' @param x The output of ds.glmSLMA or ds.lmerSLMA.
+#' @param x The output of ds.glmSLMA, ds.lmerSLMA or ds.glmerSLMA.
 #' @param glance_study Function making a one-row data frame from a valid study summary.
 #' @return A data frame with the cohort column first.
 #' @noRd

@@ -1,4 +1,4 @@
-# Captures real ds.glm, ds.glmSLMA and ds.lmerSLMA outputs (dsBaseClient/dsBase 6.3.5) as fixtures.
+# Captures real ds.glm, ds.glmSLMA, ds.lmerSLMA and ds.glmerSLMA outputs (dsBaseClient/dsBase 6.3.5) as fixtures.
 # DSLite cannot run ds.glmSLMA because dsBase evaluates `dataName` in the global environment, so
 # DSI calls are mocked to run the dsBase server functions in the global environment, one study at
 # a time, which is what a real DataSHIELD server does.
@@ -105,5 +105,19 @@ save_fixture(
     ds.lmerSLMA("LAB_HDL ~ LAB_TSC + GENDER + (1|clinic)", dataName = "D", datasources = conns)
   ),
   "lmerSLMA_studies_failed"
+)
+
+fg <- "obese ~ LAB_TSC + (1|clinic)"
+save_fixture(run(studies, ds.glmerSLMA(fg, family = "binomial", dataName = "D", datasources = conns)), "glmerSLMA_full")
+save_fixture(
+  run(studies, ds.glmerSLMA(fg, family = "binomial", dataName = "D", datasources = conns, combine.with.metafor = FALSE)),
+  "glmerSLMA_no_metafor"
+)
+save_fixture(
+  run(
+    list(study1 = studies$study1, study2 = one_clinic, study3 = disclosive),
+    ds.glmerSLMA("obese ~ LAB_TSC + GENDER + (1|clinic)", family = "binomial", dataName = "D", datasources = conns)
+  ),
+  "glmerSLMA_studies_failed"
 )
 datashield.logout(conns)
