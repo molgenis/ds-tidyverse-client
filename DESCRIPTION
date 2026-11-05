@@ -33,7 +33,8 @@ Imports:
   rlang,
   assertthat,
   generics,
-  stats
+  stats,
+  tibble
 Suggests: 
   testthat (>= 3.0.0),
   knitr,

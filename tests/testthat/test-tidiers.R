@@ -30,7 +30,9 @@ test_that("as_ds_model rejects outputs without model results", {
 test_that("tidy.ds_glm returns the pooled coefficients", {
   out <- tidy(glm_gaussian)
   coefs <- glm_gaussian$coefficients
-  expect_equal(names(out), c("term", "estimate", "std.error", "statistic", "p.value"))
+  expect_s3_class(out, "tbl_df")
+  expect_equal(names(out), c("cohort", "term", "estimate", "std.error", "statistic", "p.value"))
+  expect_equal(out$cohort, rep("pooled", 3))
   expect_equal(out$term, rownames(coefs))
   expect_equal(out$estimate, unname(coefs[, "Estimate"]))
   expect_equal(out$p.value, unname(coefs[, "p-value"]))
@@ -43,6 +45,16 @@ test_that("tidy.ds_glm confidence intervals match ds.glm's for every family", {
   expect_equal(tidy(glm_gaussian, conf.int = TRUE)$conf.low, unname(glm_gaussian$coefficients[, "low0.95CI"]))
 })
 
+test_that("tidy.ds_glm exponentiates estimates and intervals but not standard errors", {
+  linear <- tidy(glm_binomial, conf.int = TRUE)
+  out <- tidy(glm_binomial, conf.int = TRUE, exponentiate = TRUE)
+  expect_equal(out$estimate, exp(linear$estimate))
+  expect_equal(out$conf.low, exp(linear$conf.low))
+  expect_equal(out$conf.high, exp(linear$conf.high))
+  expect_equal(out$std.error, linear$std.error)
+  expect_equal(out$estimate[-1], unname(glm_binomial$coefficients[-1, "P_OR"]))
+})
+
 test_that("tidy.ds_glm keeps the term of a one-term model", {
   intercept_only <- glm_gaussian
   intercept_only$coefficients <- glm_gaussian$coefficients[1, , drop = FALSE]
@@ -51,6 +63,7 @@ test_that("tidy.ds_glm keeps the term of a one-term model", {
 
 test_that("glance.ds_glm returns one row", {
   out <- glance(glm_gaussian)
+  expect_s3_class(out, "tbl_df")
   expect_equal(nrow(out), 1)
   expect_equal(out$nobs, glm_gaussian$Nvalid)
   expect_equal(out$deviance, glm_gaussian$dev)
@@ -77,6 +90,15 @@ test_that("tidy.ds_glmSLMA computes pooled statistics for the chosen pooling met
   expect_equal(fe$conf.high, fe$estimate + stats::qnorm(0.95) * fe$std.error)
 })
 
+test_that("tidy.ds_glmSLMA exponentiates cohort and pooled rows", {
+  linear <- tidy(slma, conf.int = TRUE)
+  out <- tidy(slma, conf.int = TRUE, exponentiate = TRUE)
+  expect_s3_class(out, "tbl_df")
+  expect_equal(out$estimate, exp(linear$estimate))
+  expect_equal(out$conf.high, exp(linear$conf.high))
+  expect_equal(out$std.error, linear$std.error)
+})
+
 test_that("tidy.ds_glmSLMA handles results without pooled estimates", {
   expect_equal(unique(tidy(slma_no_metafor)$cohort), c("study1", "study2", "study3"))
   structure_mismatch <- as_ds_model(list(output.summary = slma$output.summary), "glmSLMA")
@@ -91,6 +113,7 @@ test_that("tidy.ds_glmSLMA leaves out failed studies and keeps pooled term names
 
 test_that("glance.ds_glmSLMA returns one row per cohort", {
   out <- glance(slma)
+  expect_s3_class(out, "tbl_df")
   study1 <- slma$output.summary$study1
   expect_equal(out$cohort, c("study1", "study2", "study3"))
   expect_equal(out$AIC[1], study1$aic)
@@ -132,6 +155,16 @@ test_that("tidy.ds_lmerSLMA pools fixed effects only", {
   expect_equal(pooled$effect, c("fixed", "fixed"))
   expect_equal(pooled$estimate, unname(lmer$SLMA.pooled.ests.matrix[, "pooled.ML"]))
   expect_false(anyNA(pooled$p.value))
+})
+
+test_that("tidy.ds_lmerSLMA exponentiates fixed effects only", {
+  linear <- tidy(lmer, conf.int = TRUE)
+  out <- tidy(lmer, conf.int = TRUE, exponentiate = TRUE)
+  fixed <- out$effect == "fixed"
+  expect_equal(out$estimate[fixed], exp(linear$estimate[fixed]))
+  expect_equal(out$conf.low[fixed], exp(linear$conf.low[fixed]))
+  expect_equal(out$estimate[!fixed], linear$estimate[!fixed])
+  expect_equal(out$std.error, linear$std.error)
 })
 
 test_that("tidy.ds_lmerSLMA handles failed studies and a single random intercept", {
@@ -178,4 +211,16 @@ test_that("modelsummary renders SLMA models with a cohort layout", {
     shape = term + group + cohort ~ model, gof_map = NA, output = "data.frame"
   )
   expect_true("sd__Observation" %in% mixed$term)
+})
+
+test_that("modelsummary renders a ds.glm and an SLMA model together", {
+  skip_if_not_installed("modelsummary")
+  out <- modelsummary::modelsummary(
+    list(glm = glm_gaussian, slma = slma),
+    shape = term + cohort ~ model, gof_map = NA, output = "data.frame"
+  )
+  pooled_intercept <- out[out$term == "(Intercept)" & out$cohort == "pooled" & out$statistic == "estimate", ]
+  expect_equal(pooled_intercept$glm, sprintf("%.3f", glm_gaussian$coefficients[1, 1]))
+  expect_equal(pooled_intercept$slma, sprintf("%.3f", slma$SLMA.pooled.ests.matrix[1, "pooled.REML"]))
+  expect_equal(out$glm[out$cohort == "study1"], rep("", 6))
 })

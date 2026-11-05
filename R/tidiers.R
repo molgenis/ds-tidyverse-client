@@ -42,6 +42,8 @@ as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
 #'   pooled them. Mixed models also return each cohort's random-effect standard deviations and
 #'   correlations, with `effect = "ran_pars"`.
 #'
+#'   \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
+#'
 #'   \code{glance()} returns one row for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
 #'   that failed have missing values.
 #'
@@ -50,34 +52,40 @@ as_ds_model <- function(x, type = c("glm", "glmSLMA", "lmerSLMA")) {
 #' @param x A model result marked with \code{as_ds_model()}.
 #' @param conf.int Logical: whether to add the columns `conf.low` and `conf.high`.
 #' @param conf.level The confidence level of the interval.
+#' @param exponentiate Logical: whether to exponentiate the estimates and confidence intervals, as for
+#'   odds ratios or rate ratios. Standard errors are not changed, and for mixed models only the fixed
+#'   effects are exponentiated.
 #' @param pooling The pooled estimates to report: `"REML"`, `"ML"` or `"FE"`, as estimated by
 #'   \code{metafor::rma} in \code{ds.glmSLMA} and \code{ds.lmerSLMA}.
 #' @param ... Not used.
-#' @return A data frame.
+#' @return A tibble.
 #' @name ds_model_tidiers
 NULL
 
 #' @rdname ds_model_tidiers
 #' @export
-tidy.ds_glm <- function(x, conf.int = FALSE, conf.level = 0.95, ...) {
-  .add_conf_int(.coefficient_rows(x[["coefficients"]][, 1:4, drop = FALSE]), conf.int, conf.level)
+tidy.ds_glm <- function(x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE, ...) {
+  rows <- list(pooled = .coefficient_rows(x[["coefficients"]][, 1:4, drop = FALSE]))
+  .format_tidy_rows(.bind_cohorts(rows), conf.int, conf.level, exponentiate)
 }
 
 #' @rdname ds_model_tidiers
 #' @export
-tidy.ds_glmSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, pooling = c("REML", "ML", "FE"), ...) {
+tidy.ds_glmSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE,
+                            pooling = c("REML", "ML", "FE"), ...) {
   studies <- .valid_studies(x)
   rows <- lapply(studies, function(study) .coefficient_rows(study[["coefficients"]]))
   pooled <- .pooled_coefficients(x, studies, match.arg(pooling))
   if (!is.null(pooled)) {
     rows$pooled <- .coefficient_rows(pooled)
   }
-  .add_conf_int(.bind_cohorts(rows), conf.int, conf.level)
+  .format_tidy_rows(.bind_cohorts(rows), conf.int, conf.level, exponentiate)
 }
 
 #' @rdname ds_model_tidiers
 #' @export
-tidy.ds_lmerSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, pooling = c("REML", "ML", "FE"), ...) {
+tidy.ds_lmerSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE,
+                             pooling = c("REML", "ML", "FE"), ...) {
   studies <- .valid_studies(x)
   rows <- lapply(studies, function(study) {
     rbind(.fixed_effect_rows(study[["coefficients"]]), .random_effect_rows(study[["varcor"]]))
@@ -86,13 +94,13 @@ tidy.ds_lmerSLMA <- function(x, conf.int = FALSE, conf.level = 0.95, pooling = c
   if (!is.null(pooled)) {
     rows$pooled <- .fixed_effect_rows(pooled)
   }
-  .add_conf_int(.bind_cohorts(rows), conf.int, conf.level)
+  .format_tidy_rows(.bind_cohorts(rows), conf.int, conf.level, exponentiate)
 }
 
 #' @rdname ds_model_tidiers
 #' @export
 glance.ds_glm <- function(x, ...) {
-  data.frame(
+  tibble(
     deviance = x[["dev"]],
     df.residual = x[["df"]],
     nobs = x[["Nvalid"]],
@@ -263,6 +271,34 @@ glance.ds_lmerSLMA <- function(x, ...) {
   rows
 }
 
+#' Add confidence intervals, exponentiate if asked, and return a tibble
+#' @param rows A data frame of tidy rows.
+#' @param conf.int Logical: whether to add confidence intervals.
+#' @param conf.level The confidence level.
+#' @param exponentiate Logical: whether to exponentiate estimates and intervals.
+#' @return A tibble.
+#' @importFrom tibble as_tibble tibble
+#' @noRd
+.format_tidy_rows <- function(rows, conf.int, conf.level, exponentiate) {
+  rows <- .add_conf_int(rows, conf.int, conf.level)
+  if (exponentiate) {
+    rows <- .exponentiate(rows)
+  }
+  as_tibble(rows)
+}
+
+#' Exponentiate estimates and confidence limits, leaving standard errors and random-effect parameters
+#' @param rows A data frame of tidy rows.
+#' @return `rows` with estimate, conf.low and conf.high exponentiated.
+#' @noRd
+.exponentiate <- function(rows) {
+  fixed <- if (is.null(rows$effect)) rep(TRUE, nrow(rows)) else rows$effect == "fixed"
+  for (column in intersect(c("estimate", "conf.low", "conf.high"), names(rows))) {
+    rows[[column]][fixed] <- exp(rows[[column]][fixed])
+  }
+  rows
+}
+
 #' Make one glance row per cohort, with missing values for cohorts that failed
 #' @param x The output of ds.glmSLMA or ds.lmerSLMA.
 #' @param glance_study Function making a one-row data frame from a valid study summary.
@@ -273,7 +309,7 @@ glance.ds_lmerSLMA <- function(x, ...) {
   valid <- .valid_studies(x)
   rows <- do.call(rbind, lapply(valid, glance_study))
   rows <- rows[match(names(studies), names(valid)), , drop = FALSE]
-  cbind(cohort = names(studies), rows, row.names = NULL)
+  as_tibble(cbind(cohort = names(studies), rows, row.names = NULL))
 }
 
 #' Check whether lme4 reported convergence

@@ -10,12 +10,13 @@
 \alias{glance.ds_lmerSLMA}
 \title{Tidy and glance methods for DataSHIELD models}
 \usage{
-\method{tidy}{ds_glm}(x, conf.int = FALSE, conf.level = 0.95, ...)
+\method{tidy}{ds_glm}(x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE, ...)
 
 \method{tidy}{ds_glmSLMA}(
   x,
   conf.int = FALSE,
   conf.level = 0.95,
+  exponentiate = FALSE,
   pooling = c("REML", "ML", "FE"),
   ...
 )
@@ -24,6 +25,7 @@
   x,
   conf.int = FALSE,
   conf.level = 0.95,
+  exponentiate = FALSE,
   pooling = c("REML", "ML", "FE"),
   ...
 )
@@ -41,13 +43,17 @@
 
 \item{conf.level}{The confidence level of the interval.}
 
+\item{exponentiate}{Logical: whether to exponentiate the estimates and confidence intervals, as for
+odds ratios or rate ratios. Standard errors are not changed, and for mixed models only the fixed
+effects are exponentiated.}
+
 \item{...}{Not used.}
 
 \item{pooling}{The pooled estimates to report: `"REML"`, `"ML"` or `"FE"`, as estimated by
 \code{metafor::rma} in \code{ds.glmSLMA} and \code{ds.lmerSLMA}.}
 }
 \value{
-A data frame.
+A tibble.
 }
 \description{
 \code{tidy()} returns one row per model term. For study-level meta-analysis (SLMA)
@@ -55,6 +61,8 @@ A data frame.
   `cohort = "pooled"` holding the pooled estimates, if \code{ds.glmSLMA} or \code{ds.lmerSLMA}
   pooled them. Mixed models also return each cohort's random-effect standard deviations and
   correlations, with `effect = "ran_pars"`.
+
+  \code{ds.glm} fits one model on the pooled data, so its rows have `cohort = "pooled"`.
 
   \code{glance()} returns one row for \code{ds.glm} and one row per cohort for SLMA results. Cohorts
   that failed have missing values.
