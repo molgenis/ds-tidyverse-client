@@ -31,7 +31,11 @@ Imports:
   DSI (>= 1.7.0),
   cli,
   rlang,
-  assertthat
+  assertthat,
+  dplyr (>= 1.1.0),
+  purrr (>= 1.0.0),
+  stats,
+  tidyr (>= 1.0.0)
 Suggests: 
   testthat (>= 3.0.0),
   knitr,
@@ -39,7 +43,6 @@ Suggests:
   DSLite, 
   dsBase,
   dsBaseClient, 
-  dsTidyverse, 
-  dplyr
+  dsTidyverse
 Config/testthat/edition: 3
 VignetteBuilder: knitr
