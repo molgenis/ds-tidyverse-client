@@ -34,7 +34,9 @@ Imports:
   cli,
   rlang,
   assertthat,
+  cards (>= 0.6.1),
   dplyr (>= 1.1.0),
+  gtsummary (>= 2.1.0),
   purrr (>= 1.0.0),
   stats,
   tidyr (>= 1.0.0)
