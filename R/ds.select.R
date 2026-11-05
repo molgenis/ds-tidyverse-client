@@ -3,7 +3,8 @@
 #' @param df.name Character specifying a server-side data frame or tibble.
 #' @param tidy_expr List of one or more unquoted expressions separated by commas. Variable names can
 #' be used as if they were positions in the data frame, so expressions like x:y can be used to
-#' select a range of variables.
+#' select a range of variables. To use a vector of column names defined in your local session,
+#' prefix it with \code{!!}, e.g. \code{list(!!my_vars)}.
 #' @param newobj Character specifying name for new server-side data frame.
 #' @param datasources DataSHIELD connections object.
 #' @return No return value, called for its side effects. An object (typically a data frame or tibble)
@@ -17,6 +18,14 @@
 #'   tidy_expr = list(mpg, starts_with("t")),
 #'   newobj = "df_subset",
 #'   dataources = conns
+#' )
+#'
+#' my_vars <- c("mpg", "cyl")
+#' ds.select(
+#'   df.name = "mtcars",
+#'   tidy_expr = list(!!my_vars),
+#'   newobj = "df_subset",
+#'   datasources = conns
 #' )
 #' }
 #' @export
