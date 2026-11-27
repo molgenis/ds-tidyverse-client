@@ -8,6 +8,38 @@ jobs:
     docker:
     # specify the version you desire here
     - image: rocker/verse:4.3.3
+    # service containers share localhost with the build container
+    - image: datashield/armadillo_citest:latest
+      environment:
+        LOGGING_CONFIG: 'classpath:logback-file.xml'
+        AUDIT_LOG_PATH: '/app/logs/audit.log'
+        SPRING_SECURITY_USER_PASSWORD: 'admin'
+        DEBUG: "FALSE"
+        SPRING_APPLICATION_JSON: |
+          {
+            "armadillo": {
+              "docker-management-enabled": false,
+              "profiles": [{
+                "name": "default",
+                "image": "datashield/rock-base:latest",
+                "host": "localhost",
+                "port": 8085,
+                "package-whitelist": ["dsBase", "dsTidyverse"],
+                "function-blacklist": [],
+                "options": {"datashield": {"seed": 342325352}}
+              }]
+            },
+            "spring": {
+              "security": {"user": {"name": "admin", "password": "admin"}},
+              "servlet": {"multipart": {"max-file-size": "1000MB", "max-request-size": "1000MB"}}
+            },
+            "storage": {"root-dir": "/data"},
+            "audit.log.path": "/logs/audit.log",
+            "stdout.log.path": "/logs/armadillo.log"
+          }
+    - image: datashield/rock-base:latest
+      environment:
+        DEBUG: "FALSE"
     working_directory: ~/repo
 
     # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
@@ -48,7 +80,7 @@ jobs:
     - run:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
-          Rscript -e 'install.packages(c("knitr", "devtools", "pkgdown", "markdown", "rmarkdown", "rlang", "stringr", "cli", "covr", "git2r", "DSI", "assertthat", "purrr", "gridExtra", "DSLite", "RANN", "lme4", "reshape2", "polycor", "gamlss", "gamlss", "mice", "childsds", "fields", "metafor", "meta", "panelaggregation", "testthat"), repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages(c("knitr", "devtools", "pkgdown", "markdown", "rmarkdown", "rlang", "stringr", "cli", "covr", "git2r", "DSI", "assertthat", "purrr", "gridExtra", "DSLite", "RANN", "lme4", "reshape2", "polycor", "gamlss", "gamlss", "mice", "childsds", "fields", "metafor", "meta", "panelaggregation", "testthat", "MolgenisArmadillo", "DSMolgenisArmadillo"), repos = "https://cloud.r-project.org")'
           Rscript -e 'install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")'
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           if [ "$CIRCLE_BRANCH" != "master" ] && git ls-remote --heads https://github.com/molgenis/ds-tidyverse | grep "refs/heads/$CIRCLE_BRANCH"; then
@@ -75,6 +107,81 @@ jobs:
           R CMD build .
           Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = FALSE)"
           Rscript -e "devtools::build_site(examples = FALSE)"
+
+    - run:
+        name: Wait for Armadillo to be ready
+        command: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
+              echo "Armadillo is ready"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Armadillo did not become ready in time"
+          exit 1
+
+    - run:
+        name: Upload test datasets to Armadillo
+        command: |
+          cd tests/testthat/data_files
+          R -q -f molgenis_armadillo-upload_testing_datasets.R
+
+    - run:
+        name: Install dsBase and dsTidyverse to Armadillo
+        command: |
+          ref=master
+          if [ "$CIRCLE_BRANCH" != "master" ] && git ls-remote --exit-code --heads https://github.com/molgenis/ds-tidyverse "$CIRCLE_BRANCH"; then
+            ref="$CIRCLE_BRANCH"
+          fi
+          git clone --depth 1 --branch "$ref" https://github.com/molgenis/ds-tidyverse.git /tmp/ds-tidyverse
+
+          mkdir /tmp/armadillo-packages
+          cd /tmp/armadillo-packages
+          R CMD build --no-build-vignettes /tmp/ds-tidyverse
+          Rscript -e 'download.packages("dsBase", destdir = ".", type = "source", repos = "https://cran.obiba.org/")'
+
+          for i in $(seq 1 30); do
+            if Rscript -e '
+              MolgenisArmadillo::armadillo.login_basic("http://localhost:8080", "admin", "admin")
+              MolgenisArmadillo::armadillo.install_packages(
+                c(Sys.glob("dsBase_*.tar.gz"), Sys.glob("dsTidyverse_*.tar.gz")),
+                profile = "default"
+              )
+            '; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Package install failed (default profile may not have started in time)"
+          exit 1
+
+    - run:
+        name: Verify and whitelist the Armadillo packages
+        command: |
+          check_version() {
+            for i in $(seq 1 30); do
+              actual=$(curl -sf -u admin:admin http://localhost:8080/packages | jq -r ".[] | select(.name == \"$1\") | .version" || true)
+              if [ "$actual" == "$2" ]; then
+                echo "Installed $1 $actual"
+                return 0
+              fi
+              sleep 10
+            done
+            echo "$1 version mismatch: expected $2, found '$actual'"
+            return 1
+          }
+          check_version dsBase "$(basename /tmp/armadillo-packages/dsBase_*.tar.gz .tar.gz | cut -d'_' -f2)"
+          check_version dsTidyverse "$(sed -n 's/^Version: //p' /tmp/ds-tidyverse/DESCRIPTION | tr -d '\r')"
+          curl -fsS -u admin:admin -X POST http://localhost:8080/whitelist/dsBase
+          curl -fsS -u admin:admin -X POST http://localhost:8080/whitelist/dsTidyverse
+
+    - run:
+        name: Run tests against Armadillo
+        environment:
+          TESTTHAT_MAX_FAILS: 999999
+        command: |
+          Rscript -e 'options(default_driver = "ArmadilloDriver"); devtools::test(stop_on_failure = TRUE)'
 
     - run:
         name: If on master and significant commits then release to github and message slack
