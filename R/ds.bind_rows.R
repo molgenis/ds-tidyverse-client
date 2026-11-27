@@ -27,7 +27,7 @@
 #' }
 #' @export
 ds.bind_rows <- function(to_combine = NULL, .id = NULL, newobj = NULL, datasources = NULL) {
-  to_combine <- .format_args_as_string(enquo(to_combine))
+  to_combine <- .format_args_as_string(enquo(to_combine), "to_combine")
   datasources <- .set_datasources(datasources)
   .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("bindRowsDS", to_combine, list(.id))

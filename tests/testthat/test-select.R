@@ -110,3 +110,14 @@ test_that("ds.select correctly passes strings with '='", {
     c("test", "cyl", "gear")
   )
 })
+
+test_that("ds.select throws an error if newobj is not provided", {
+  expect_error(
+    ds.select(
+      df.name = "mtcars",
+      tidy_expr = list(mpg),
+      datasources = conns
+    ),
+    "`newobj` must be a single non-empty character string"
+  )
+})

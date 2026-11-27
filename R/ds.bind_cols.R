@@ -27,7 +27,7 @@
 #' }
 #' @export
 ds.bind_cols <- function(to_combine = NULL, .name_repair = c("unique", "universal", "check_unique", "minimal"), newobj = NULL, datasources = NULL) {
-  to_combine <- .format_args_as_string(enquo(to_combine))
+  to_combine <- .format_args_as_string(enquo(to_combine), "to_combine")
   datasources <- .set_datasources(datasources)
   .check_tidy_args(NULL, newobj, check_df = FALSE)
   cally <- .make_serverside_call("bindColsDS", to_combine, list(.name_repair))

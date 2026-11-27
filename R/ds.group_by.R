@@ -23,7 +23,7 @@
 #' }
 #' @export
 ds.group_by <- function(df.name = NULL, tidy_expr, .add = FALSE, .drop = TRUE, newobj = NULL, datasources = NULL) {
-  tidy_expr <- .format_args_as_string(enquo(tidy_expr))
+  tidy_expr <- .format_args_as_string(enquo(tidy_expr), "tidy_expr")
   datasources <- .set_datasources(datasources)
   .check_tidy_args(df.name, newobj)
   cally <- .make_serverside_call("groupByDS", tidy_expr, list(df.name, .add, .drop))

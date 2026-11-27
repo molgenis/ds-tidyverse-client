@@ -65,29 +65,24 @@
   return(encode_list)
 }
 
-#' Remove List
+#' Converts a 'list()' expression to a string and removes the outer 'list()'.
 #'
-#' This function removes the 'list(' portion from a string.
-#'
-#' @param string A string containing the characters 'list('.
-#' @return The string with 'list(' removed.
+#' @param quo A quosure containing the expression passed by the user.
+#' @param arg_name The name of the user-facing argument, used in the error message.
+#' @return The contents of 'list()' as a string, or NULL if no expression was passed.
+#' @importFrom rlang quo_get_expr quo_text is_call
+#' @importFrom cli cli_abort
 #' @noRd
-.remove_list <- function(string) {
-  if (string != "NULL") {
-    string <- gsub("list\\(", "", string, fixed = FALSE)
-    string <- substr(string, 1, nchar(string) - 1)
+.format_args_as_string <- function(quo, arg_name) {
+  expr <- quo_get_expr(quo)
+  if (is.null(expr)) {
+    return(NULL)
   }
-}
-
-#' Converts expressions to a string and remove the 'list(' portion.
-#'
-#' @param expr The expression to be converted.
-#' @return The formatted arguments as a string.
-#' @importFrom rlang quo_text
-#' @noRd
-.format_args_as_string <- function(expr) {
-  neat_args_as_string <- .remove_list(quo_text(expr))
-  return(neat_args_as_string)
+  if (!is_call(expr, "list")) {
+    cli_abort("`{arg_name}` must be wrapped in `list()`, e.g. `{arg_name} = list(...)`.", call = NULL)
+  }
+  text <- quo_text(expr)
+  return(substr(text, nchar("list(") + 1, nchar(text) - 1))
 }
 
 #' Encode a string using the provided encoding key.
@@ -115,7 +110,7 @@
 #' @param .data Character specifying a server-side data frame or tibble.
 #' @param newobj Optionally, character specifying name for new server-side data frame.
 #' @return This function does not return a value but is used for argument validation.
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.string
 #' @noRd
 .check_tidy_args <- function(df.name = NULL, newobj, check_df = TRUE, check_obj = TRUE) {
   if (check_df) {
@@ -123,7 +118,10 @@
   }
 
   if (check_obj) {
-    assert_that(is.character(newobj))
+    assert_that(
+      is.string(newobj) && !is.na(newobj) && nzchar(newobj),
+      msg = "`newobj` must be a single non-empty character string."
+    )
   }
 }
 
