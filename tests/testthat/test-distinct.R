@@ -97,3 +97,5 @@ test_that("ds.distinct fails if created subset is too small", {
     )
   )
 })
+
+datashield.logout(conns)

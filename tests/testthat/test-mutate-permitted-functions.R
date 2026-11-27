@@ -374,3 +374,5 @@ test_that("ds.mutate permits as.numeric(as.Date()) nested call", {
     round(mean(as.numeric(as.Date(c("2024-01-15", "2024-06-30", "2024-12-25")))), 2)
   )
 })
+
+datashield.logout(conns)

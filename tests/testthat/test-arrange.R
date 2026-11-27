@@ -67,3 +67,5 @@ test_that("ds.arrange works with desc() specification", {
     "data.frame"
   )
 })
+
+datashield.logout(conns)

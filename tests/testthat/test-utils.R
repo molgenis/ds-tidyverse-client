@@ -185,3 +185,5 @@ test_that(".check_tidy_args returns correct errors", {
     .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
   )
 })
+
+datashield.logout(conns)

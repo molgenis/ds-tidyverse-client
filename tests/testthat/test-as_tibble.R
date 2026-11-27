@@ -174,3 +174,5 @@ test_that("ds.as_tibble works with matrices", {
     c("", "", "", "")
   )
 })
+
+datashield.logout(conns)

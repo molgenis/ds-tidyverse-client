@@ -47,3 +47,5 @@ test_that("ds.rename throws an error if column name doesn't exist", {
     )
   )
 })
+
+datashield.logout(conns)

@@ -134,3 +134,5 @@ test_that("ds.case_when correctly passes .default argument", {
     c(45, 36, 15, 0)
   )
 })
+
+datashield.logout(conns)

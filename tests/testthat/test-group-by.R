@@ -26,6 +26,8 @@ test_that("ds.group_by correctly groups a data frame", {
   )
 })
 
+datashield.logout(conns)
+
 login_data <- .prepare_login(assign_method = "ungroupDS")
 
 conns <- datashield.login(logins = login_data)
@@ -41,3 +43,5 @@ test_that("ds.ungroup correctly ungroups a data frame", {
     c("tbl_df", "tbl", "data.frame")
   )
 })
+
+datashield.logout(conns)

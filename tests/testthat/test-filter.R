@@ -84,3 +84,5 @@ test_that("ds.filter works with .preserve arg", {
     "data.frame"
   )
 })
+
+datashield.logout(conns)

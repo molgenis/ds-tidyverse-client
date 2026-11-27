@@ -174,3 +174,5 @@ test_that("ds.select correctly passes `num_range`", {
     c("x1", "x2")
   )
 })
+
+datashield.logout(conns)

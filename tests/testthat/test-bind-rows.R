@@ -57,3 +57,5 @@ test_that("ds.case_when works with .id arg", {
     c("which_df", "mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 })
+
+datashield.logout(conns)

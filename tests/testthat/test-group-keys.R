@@ -28,3 +28,5 @@ test_that("ds.group_keys returns error if too many groups", {
     ds.group_keys("mtcars_bad_group", datasources = conns)
   )
 })
+
+datashield.logout(conns)

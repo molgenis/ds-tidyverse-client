@@ -60,3 +60,5 @@ test_that("ds.slice throws error if disclosure risk", {
     )
   )
 })
+
+datashield.logout(conns)

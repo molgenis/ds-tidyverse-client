@@ -110,3 +110,5 @@ test_that("ds.select correctly passes strings with '='", {
     c("test", "cyl", "gear")
   )
 })
+
+datashield.logout(conns)

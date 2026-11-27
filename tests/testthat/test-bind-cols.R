@@ -80,3 +80,5 @@ test_that("ds.bind_cols throws error with .namerepair as 'check_unique'", {
     )
   )
 })
+
+datashield.logout(conns)

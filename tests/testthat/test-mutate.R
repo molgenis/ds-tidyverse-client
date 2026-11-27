@@ -106,3 +106,5 @@ test_that("ds.mutate passes with different .after argument", {
     c("mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "mpg_trans", "new_var", "vs", "am", "gear", "carb")
   )
 })
+
+datashield.logout(conns)

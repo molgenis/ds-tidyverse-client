@@ -94,3 +94,5 @@ test_that("ds.if_else correctly passes argument with = ", {
     c(54, 42, 0)
   )
 })
+
+datashield.logout(conns)
