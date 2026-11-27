@@ -4,9 +4,9 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-login_data <- .prepare_dslite(assign_method = "bindRowsDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "bindRowsDS")
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.bind_rows binds two data frames together", {
   skip_if_not_installed("dsBaseClient")
@@ -57,3 +57,5 @@ test_that("ds.case_when works with .id arg", {
     c("which_df", "mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb")
   )
 })
+
+datashield.logout(conns)

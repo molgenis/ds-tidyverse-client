@@ -5,7 +5,7 @@ require(dsTidyverse)
 require(dsBaseClient)
 
 data("mtcars")
-login_data <- .prepare_dslite()
+login_data <- .prepare_login()
 conns <- datashield.login(logins = login_data)
 
 test_that(".get_datasources returns datasources found by datashield.connections_find() when datasources is NULL", {
@@ -185,3 +185,5 @@ test_that(".check_tidy_args returns correct errors", {
     .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
   )
 })
+
+datashield.logout(conns)

@@ -4,9 +4,9 @@ require(dplyr)
 require(dsTidyverse)
 require(dsBaseClient)
 
-login_data <- .prepare_dslite(assign_method = "distinctDS", tables = list(mtcars = mtcars))
+login_data <- .prepare_login(assign_method = "distinctDS")
 conns <- datashield.login(logins = login_data)
-datashield.assign.table(conns, "mtcars", "mtcars")
+datashield.assign.table(conns, "mtcars", .test_table("mtcars"))
 
 test_that("ds.distinct correctly identified distinct rows", {
   skip_if_not_installed("dsBaseClient")
@@ -97,3 +97,5 @@ test_that("ds.distinct fails if created subset is too small", {
     )
   )
 })
+
+datashield.logout(conns)
