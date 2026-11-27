@@ -95,34 +95,27 @@ test_that(".get_encode_dictionary returns the expected encoding key", {
   expect_false(isTRUE(all.equal(expected_encode_list, actual_encode_list)))
 })
 
-test_that(".remove_list removes 'list(' portion from a string", {
-  input_string <- "list(a, b, c)"
-  output_string <- .remove_list(input_string)
-  expect_equal(output_string, "a, b, c")
-})
-
-test_that(".remove_list handles input without 'list(' correctly", {
-  input_string <- "c(a, b, c)"
-  output_string <- .remove_list(input_string)
-  expect_equal(output_string, "c(a, b, c")
-})
-
-test_that(".format_args_as_string correctly formats including 'list'", {
-  expr <- rlang::expr(
-    list(LAB_TSC, starts_with("LAB"), ends_with("ED"))
-  )
+test_that(".format_args_as_string removes the outer 'list()'", {
+  quo <- rlang::quo(list(LAB_TSC, starts_with("LAB"), ends_with("ED")))
   expected <- "LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  result <- .format_args_as_string(expr)
-  expect_equal(result, expected)
+  expect_equal(.format_args_as_string(quo, "tidy_expr"), expected)
 })
 
-test_that(".format_args_as_string correctly formats excluding 'list'", {
-  expr <- rlang::expr(
-    c(LAB_TSC, starts_with("LAB"), ends_with("ED"))
-  )
-  expected <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  result <- .format_args_as_string(expr)
-  expect_equal(result, expected)
+test_that(".format_args_as_string leaves an inner 'list(' intact", {
+  quo <- rlang::quo(list(x = enlist(a)))
+  expect_equal(.format_args_as_string(quo, "tidy_expr"), "x = enlist(a)")
+})
+
+test_that(".format_args_as_string returns NULL when no expression is passed", {
+  expect_null(.format_args_as_string(rlang::quo(NULL), "tidy_expr"))
+})
+
+test_that(".format_args_as_string throws an error if the expression is not wrapped in 'list()'", {
+  expected <- "`condition` must be wrapped in `list\\(\\)`"
+  expect_error(.format_args_as_string(rlang::quo(mpg > 20), "condition"), expected)
+  expect_error(.format_args_as_string(rlang::quo(desc(mpg)), "condition"), expected)
+  expect_error(.format_args_as_string(rlang::quo(cyl), "condition"), expected)
+  expect_error(.format_args_as_string(rlang::quo(c(mpg, cyl)), "condition"), expected)
 })
 
 test_that(".encode_tidy_eval correctly encodes strings with permitted values", {
@@ -156,15 +149,16 @@ test_that(".build_cally build correct call object", {
 })
 
 test_that(".make_serverside_call encodes and builds call object", {
-  input_string <- "c(LAB_TSC, starts_with(\"LAB\"), ends_with(\"ED\")"
-  tidy_select <- .format_args_as_string(rlang::enquo(input_string))
+  tidy_select <- .format_args_as_string(
+    rlang::quo(list(c(LAB_TSC, starts_with("LAB"), ends_with("ED")))), "tidy_expr"
+  )
   returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata"))
-  expected <- call("mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$", "mydata")
+  expected <- call("mutateDS", "c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$$QUOTE$LAB$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$$QUOTE$ED$QUOTE$$RB$$RB$", "mydata")
   expect_equal(expected, returned)
 
   returned <- .make_serverside_call("mutateDS", tidy_select, list("mydata", "extra_arg_1", "extra_arg_2"))
   expected <- call(
-    "mutateDS", "$QUOTE$c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$\\$QUOTE$LAB\\$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$\\$QUOTE$ED\\$QUOTE$$RB$",
+    "mutateDS", "c$LB$LAB_TSC$COMMA$$SPACE$starts_with$LB$$QUOTE$LAB$QUOTE$$RB$$COMMA$$SPACE$ends_with$LB$$QUOTE$ED$QUOTE$$RB$$RB$",
     "mydata", "extra_arg_1", "extra_arg_2"
   )
   expect_equal(expected, returned)
@@ -178,8 +172,15 @@ test_that(".check_tidy_args returns correct errors", {
 
   expect_error(
     .check_tidy_args(df.name = "test", newobj = NULL, check_df = TRUE, check_obj = TRUE),
-    "newobj is not a character vector"
+    "`newobj` must be a single non-empty character string"
   )
+
+  for (bad_newobj in list(1, c("a", "b"), NA_character_, "")) {
+    expect_error(
+      .check_tidy_args(df.name = "test", newobj = bad_newobj),
+      "`newobj` must be a single non-empty character string"
+    )
+  }
 
   expect_silent(
     .check_tidy_args(df.name = "test", newobj = "test", check_df = TRUE, check_obj = TRUE)
