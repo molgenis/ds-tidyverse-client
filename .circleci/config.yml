@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -81,7 +81,7 @@ jobs:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
           Rscript -e 'install.packages(c("knitr", "devtools", "pkgdown", "markdown", "rmarkdown", "rlang", "stringr", "cli", "covr", "git2r", "DSI", "assertthat", "purrr", "gridExtra", "DSLite", "RANN", "lme4", "reshape2", "polycor", "gamlss", "gamlss", "mice", "childsds", "fields", "metafor", "meta", "panelaggregation", "testthat", "MolgenisArmadillo", "DSMolgenisArmadillo"), repos = "https://cloud.r-project.org")'
-          Rscript -e 'install.packages(c("dsBase", "dsBaseClient"), repos = "https://cran.obiba.org/")'
+          Rscript -e 'install.packages(c("dsBase", "dsBaseClient"), repos = "https://cloud.r-project.org")'
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           if [ "$CIRCLE_BRANCH" != "master" ] && git ls-remote --heads https://github.com/molgenis/ds-tidyverse | grep "refs/heads/$CIRCLE_BRANCH"; then
             Rscript -e "remotes::install_git('git@github.com:molgenis/ds-tidyverse.git', ref = '${CIRCLE_BRANCH}')"
@@ -139,7 +139,7 @@ jobs:
           mkdir /tmp/armadillo-packages
           cd /tmp/armadillo-packages
           R CMD build --no-build-vignettes /tmp/ds-tidyverse
-          Rscript -e 'download.packages("dsBase", destdir = ".", type = "source", repos = "https://cran.obiba.org/")'
+          Rscript -e 'download.packages("dsBase", destdir = ".", type = "source", repos = "https://cloud.r-project.org")'
 
           for i in $(seq 1 30); do
             if Rscript -e '

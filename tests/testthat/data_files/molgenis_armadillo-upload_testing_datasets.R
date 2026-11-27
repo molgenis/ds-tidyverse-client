@@ -7,6 +7,7 @@
 
 library(MolgenisArmadillo)
 source("../helpers.R")
+options(arrow.use_threads = FALSE)
 
 armadillo.login_basic(armadillo = "http://localhost:8080", username = "admin", password = "admin")
 
